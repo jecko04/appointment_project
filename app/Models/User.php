@@ -16,6 +16,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    // protected $table = 'superadmin'; // Ensure this matches your actual table name
+    
     protected $fillable = [
         'name',
         'email',

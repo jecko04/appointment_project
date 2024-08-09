@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('superadmin', function (Blueprint $table) {
-            $table->id('SuperAdmin_ID');
-            $table->string('Name');
-            $table->string('Email');
-            $table->string('Password');
+        Schema::create('adminweb', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
             $table->rememberToken();
-            $table->unsignedBigInteger('Role_ID');
             $table->timestamps();
-
-            $table->foreign('Role_ID')->references('Role_ID')->on('role');
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('superadmin');
+        Schema::dropIfExists('adminweb');
     }
 };
