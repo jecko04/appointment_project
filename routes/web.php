@@ -4,6 +4,8 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AppointController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserRecordAppointmentController;
+use App\Http\Controllers\UsersAppointmentController;
 use App\Http\Middleware\RedirectIfNotAdmin;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +25,8 @@ Route::get('/', function () {
 // Authentication routes
 Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+
+
 Route::middleware('ifAdmin')->group(function () {
     Route::get('/admin/login', [AdminLoginController::class, 'showAdminLogin'])->name('admin.login');
 });
@@ -33,10 +37,20 @@ Route::middleware('IfNotAdmin')->group(function () {
 });
 
 //learn how to make route
+Route::middleware('ifNotUser')->group(function (){
+    Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
+    Route::get('/record', [UserRecordAppointmentController::class, 'showRecordAppointment'])->name('record');
+});
 
+// Route::middleware('ifNotUser')->group(function () {
+//     Route::get('/dashboard', )
+// });
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+// //     return Inertia::render('Dashboard');
+// // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

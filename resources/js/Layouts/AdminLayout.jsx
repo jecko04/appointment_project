@@ -29,6 +29,9 @@ const AdminLayout = ({ header, children, }) => {
                                 <NavLink href={route('admin.dashboard')} active={route().current('dashboard')}>
                                     Dashboard
                                 </NavLink>
+                                {/* <NavLink href={route('admin.appointment')} active={route().current('appointment')}>
+                                    Appointment
+                                </NavLink> */}
                             </div>
                             
                         </div>
@@ -100,6 +103,9 @@ const AdminLayout = ({ header, children, }) => {
                         <ResponsiveNavLink href={route('admin.dashboard')} active={route().current('dashboard')}>
                             Dashboard
                         </ResponsiveNavLink>
+                        {/* <ResponsiveNavLink href={route('admin.appointment')} active={route().current('appointment')}>
+                            Appointment
+                        </ResponsiveNavLink> */}
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">

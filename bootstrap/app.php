@@ -2,6 +2,8 @@
 
 use App\Http\Middleware\RedirectIfAdmin;
 use App\Http\Middleware\RedirectIfNotAdmin;
+use App\Http\Middleware\RedirectIfNotUsers;
+use App\Http\Middleware\RedirectIfUser;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -24,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'IfNotAdmin' => RedirectIfNotAdmin::class, // Register your middleware here
             'ifAdmin' => RedirectIfAdmin::class,
+            'ifNotUser' => RedirectIfNotUsers::class,
         ]);
     })
     
