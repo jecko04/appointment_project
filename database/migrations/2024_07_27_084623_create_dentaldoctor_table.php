@@ -12,17 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dentaldoctor', function (Blueprint $table) {
-            $table->id('User_ID');
+            $table->id('Doctors_ID');
             $table->string('Name');
             $table->string('Email');
             $table->string('Password');
-            $table->unsignedBigInteger('CreatedBy');
             $table->unsignedBigInteger('Branch_ID');
             $table->unsignedBigInteger('Role_ID');
             $table->timestamps();
 
             // Define foreign key constraints
-            $table->foreign('CreatedBy')->references('Admin_ID')->on('admin');
             $table->foreign('Branch_ID')->references('Branch_ID')->on('branch')->onDelete('cascade');
             $table->foreign('Role_ID')->references('Role_ID')->on('role');
         });
