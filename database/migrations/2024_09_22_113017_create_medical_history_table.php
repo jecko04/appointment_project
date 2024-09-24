@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('allergies')->nullable();
             $table->text('past_surgeries')->nullable();
             $table->text('family_medical_history')->nullable();
-            $table->decimal('blood_pressure', 5, 2)->nullable();
+            $table->string('blood_pressure')->nullable();
             $table->boolean('heart_disease')->default(false);
             $table->boolean('diabetes')->default(false);
             $table->boolean('smoker')->default(false);

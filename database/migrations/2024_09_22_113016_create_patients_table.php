@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id(); // Patient ID
             $table->string('fullname');
             $table->date('date_of_birth');
-            $table->integer('age')->nullable();
+            $table->string('age')->nullable();
             $table->string('gender')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
