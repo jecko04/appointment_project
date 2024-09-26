@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
 
 Route::get('/', function () {
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -27,10 +30,16 @@ Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
 
+// Route for the home page
+Route::get('/home', [HomeController::class, 'showHome'])->name('home');
+
+
 Route::middleware('ifAdmin')->group(function () {
     Route::get('/admin/login', [AdminLoginController::class, 'showAdminLogin'])->name('admin.login');
 });
  
+
+
 // Dashboard route
 Route::middleware('IfNotAdmin')->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'showAdminDashboard'])->name('admin.dashboard');
@@ -40,7 +49,19 @@ Route::middleware('IfNotAdmin')->group(function () {
 Route::middleware('ifNotUser')->group(function (){
     Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
     Route::get('/record', [UserRecordAppointmentController::class, 'showRecordAppointment'])->name('record');
+ 
 });
+
+
+//routes for contacts
+
+// Route to display the contact form (GET request)
+Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact.form');
+
+// Route to handle the form submission (POST request)
+Route::post('/contact', [ContactController::class, 'storeContact'])->name('contact.store');
+
+
 
 // Route::middleware('ifNotUser')->group(function () {
 //     Route::get('/dashboard', )
