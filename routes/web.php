@@ -29,14 +29,14 @@ Route::get('/', function () {
 Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
-
-// Route for the home page
-Route::get('/home', [HomeController::class, 'showHome'])->name('home');
-
-
 Route::middleware('ifAdmin')->group(function () {
     Route::get('/admin/login', [AdminLoginController::class, 'showAdminLogin'])->name('admin.login');
 });
+
+// Route for the home page
+//Route::get('/home', [HomeController::class, 'showHome'])->name('home');
+
+
  
 
 
@@ -55,11 +55,11 @@ Route::middleware('ifNotUser')->group(function (){
 
 //routes for contacts
 
-// Route to display the contact form (GET request)
-Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact.form');
+// // Route to display the contact form (GET request)
+// Route::get('/contact', [ContactController::class, 'showContactForm'])->name('contact.form');
 
-// Route to handle the form submission (POST request)
-Route::post('/contact', [ContactController::class, 'storeContact'])->name('contact.store');
+// // Route to handle the form submission (POST request)
+// Route::post('/contact', [ContactController::class, 'storeContact'])->name('contact.store');
 
 
 

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            //
+            $table->boolean('required_med_history')->default(false)->after('Branch_ID'); 
+            $table->boolean('required_dent_history')->default(false)->after('required_med_history');
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            //
+            $table->dropColumn(['required_med_history', 'required_dent_history']);
         });
     }
 };

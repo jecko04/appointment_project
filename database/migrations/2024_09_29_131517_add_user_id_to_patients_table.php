@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('patients', function (Blueprint $table) {
-            $table->unsignedBigInteger('Branch_ID')->after('emergency_contact'); // Add Branch_ID column
-            $table->foreign('Branch_ID')->references('Branch_ID')->on('branch')->onDelete('cascade'); // Add foreign key constraint
-        });
+            $table->unsignedBigInteger('user_id')->nullable()->after('id');
 
+            // Define the foreign key constraint to reference the users table
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
     }
 
     /**
@@ -24,8 +25,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('patients', function (Blueprint $table) {
-            $table->dropForeign(['Branch_ID']); // Drop foreign key constraint
-            $table->dropColumn('Branch_ID'); // Drop Branch_ID column
+            $table->dropForeign(['user_id']);
+            $table->dropColumn('user_id');
         });
     }
 };

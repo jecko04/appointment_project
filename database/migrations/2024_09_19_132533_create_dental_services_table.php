@@ -29,10 +29,9 @@ return new class extends Migration
             // Foreign key constraint
             $table->foreign('Branch_ID')->references('Branch_ID')->on('branch')->onDelete('cascade');
 
-            // Add unique index if needed to prevent duplicates
             $table->unique(['dentalservices', 'Branch_ID', 'dayofweek']); 
 
-            $table->timestamps(); // Timestamps
+            $table->timestamps(); 
         });
     }
 
