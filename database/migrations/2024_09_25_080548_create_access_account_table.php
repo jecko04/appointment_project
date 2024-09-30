@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('access_id');
             $table->unsignedBigInteger('Admin_ID');
             $table->string('name');
-            $table->string('username');
+            $table->string('email');
             $table->string('password');
             $table->unsignedBigInteger('Branch_ID');
             $table->timestamps();
