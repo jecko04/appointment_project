@@ -39,7 +39,7 @@ Route::middleware('ifAdmin')->group(function () {
 // Route for the home page
 // Route::get('/', [HomeController::class, 'showHome'])->name('home');
 
-// Route::get('/home', [HomeController::class, 'showHome'])->name('home');
+Route::get('/home', [HomeController::class, 'home'])->name('home');
 // Route::get('/signup', [SignupController::class, 'Signup'])->name('signup');
 // Route::get('/register', [RegisterController::class, 'Register'])->name('register');
 

@@ -3,7 +3,11 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import Header from '@/Components/Header';
+import Footer from '@/Components/Footer';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { DatePicker, Input } from 'antd';
+import moment from 'moment';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -11,19 +15,42 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        dob: null,
+        age: '',
+        gender: '',
+        phone: '',
+        address: '',
+        emergency_contact: '',
     });
 
     const submit = (e) => {
         e.preventDefault();
-
+        console.log(data.dob);
         post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
+            onFinish: () => reset('password', 'password_confirmation',),
         });
     };
 
     return (
+        <>
+        <Header/>
+        <div className="flex flex-col gap-5 items-center mt-14">
+            <div className='flex items-center'>
+                <span className='font-extrabold text-3xl  tracking-widest'>Welcome To</span>
+                <img src="/images/image.png" alt="Logo" className='h-20 w-20 mr-2' /> 
+                <span style={{ color: '#FF4200' }} className='mr-2 text-3xl tracking-widest'>SMTC</span> 
+                <span style={{ color: '#2938DA' }} className='text-3xl tracking-widest'>Dental Care</span>
+            </div>
+                <span className='text-lg tracking-widest'>General Dentistry & Orthodontics W/ Dental X - Ray</span>
+
+            <div className='flex flex-col items-center tracking-widest '>
+                <span className='text-gray-400'>Sign up now to book your dental appointment easily with </span>
+                <span className='text-gray-400'>SMTC Dental Care</span>
+            </div>
+        </div>
         <GuestLayout>
             <Head title="Register" />
+            
 
             <form onSubmit={submit}>
                 <div>
@@ -63,12 +90,13 @@ export default function Register() {
                 <div className="mt-4">
                     <InputLabel htmlFor="password" value="Password" />
 
-                    <TextInput
+                    <Input.Password
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="flex flex-1 mt-1 w-full"
+                        size="large"
                         autoComplete="new-password"
                         onChange={(e) => setData('password', e.target.value)}
                         required
@@ -80,12 +108,13 @@ export default function Register() {
                 <div className="mt-4">
                     <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
 
-                    <TextInput
+                    <Input.Password
                         id="password_confirmation"
                         type="password"
                         name="password_confirmation"
                         value={data.password_confirmation}
-                        className="mt-1 block w-full"
+                        className="mt-1 flex flex-1 w-full"
+                        size="large"
                         autoComplete="new-password"
                         onChange={(e) => setData('password_confirmation', e.target.value)}
                         required
@@ -94,19 +123,138 @@ export default function Register() {
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
 
+                <div className="mt-4">
+                    <InputLabel htmlFor="dob" value="Date of Birth" />
+
+                    <DatePicker
+                        id="dob"
+                        name="dob" 
+                        value={data.dob ? moment(data.dob): null}  
+                        className="mt-1 block w-full"
+                        autoComplete="bday" 
+                        size='large'
+                        onChange={(date) => setData('dob', date ? date.format("YYYY-MM-DD"): null)}
+                        required
+                    />
+
+                    <InputError message={errors.dob} className="mt-2" /> 
+                </div>
+
+                <div className="flex gap-2 mt-4">
+                    <div className='relative flex-1'> 
+                    <InputLabel htmlFor="age" value="Age"/>
+
+
+                    <TextInput
+                        id="age"
+                        name="age"
+                        value={data.age}
+                        className="mt-1 block w-full h-10"
+                        autoComplete="age"
+                        isFocused={true}
+                        onChange={(e) => setData('age', e.target.value)}
+                        required
+                    />
+                    </div>
+
+                    <div className='relative flex-1'>
+
+                    <InputLabel htmlFor="gender" value="Gender"/>
+
+                    <TextInput
+                        id="gender"
+                        name="gender"
+                        value={data.gender}
+                        className="mt-1 block w-full h-10"
+                        autoComplete="gender"
+                        isFocused={true}
+                        onChange={(e) => setData('gender', e.target.value)}
+                        required
+                    />
+                    </div>
+
+                    <div className='relative flex-1'>
+
+                    <InputLabel htmlFor="phone" value="Phone"/>
+
+                    <TextInput
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        value={data.phone}
+                        className="mt-1 block w-full h-10"
+                        autoComplete="phone"
+                        isFocused={true}
+                        onChange={(e) => setData('phone', e.target.value)}
+                        required
+                    />
+                    </div>
+
+                    <InputError message={errors.phone} className="mt-2" /> 
+                    <InputError message={errors.age} className="mt-2" /> 
+                    <InputError message={errors.gender} className="mt-2" />
+
+                    
+                </div>
+                <div className='mt-4'>
+                    <InputLabel htmlFor="address" value="Address" />
+
+                    <TextInput
+                        id="address"
+                        name="address"
+                        value={data.address}
+                        className="mt-1 block w-full"
+                        autoComplete="address"
+                        isFocused={true}
+                        onChange={(e) => setData('address', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.address} className="mt-2" />
+                    </div>
+
+                    <div className='mt-4'>
+                    <InputLabel htmlFor="emergency_contact" value="Emergency Contact (fullname - contact number)" />
+
+                    <TextInput
+                        id="emergency_contact"
+                        name="emergency_contact"
+                        value={data.emergency_contact}
+                        className="mt-1 block w-full"
+                        autoComplete="emergency_contact"
+                        onChange={(e) => setData('emergency_contact', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.emergency_contact} className="mt-2" />
+
+                    
+                    </div>
+
+                    <div className='mt-4'>
+                        <PrimaryButton className="w-full flex justify-center"  disabled={processing}>
+                            Sign up
+                        </PrimaryButton>
+                    </div>
+
                 <div className="flex items-center justify-end mt-4">
+                    <span className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Already have an account?
+                    </span>
                     <Link
                         href={route('login')}
-                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Already registered?
+                        className='ml-2 text-[#FF4200] hover:text-[#3498DB] ease-in-out duration-300'
+                           >
+                        Login
                     </Link>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
+                    
                 </div>
             </form>
+
         </GuestLayout>
+        <div className="mt-14"></div>
+        <Footer/>
+        </>
     );
 }
