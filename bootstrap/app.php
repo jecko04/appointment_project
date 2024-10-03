@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\RedirectIfAdmin;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\RedirectIfNotAdmin;
 use App\Http\Middleware\RedirectIfNotUsers;
 use App\Http\Middleware\RedirectIfUser;
@@ -24,9 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'IfNotAdmin' => RedirectIfNotAdmin::class, // Register your middleware here
-            'ifAdmin' => RedirectIfAdmin::class,
             'ifNotUser' => RedirectIfNotUsers::class,
+            'IfAuthenticate' => RedirectIfAuthenticated::class,
         ]);
     })
     

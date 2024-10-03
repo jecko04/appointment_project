@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,7 +40,6 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit');
     }
-
     /**
      * Delete the user's account.
      */
@@ -60,4 +60,5 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
 }
