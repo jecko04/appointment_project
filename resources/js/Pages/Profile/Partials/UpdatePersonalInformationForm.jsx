@@ -4,18 +4,15 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
-import { DatePicker, Alert } from "antd";
+import { DatePicker, notification } from "antd";
 import moment from 'moment';
 import { useState } from 'react';
 
 const UpdatePersonalInformationForm = ({  className = ''  }) => {
 const user= usePage().props.auth.user
 
-const [alertMessage, setAlertMessage] = useState(null);
-const [alertType, setAlertType] = useState(null)
-
   const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-    bod: user.date_of_birth,
+    date_of_birth: user.date_of_birth,
     age: user.age,
     gender: user.gender,
     phone: user.phone,
@@ -23,20 +20,38 @@ const [alertType, setAlertType] = useState(null)
     emergency_contact: user.emergency_contact
   });
 
-    const submit = (e) => {
-        e.preventDefault();
-        
-        patch(route('profile.update.personalinfo')), {
-            data,
-            onSuccess: () => {
-                setAlertMessage('Personal information updated successfully!');
-                setAlertType('success');
-            },
-            onError: () => {
-                setAlertMessage('There was an error updating your information.');
-                setAlertType('error');
-            }
-        }};
+
+
+  const submit = (e) => {
+    e.preventDefault();
+
+    patch(route('profile.update.info'), {
+      data,
+      onSuccess: () => {
+        notification.success({
+          message: 'Success',
+          description: 'Personal information updated successfully!',
+          placement: 'bottomRight',
+          onClick: () => {
+            console.log('Notification Clicked!');
+          },
+          duration: 3,
+        });
+      },
+      onError: () => {
+        notification.error({
+          message: 'Error',
+          description: 'There was an error updating your information.',
+          placement: 'bottomRight',
+          onClick: () => {
+            console.log('Notification Clicked!');
+          },
+          duration: 3, 
+        });
+      }
+    });
+  };
+
 
   return (
     <section className={className}>
@@ -48,15 +63,6 @@ const [alertType, setAlertType] = useState(null)
           </p>
      </header>
 
-     {alertMessage && (
-        <Alert
-        message={alertMessage}
-        type={alertType}
-        showIcon
-        className="mb-4"
-        />
-     )}
-
      <form onSubmit={submit} className="mt-6 space-y-6">
               <div>
                   <InputLabel htmlFor="date_of_birth" value="Date of Birth" />
@@ -66,13 +72,13 @@ const [alertType, setAlertType] = useState(null)
                         name="date_of_birth"
                         className="mt-1 block w-full"
                         size='large'
-                        value={data.bod ? moment(data.bod) : null} 
-                        onChange={(dateString) => setData('bod', dateString)} 
+                        value={data.date_of_birth ? moment(data.date_of_birth) : null} 
+                        onChange={(date) => setData('date_of_birth', date ? date.format("YYYY-MM-DD"): null)}
                         required
                         autoComplete="date_of_birth"
                     />
 
-                    <InputError className="mt-2" message={errors.bod} />
+                    <InputError className="mt-2" message={errors.date_of_birth} />
                 </div>
 
                 <div>

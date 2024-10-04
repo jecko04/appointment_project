@@ -5,6 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
+import { notification } from 'antd';
 
 export default function UpdatePasswordForm({ className = '' }) {
     const passwordInput = useRef();
@@ -18,20 +19,43 @@ export default function UpdatePasswordForm({ className = '' }) {
 
     const updatePassword = (e) => {
         e.preventDefault();
-
+    
         put(route('password.update'), {
             preserveScroll: true,
-            onSuccess: () => reset(),
+            onSuccess: () => {
+
+                reset();
+                notification.success({
+                    message: 'Success',
+                    description: 'Your password has been updated successfully!',
+                    placement: 'bottomRight',
+                    onClick: () => {
+                        console.log('Notification Clicked!');
+                    },
+                    duration: 3,
+                });
+            },
             onError: (errors) => {
+
                 if (errors.password) {
                     reset('password', 'password_confirmation');
                     passwordInput.current.focus();
                 }
-
+    
                 if (errors.current_password) {
                     reset('current_password');
                     currentPasswordInput.current.focus();
                 }
+    
+                notification.error({
+                    message: 'Error',
+                    description: 'There was an error updating your password. Please check your inputs.',
+                    placement: 'bottomRight',
+                    onClick: () => {
+                        console.log('Notification Clicked!');
+                    },
+                    duration: 3,
+                });
             },
         });
     };

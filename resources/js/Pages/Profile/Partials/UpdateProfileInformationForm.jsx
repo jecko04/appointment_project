@@ -4,6 +4,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
+import { notification } from 'antd';
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }) {
     const user = usePage().props.auth.user;
@@ -15,9 +16,33 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
     const submit = (e) => {
         e.preventDefault();
-
-        patch(route('profile.update'));
-    };
+    
+        patch(route('profile.update'), {
+          data,
+          onSuccess: () => {
+            notification.success({
+              message: 'Success',
+              description: 'Personal information updated successfully!',
+              placement: 'bottomRight',
+              onClick: () => {
+                console.log('Notification Clicked!');
+              },
+              duration: 3,
+            });
+          },
+          onError: () => {
+            notification.error({
+              message: 'Error',
+              description: 'There was an error updating your information.',
+              placement: 'bottomRight',
+              onClick: () => {
+                console.log('Notification Clicked!');
+              },
+              duration: 3, 
+            });
+          }
+        });
+      };
 
     return (
         <section className={className}>

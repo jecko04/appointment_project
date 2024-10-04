@@ -13,7 +13,7 @@ const Navbar = ({ auth }) => {
     };
 
   return (
-    <nav className="relative flex flex-col w-full px-6 lg:max-w-full">
+    <nav className="relative flex flex-col w-full px-6 lg:max-w-full border-solid border-b-2 lg:border-none">
         <div className="flex items-start justify-start">
             <button onClick={toggleMenu} className="text-black lg:hidden">
                 {isOpen ? (
@@ -49,7 +49,7 @@ const Navbar = ({ auth }) => {
                 <ResponsiveNavLink href={route('login')} className="text-black hover:text-amber-400 text-xs">Contact</ResponsiveNavLink>
                 {auth.user ? (
                 
-                <ResponsiveNavLink href={route('dashboard')} className="text-black text-xs"
+                <ResponsiveNavLink href={route('dashboard')} className="text-black text-xs "
                 >
                     Dashboard
                 </ResponsiveNavLink>

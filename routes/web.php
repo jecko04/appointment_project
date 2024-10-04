@@ -34,8 +34,9 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::patch('/profile/personal-info', [UpdatePersonalInfomationFormController::class, 'updateinfo'])->name('profile.update.personalinfo');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::patch('/profile/personal-info', [ProfileController::class, 'updateinfo'])->name('profile.update.info');
 });
 
 require __DIR__.'/auth.php';
