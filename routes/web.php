@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserRecordAppointmentController;
 use App\Http\Controllers\UsersAppointmentController;
@@ -20,6 +21,7 @@ Route::get('/', function () {
 });
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
+Route::get('/guest-appointment', [AppointmentController::class, 'appointment'])->name('guest.appointment');
 
 //learn how to make route
 Route::middleware('ifNotUser')->group(function (){

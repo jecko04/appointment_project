@@ -108,7 +108,7 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             </form>
         </GuestLayout>
-        <Footer/>
+        <Header/>
         </>
 
     );

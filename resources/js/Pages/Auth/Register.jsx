@@ -26,7 +26,6 @@ export default function Register() {
 
     const submit = (e) => {
         e.preventDefault();
-        console.log(data.dob);
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation',),
         });
@@ -261,7 +260,7 @@ export default function Register() {
 
         </GuestLayout>
         <div className="mt-14"></div>
-        <Footer/>
+        <Header/>
         </>
     );
 }
