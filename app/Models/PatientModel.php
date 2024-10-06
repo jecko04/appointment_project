@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class AppointmentModel extends Authenticatable
+class PatientModel extends Model
 {
     use HasFactory;
 
-    //this is where the appointment inputed
+    protected $table = 'patients';
+
     protected $fillable = [
         'user_id',
         'fullname',
@@ -18,17 +18,9 @@ class AppointmentModel extends Authenticatable
         'age',
         'gender',
         'phone',
-        'email',
         'address',
         'emergency_contact',
-        'dental_services',
-        'appointment_date',
-        'appointment_time',
-        'reschedule_date',
-        'reschedule_time',
-        'reschedule_date',
-        'qr_code',
-        'check_in',
+        'Branch_ID',
     ];
 
     public function user()
@@ -36,15 +28,19 @@ class AppointmentModel extends Authenticatable
         return $this->belongsTo(User::class);
     }
 
-    // Define the relationship with the MedicalHistory model
+    // Relationship with MedicalHistory model
     public function medicalHistory()
     {
         return $this->hasOne(MedicalHistoryModel::class, 'patient_id');
     }
 
-    // Define the relationship with the DentalHistory model
+    // Relationship with DentalHistory model
     public function dentalHistory()
     {
         return $this->hasOne(DentalHistoryModel::class, 'patient_id');
+    }
+
+    public function branch() {
+        return $this->belongsTo(BranchModel::class, 'Branch_ID', 'Branch_ID'); // This establishes the relationship to the BranchModel
     }
 }

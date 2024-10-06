@@ -21,10 +21,12 @@ Route::get('/', function () {
 });
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
-Route::get('/guest-appointment', [AppointmentController::class, 'appointment'])->name('guest.appointment');
 
 //learn how to make route
 Route::middleware('ifNotUser')->group(function (){
+    Route::get('/guest-appointment', [AppointmentController::class, 'appointment'])->name('guest.appointment');
+    Route::put('/guest-appointment', [AppointmentController::class, 'appointment'])->name('guest.appointment');
+
     Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
     Route::get('/record', [UserRecordAppointmentController::class, 'showRecordAppointment'])->name('record');
 });

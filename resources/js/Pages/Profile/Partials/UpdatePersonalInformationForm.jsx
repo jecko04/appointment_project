@@ -90,7 +90,6 @@ const user= usePage().props.auth.user
                         value={data.age}
                         onChange={(e) => setData('age', e.target.value)}
                         required
-                        isFocused
                         autoComplete="age"
                     />
 
@@ -106,7 +105,6 @@ const user= usePage().props.auth.user
                         value={data.gender}
                         onChange={(e) => setData('gender', e.target.value)}
                         required
-                        isFocused
                         autoComplete="gender"
                     />
 
@@ -123,7 +121,6 @@ const user= usePage().props.auth.user
                         value={data.phone}
                         className="mt-1 block w-full"
                         autoComplete="phone"
-                        isFocused={true}
                         onChange={(e) => setData('phone', e.target.value)}
                         required
                     />
@@ -140,7 +137,6 @@ const user= usePage().props.auth.user
                         value={data.address}
                         className="mt-1 block w-full"
                         autoComplete="address"
-                        isFocused={true}
                         onChange={(e) => setData('address', e.target.value)}
                         required
                     />
@@ -157,7 +153,6 @@ const user= usePage().props.auth.user
                         value={data.emergency_contact}
                         onChange={(e) => setData('emergency_contact', e.target.value)}
                         required
-                        isFocused
                         autoComplete="emergency_contact"
                     />
 
