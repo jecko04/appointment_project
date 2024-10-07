@@ -1,4 +1,4 @@
-import GuestLayout from '@/Layouts/GuestLayout';
+
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -6,9 +6,10 @@ import TextInput from '@/Components/TextInput';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { DatePicker, Input } from 'antd';
+import { DatePicker, Input, Select } from 'antd';
 import moment from 'moment';
 import { TbArrowBackUp } from "react-icons/tb";
+import GuestLayout from '@/Layouts/GuestLayout';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -23,6 +24,8 @@ export default function Register() {
         address: '',
         emergency_contact: '',
     });
+
+const { Option } = Select;
 
     const submit = (e) => {
         e.preventDefault();
@@ -161,18 +164,21 @@ export default function Register() {
 
                     <div className='relative flex-1'>
 
-                    <InputLabel htmlFor="gender" value="Gender"/>
-
-                    <TextInput
-                        id="gender"
-                        name="gender"
-                        value={data.gender}
-                        className="mt-1 block w-full text-xs"
-                        autoComplete="gender"
-                        isFocused={true}
-                        onChange={(e) => setData('gender', e.target.value)}
-                        required
-                    />
+                    <InputLabel htmlFor="gender" value="Gender" />
+                          <Select
+                            id="gender"
+                            name="gender"
+                            value={data.gender}
+                            className="block w-full text-xs"
+                            autoComplete="gender"
+                            size="middle"
+                            onChange={(value) => setData('gender', value)}
+                            required
+                          >
+                            <Option value="male">Male</Option>
+                            <Option value="female">Female</Option>
+                            <Option value="other">Other</Option>
+                          </Select>
                     </div>
 
                     <div className='relative flex-1'>

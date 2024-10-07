@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import Logo from '@/Components/Logo';
-import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
-import { HomeOutlined, UserOutlined, SettingOutlined, DashboardOutlined  } from '@ant-design/icons';
 
 export default function Authenticated({ user, header, children, }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);

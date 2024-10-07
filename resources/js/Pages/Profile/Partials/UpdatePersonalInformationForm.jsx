@@ -4,9 +4,11 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
-import { DatePicker, notification } from "antd";
+import { DatePicker, notification, Select } from "antd";
 import moment from 'moment';
 import { useState } from 'react';
+
+const { Option } = Select;
 
 const UpdatePersonalInformationForm = ({  className = ''  }) => {
 const user= usePage().props.auth.user
@@ -97,16 +99,21 @@ const user= usePage().props.auth.user
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="gender" value="Gender" />
-
-                    <TextInput
-                        id="gender"
-                        className="mt-1 block w-full"
-                        value={data.gender}
-                        onChange={(e) => setData('gender', e.target.value)}
-                        required
-                        autoComplete="gender"
-                    />
+                <InputLabel htmlFor="gender" value="Gender" />
+                          <Select
+                            id="gender"
+                            name="gender"
+                            value={data.gender}
+                            className="block w-full text-xs"
+                            autoComplete="gender"
+                            size="middle"
+                            onChange={(value) => setData('gender', value)}
+                            required
+                          >
+                            <Option value="male">Male</Option>
+                            <Option value="female">Female</Option>
+                            <Option value="other">Other</Option>
+                          </Select>
 
                     <InputError className="mt-2" message={errors.gender} />
                 </div>

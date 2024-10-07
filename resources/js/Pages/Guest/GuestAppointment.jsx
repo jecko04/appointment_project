@@ -41,47 +41,49 @@ const Appointment = ({ auth, branches, categories }) => {
     heart_disease: false,
     diabetes: false,
     smoker: false,
+
+    last_dental_visit: null,
+    last_dental_treatments: '',
+    tooth_sensitivity: '',
+    frequent_tooth_pain: false,
+    gum_disease_history: false,
+    teeth_grinding: false,
+    orthodontic_treatment: false,
+    dental_implants: false,
+    bleeding_gums: false,
   });
 
   const submit = (e) => {
     e.preventDefault();
 
-    put(route('guest.appointment'), data)
+    const formattedData = {
+      ...data,
+      date: data.date ? moment(data.date).format('YYYY-MM-DD') : null,
+      time: data.time ? moment(data.time, 'h:mm a').format('HH:mm') : null,
+
+    };
+
+    put(route('guest.appointment'), formattedData, {
+      onSuccess: () => {
+        // handle success if needed
+      },
+      onError: (errors) => {
+        console.log(errors); // Check what errors are returned
+      },
+    }); 
     
-    // {
-    //   branch: data.selectedBranch, 
-    //   category: data.category,
-    //   date: data.date,
-    //   time: data.time,
-
-    //   name: data.name,
-    //   age: data.age,
-    //   gender: data.gender,
-    //   date_of_birth: data.date_of_birth,
-    //   email: data.email,
-    //   phone: data.phone,
-    //   address: data.address,
-    //   emergency_contact: data.emergency_contact,
-
-    //   medical_condition: data.medical_condition,
-    //   current_medication: data.current_medication,
-    //   allergies: data.allergies,
-    //   past_surgeries: data.past_surgeries,
-    //   family_medical_history: data.family_medical_history,
-    //   blood_pressure: data.blood_pressure,
-    //   heart_disease: data.heart_disease,
-    //   diabetes: data.diabetes,
-    //   smoker: data.smoker,
-    // });
   };
+
+  const branch_name = data.selectedBranch; //need to get branch name
   
   const [currentStep, setCurrentStep] = useState(0);
+
   const [isChecked, setIsChecked] = useState({
     heart_disease: false,
     diabetes: false,
     smoker: false,
-  }
-  );
+  });
+
   
   const handleBranchChange = (value) => {
     console.log('Selected Branch:', value);
@@ -97,23 +99,37 @@ const Appointment = ({ auth, branches, categories }) => {
   };
 
   const handleCheckboxChange = (checkbox, checked) => {
-    setIsChecked((prevState) => ({
-      ...prevState,
+    setData((prevChecked) => ({
+      ...prevChecked,
       [checkbox]: checked,
     }));
+    console.log(checkbox);
   };
 
   const nextStep = () => {
-    if (currentStep < 4) {
-      setCurrentStep(currentStep + 1)
+    if (isStepComplete()) {
+      if (currentStep < 4) {
+        setCurrentStep(currentStep + 1);
+      }
+    } else {
+      console.log('Step is incomplete');
     }
-  }
+  };
 
   const previousStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
     }
   }
+
+  const isStepComplete = () => {
+    if (currentStep === 0) return data.selectedBranch && data.category && data.date && data.time;
+    if (currentStep === 1) return data.name && data.age && data.gender && data.phone && data.email && data.address && data.date_of_birth && data.emergency_contact;
+    if (currentStep === 3) return data.last_dental_visit;
+    // Add more conditions for other steps as needed
+    return true;
+  };
+  
 
   return (
     <>
@@ -153,10 +169,13 @@ const Appointment = ({ auth, branches, categories }) => {
 
                       <InputLabel htmlFor="branches" value="Select Branch"/>
                       <Select
+                        id="branches"
+                        name="branches"
                         className="w-96 h-10"
                         placeholder="Select a branch"
                         onChange={handleBranchChange}
                         value={data.selectedBranch || null} 
+                        required
                       >
                         {branches.map((branch) => (
                           <Option key={branch.Branch_ID} value={branch.Branch_ID}>
@@ -167,11 +186,14 @@ const Appointment = ({ auth, branches, categories }) => {
 
                       <InputLabel htmlFor="services" value="Select a Dental Service"/>
                       <Select
+                        id="services"
+                        name="services"
                         className="w-96 h-10"
                         placeholder="Select a service"
                         onChange={handleServiceChange}
                         value={data.category}
                         disabled={!data.selectedBranch}
+                        required
                       >
                         {categories
                           .filter(category => category.Branch_ID === data.selectedBranch) 
@@ -181,6 +203,9 @@ const Appointment = ({ auth, branches, categories }) => {
                             </Option>
                           ))}
                       </Select>
+                      {categories.filter(category => category.Branch_ID === data.selectedBranch).length === 0 && (
+                        <div className="text-red-500">No services available for the selected branch.</div>
+                      )}
                       {errors.category && <div className="text-red-500">{errors.category}</div>}
                       </div>
 
@@ -232,7 +257,7 @@ const Appointment = ({ auth, branches, categories }) => {
                   )}
 
                   {currentStep === 1 && (
-                    <div className="flex flex-col p-5 gap-5 shadow-md rounded-lg">
+                    <div className="flex flex-col p-5 gap-3 shadow-md rounded-lg">
                       <div className="flex gap-2 text-lg">
                         <span>Welcome to</span>
                         <span className="text-[#ff4200]">SMTC</span>
@@ -242,14 +267,14 @@ const Appointment = ({ auth, branches, categories }) => {
                       
                       <span className="font-black text-sm">Patient Info (Required)</span>
 
-                      <div className="flex justify-between">
+                      <div className="flex justify-around">
                         <div className="flex flex-col">
                           <InputLabel htmlFor="name" value="Full Name" />
                           <TextInput
                             id="name"
                             name="name"
                             value={data.name}
-                            className="block w-96 text-sm"
+                            className="block w-80 text-sm"
                             autoComplete="name"
                             isFocused={true}
                             onChange={(e) => setData('name', e.target.value)}
@@ -273,7 +298,7 @@ const Appointment = ({ auth, branches, categories }) => {
                         </div>
                       </div>
 
-                      <div className="flex justify-between">
+                      <div className="flex justify-around">
                         <div className="flex flex-col">
                           <InputLabel htmlFor="gender" value="Gender" />
                           <Select
@@ -293,13 +318,40 @@ const Appointment = ({ auth, branches, categories }) => {
                           <InputError message={errors.gender} className="mt-2" />
                         </div>
 
+
                         <div className="flex flex-col">
+                        <InputLabel htmlFor="date_of_birth" value="Date of Birth" />
+                        <DatePicker
+                            id="date_of_birth"
+                            name="date_of_birth"
+                            type="date"
+                            className="block w-80"
+                            size='large'
+                            value={data.date_of_birth ? moment(data.date_of_birth) : null} 
+                            onChange={(date) => setData('date_of_birth', date ? date.format("YYYY-MM-DD"): null)}
+                            required
+                            autoComplete="date_of_birth"
+                        />
+
+                        <InputError className="mt-2" message={errors.date_of_birth} />
+                        </div>
+
+                      </div>
+
+                     
+
+                     
+
+                      <div className="flex justify-around">
+                      <div className="flex flex-col gap-3">
+
+                      <div className="flex flex-col">
                           <InputLabel htmlFor="phone" value="Phone" />
                           <TextInput
                             id="phone"
                             name="phone"
                             value={data.phone}
-                            className="block w-96 text-sm"
+                            className="block w-80 text-sm"
                             autoComplete="phone"
                             onChange={(e) => setData('phone', e.target.value)}
                             required
@@ -307,22 +359,24 @@ const Appointment = ({ auth, branches, categories }) => {
                           <InputError message={errors.phone} className="mt-2" />
                         </div>
 
-                        
+                        <div>
+
+                            <InputLabel htmlFor="address" value="Address" />
+                            <TextInput
+                              id="address"
+                              name="address"
+                              value={data.address}
+                              className="block w-80 text-sm"
+                              autoComplete="address"
+                              onChange={(e) => setData('address', e.target.value)}
+                              required
+                            />
+                            <InputError message={errors.address} className="mt-2" />
+                            </div>
                       </div>
 
-                      <InputLabel htmlFor="address" value="Address" />
-                      <TextInput
-                        id="address"
-                        name="address"
-                        value={data.address}
-                        className="block w-full text-sm"
-                        autoComplete="address"
-                        onChange={(e) => setData('address', e.target.value)}
-                        required
-                      />
-                      <InputError message={errors.address} className="mt-2" />
 
-                      <div className="flex justify-between">
+                      <div className="flex flex-col gap-3">
 
                       <div className="flex flex-col">
                           <InputLabel htmlFor="email" value="Email" />
@@ -330,7 +384,7 @@ const Appointment = ({ auth, branches, categories }) => {
                             id="email"
                             name="email"
                             value={data.email}
-                            className="block w-96 text-sm"
+                            className="block w-80 text-sm"
                             autoComplete="email"
                             onChange={(e) => setData('email', e.target.value)}
                             required
@@ -352,6 +406,8 @@ const Appointment = ({ auth, branches, categories }) => {
                           <InputError message={errors.emergency_contact} className="mt-2" />
                         </div>
                       </div>
+
+                      </div>
                     </div>
                   )}
 
@@ -366,114 +422,100 @@ const Appointment = ({ auth, branches, categories }) => {
                       <span className="text-[#2938DA]">Dental Care</span>
                       <span>!</span>
                     </div>
-                    <span>Medical History</span>
+                    <span className="font-black text-sm">Medical History</span>
                     <div className="flex justify-evenly">
                       <div className="flex flex-col gap-3">
-                      <InputLabel htmlFor="medical_condition" value="Medical Condition (if there’s any)" />
-
+                      <InputLabel htmlFor="medical_condition" value="Medical Condition (if there's any)" />
                       <TextInput
                           id="medical_condition"
                           name="medical_condition"
                           value={data.medical_condition}
                           className="mt-1 block w-80 text-sm"
-                          autoComplete="medical_condition"
                           onChange={(e) => setData('medical_condition', e.target.value)}
                           required
                       />
-
                       <InputError message={errors.medical_condition} className="mt-2" />
 
-                      <InputLabel htmlFor="current_medication" value="Current Medication (if there’s any)" />
-
+                      <InputLabel htmlFor="current_medication" value="Current Medication (if there's any)" />
                       <TextInput
                           id="current_medication"
                           name="current_medication"
                           value={data.current_medication}
                           className="mt-1 block w-80 text-sm"
-                          autoComplete="current_medication"
                           onChange={(e) => setData('current_medication', e.target.value)}
                           required
                       />
-
                       <InputError message={errors.current_medication} className="mt-2" />
 
-                      <InputLabel htmlFor="allergies" value="Allergies (if there’s any)" />
-
+                      <InputLabel htmlFor="allergies" value="Allergies (if there's any)" />
                       <TextInput
                           id="allergies"
                           name="allergies"
                           value={data.allergies}
                           className="mt-1 block w-80 text-sm"
-                          autoComplete="allergies"
                           onChange={(e) => setData('allergies', e.target.value)}
                           required
                       />
-
                       <InputError message={errors.allergies} className="mt-2" />
 
-                      <InputLabel htmlFor="past_surgeries" value="Past Surgeries (if there’s any)" />
-
+                      <InputLabel htmlFor="past_surgeries" value="Past Surgeries (if there's any)" />
                       <TextInput
                           id="past_surgeries"
                           name="past_surgeries"
                           value={data.past_surgeries}
                           className="mt-1 block w-80 text-sm"
-                          autoComplete="past_surgeries"
                           onChange={(e) => setData('past_surgeries', e.target.value)}
                           required
                       />
-
                       <InputError message={errors.past_surgeries} className="mt-2" />
-                      </div>
+                  </div>
 
-                      <div className="flex flex-col gap-3">
-                      <InputLabel htmlFor="family_medical_history" value="Family medical history" />
-
+                  <div className="flex flex-col gap-3">
+                      <InputLabel htmlFor="family_medical_history" value="Family medical history (if there's any)" />
                       <TextInput
                           id="family_medical_history"
                           name="family_medical_history"
                           value={data.family_medical_history}
                           className="mt-1 block w-80 text-sm"
-                          autoComplete="family_medical_history"
                           onChange={(e) => setData('family_medical_history', e.target.value)}
                           required
                       />
-
                       <InputError message={errors.family_medical_history} className="mt-2" />
 
                       <InputLabel htmlFor="blood_pressure" value="Blood pressure" />
-
                       <TextInput
                           id="blood_pressure"
                           name="blood_pressure"
                           value={data.blood_pressure}
                           className="mt-1 block w-80 text-sm"
-                          autoComplete="blood_pressure"
                           onChange={(e) => setData('blood_pressure', e.target.value)}
                           required
                       />
-
                       <InputError message={errors.blood_pressure} className="mt-2" />
 
-                      <Checkbox 
-                      checked={isChecked.heart_disease} 
-                      value={data.checkbox ? moment(data.checkbox): false}
-                      onChange={(e) => handleCheckboxChange('heart_disease', e.target.checked)}>
-                        Heart Disease?
+                      <Checkbox
+                        id="heart_disease"
+                        name="heart_disease"
+                        checked={data.heart_disease}
+                        onChange={(e) => handleCheckboxChange('heart_disease', e.target.checked)}
+                      >
+                        Heart Disease
                       </Checkbox>
-
-                      <Checkbox 
-                      checked={isChecked.diabetes} 
-                      value={data.checkbox ? moment(data.checkbox): false}
-                      onChange={(e) => handleCheckboxChange('diabetes', e.target.checked)}>
-                        Diabetes?
+                      <Checkbox
+                        id="diabetes"
+                        name="diabetes"
+                        checked={data.diabetes}
+                        onChange={(e) => handleCheckboxChange('diabetes', e.target.checked)}
+                      >
+                        Diabetes
                       </Checkbox>
-
-                      <Checkbox 
-                      checked={isChecked.smoker} 
-                      value={data.checkbox ? moment(data.checkbox): false}
-                      onChange={(e) => handleCheckboxChange('smoker', e.target.checked)}>
-                        Smoker?
+                      <Checkbox
+                        id="smoker"
+                        name="smoker"
+                        checked={data.smoker}
+                        onChange={(e) => handleCheckboxChange('smoker', e.target.checked)}
+                      >
+                        Smoker
                       </Checkbox>
                       </div>
                     </div>
@@ -487,7 +529,133 @@ const Appointment = ({ auth, branches, categories }) => {
                   {currentStep === 3 && (
                     <>
                     <div>
-                      <span>dental history</span>
+                      <div className="flex flex-col p-5 gap-5 shadow-md rounded-lg">
+                    
+                    <div className="flex gap-2 text-lg">
+                      <span>Welcome to</span>
+                      <span className="text-[#ff4200]">SMTC</span>
+                      <span className="text-[#2938DA]">Dental Care</span>
+                      <span>!</span>
+                    </div>
+                    <span className="font-black text-sm">Dental History</span>
+                    <div className="flex justify-evenly">
+                      <div className="flex flex-col gap-3">
+                      <InputLabel htmlFor="last_dental_visit" value="Your last dental visit (if first time choose your dental appointment date)" />
+                        <DatePicker
+                            id="last_dental_visit"
+                            type="date"
+                            name="last_dental_visit"
+                            className="block w-80"
+                            size='large'
+                            value={data.last_dental_visit ? moment(data.last_dental_visit) : null} 
+                            onChange={(date) => setData('last_dental_visit', date ? date.format("YYYY-MM-DD"): null)}
+                            required
+                        />
+
+                        <InputError className="mt-2" message={errors.last_dental_visit} />
+
+                      <InputLabel htmlFor="last_dental_treatments" value="Last dental treatment" />
+
+                      <TextInput
+                          id="last_dental_treatments"
+                          name="last_dental_treatments"
+                          value={data.last_dental_treatments}
+                          className="mt-1 block w-80 text-sm"
+                          onChange={(e) => setData('last_dental_treatments', e.target.value)}
+                          required
+                      />
+
+                      <InputError message={errors.last_dental_treatments} className="mt-2" />
+
+                      
+                      <InputLabel htmlFor="tooth_sensitivity" value="Tooth sensitivity" />
+                      <Select
+                            id="tooth_sensitivity"
+                            name="tooth_sensitivity"
+                            value={data.tooth_sensitivity}
+                            className="block w-80 text-sm"
+                            autoComplete="tooth_sensitivity"
+                            size="large"
+                            onChange={(value) => setData('tooth_sensitivity', value)}
+                            required
+                          >
+                            <Option value="None">None</Option>
+                            <Option value="Hot">Hot</Option>
+                            <Option value="Cold">Cold</Option>
+                            <Option value="Sweet">Sweet</Option>
+                          </Select>
+
+                      </div>
+
+                      <div className="flex gap-3">
+                      
+                      <div className="flex flex-col justify-center gap-5">
+
+                      <Checkbox
+                        id="frequent_tooth_pain"
+                        name="frequent_tooth_pain"
+                        checked={data.frequent_tooth_pain}
+                        onChange={(e) => handleCheckboxChange('frequent_tooth_pain', e.target.checked)}
+                      >
+                        Frequent Tooth Pain
+                      </Checkbox>
+
+                      <Checkbox
+                        id="gum_disease_history"
+                        name="gum_disease_history"
+                        checked={data.gum_disease_history}
+                        onChange={(e) => handleCheckboxChange('gum_disease_history', e.target.checked)}
+                      >
+                        Gum disease history
+                      </Checkbox>
+
+                      <Checkbox
+                        id="teeth_grinding"
+                        name="teeth_grinding"
+                        checked={data.teeth_grinding}
+                        onChange={(e) => handleCheckboxChange('teeth_grinding', e.target.checked)}
+                      >
+                        Teeth Grinding
+                      </Checkbox>
+                      
+                      <Checkbox
+                        id="orthodontic_treatment"
+                        name="orthodontic_treatment"
+                        checked={data.orthodontic_treatment}
+                        onChange={(e) => handleCheckboxChange('orthodontic_treatment', e.target.checked)}
+                      >
+                        Orthodontic
+                      </Checkbox>
+                      </div>
+
+                      <div className="flex flex-col justify-center gap-5">
+
+                      <Checkbox
+                        id="dental_implants"
+                        name="dental_implants"
+                        checked={data.dental_implants}
+                        onChange={(e) => handleCheckboxChange('dental_implants', e.target.checked)}
+                      >
+                        Dental implants
+                      </Checkbox>
+
+                      
+                      <Checkbox
+                        id="bleeding_gums"
+                        name="bleeding_gums"
+                        checked={data.bleeding_gums}
+                        onChange={(e) => handleCheckboxChange('bleeding_gums', e.target.checked)}
+                      >
+                        Bleeding gums
+                      </Checkbox>
+
+                      </div>
+
+
+                      </div>
+                    </div>
+                    </div>
+                      
                     </div>
                     </>
                   )}
@@ -496,7 +664,29 @@ const Appointment = ({ auth, branches, categories }) => {
                   {currentStep === 4 && (
                     <>
                     <div>
-                      <span>review info</span>
+                    <div className="flex flex-col p-5 gap-5 shadow-md rounded-lg">
+                    
+                    <div className="flex gap-2 text-lg">
+                      <span>Welcome to</span>
+                      <span className="text-[#ff4200]">SMTC</span>
+                      <span className="text-[#2938DA]">Dental Care</span>
+                      <span>!</span>
+                    </div>
+                    <span className="font-black text-sm">Review Info</span>
+                      <div>
+                      <InputLabel htmlFor="branch_name" value="Last dental treatment" />
+
+                      <TextInput
+                          id="branch_name"
+                          name="branch_name"
+                          value={branch_name || null} 
+                          className="mt-1 block w-80 text-sm"
+                          onChange={(e) => setData('branch_name', e.target.value)}
+                          required
+                      />
+                      </div>
+
+                    </div>
                     </div>
                     </>
                   )}
@@ -504,17 +694,17 @@ const Appointment = ({ auth, branches, categories }) => {
 
                   <div className="flex justify-between mt-4">
                     {currentStep > 0 && (
-                      <PrimaryButton onClick={previousStep}>
+                      <PrimaryButton onClick={previousStep}  disabled={currentStep === 0}>
                         Previous
                       </PrimaryButton>
                     )}
 
                     {currentStep < 4 ? (
-                      <PrimaryButton onClick={nextStep} disabled={processing}>
+                      <PrimaryButton onClick={nextStep} disabled={!isStepComplete()}> {/* add this  */}
                         Next
                       </PrimaryButton>
                     ) : (
-                      <PrimaryButton className="w-full flex justify-center" disabled={processing}>
+                      <PrimaryButton className="flex justify-center" disabled={processing}>
                         Submit
                       </PrimaryButton>
                     )}
