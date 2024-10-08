@@ -3,12 +3,12 @@ import Navbar from '../Navbar/Navbar';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { Inertia } from '@inertiajs/inertia-react';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import { Steps, Select, DatePicker, TimePicker, Checkbox } from "antd";
 import PrimaryButton from '@/Components/PrimaryButton';
+import TertiaryButton from '@/Components/TertiaryButton';
 import moment from 'moment';
 
 const { Step } = Steps;
@@ -17,20 +17,23 @@ const { Option } = Select;
 const Appointment = ({ auth, branches, categories }) => {
   const user= usePage().props.auth.user
 
-  const { data, setData, put, processing, errors } = useForm({
+  const { data, setData, post, errors } = useForm({
     selectedBranch: null, 
-    category: '',
-    date: null,
-    time: null,
+    selectedBranchName: '',
+    branchLocation: '',
+    selectServices: null,
+    selectedServices: '',
+    appointment_date: null,
+    appointment_time: null,
     
-    name: user.name,
-    email: user.email,
-    age: user.age,
-    gender: user.gender,
-    date_of_birth: user.date_of_birth,
-    phone: user.phone,
-    address: user.address,
-    emergency_contact: user.emergency_contact,
+    fullname: user.name || '',
+    email: user.email || '',
+    age: user.age || '',
+    gender: user.gender || '',
+    date_of_birth: user.date_of_birth || '',
+    phone: user.phone || '',
+    address: user.address || '',
+    emergency_contact: user.emergency_contact || '',
 
     medical_condition: '',
     current_medication: '',
@@ -43,7 +46,7 @@ const Appointment = ({ auth, branches, categories }) => {
     smoker: false,
 
     last_dental_visit: null,
-    last_dental_treatments: '',
+    past_dental_treatments: '',
     tooth_sensitivity: '',
     frequent_tooth_pain: false,
     gum_disease_history: false,
@@ -53,30 +56,28 @@ const Appointment = ({ auth, branches, categories }) => {
     bleeding_gums: false,
   });
 
-  const submit = (e) => {
+  const [processing, setProcessing] = useState();
+
+  const submit = async (e) => {
     e.preventDefault();
+    setProcessing(true);
+    try {
+      const formattedData = {
+          ...data,
+          date: data.date ? moment(data.date).format('YYYY-MM-DD') : null,
+          appointment_time: data.appointment_time,
+          name: user.name,
+      };
 
-    const formattedData = {
-      ...data,
-      date: data.date ? moment(data.date).format('YYYY-MM-DD') : null,
-      time: data.time ? moment(data.time, 'h:mm a').format('HH:mm') : null,
+      await post(route('guest.appointment.store', data), formattedData);
 
-    };
-
-    put(route('guest.appointment'), formattedData, {
-      onSuccess: () => {
-        // handle success if needed
-      },
-      onError: (errors) => {
-        console.log(errors); // Check what errors are returned
-      },
-    }); 
-    
+  } catch (error) {
+      console.error("Error during appointment submission:", error);
+  } finally {
+    setProcessing(false);
+  }
   };
-
-  const branch_name = data.selectedBranch; //need to get branch name
   
-  const [currentStep, setCurrentStep] = useState(0);
 
   const [isChecked, setIsChecked] = useState({
     heart_disease: false,
@@ -84,19 +85,32 @@ const Appointment = ({ auth, branches, categories }) => {
     smoker: false,
   });
 
-  
   const handleBranchChange = (value) => {
     console.log('Selected Branch:', value);
+    const selectBranchName = branches.find(branch => branch.Branch_ID === parseInt(value));
+    const branchLocation = branches.find(branch => branch.Branch_ID === parseInt(value));
     setData((prevData) => ({
       ...prevData,
       selectedBranch: value, 
-      category: '', 
+      selectedBranchName: selectBranchName ? selectBranchName.BranchName : '',
+      branchLocation: branchLocation 
+      ? `${branchLocation.BuildingNumber}, ${branchLocation.Street}, ${branchLocation.Barangay}, ${branchLocation.City}, ${branchLocation.Province}, ${branchLocation.PostalCode}`
+      : '',
     }));
   };
 
   const handleServiceChange = (value) => {
-    setData('category', value);
+    console.log('Selected Services:', value);
+    const selectServices = categories.find(category => category.Categories_ID === parseInt(value));
+    setData((prevData) => ({
+      ...prevData,
+      selectServices: value,
+      selectedServices: selectServices ? selectServices.Title : '',
+    }));
+
   };
+
+  
 
   const handleCheckboxChange = (checkbox, checked) => {
     setData((prevChecked) => ({
@@ -105,6 +119,8 @@ const Appointment = ({ auth, branches, categories }) => {
     }));
     console.log(checkbox);
   };
+
+  const [currentStep, setCurrentStep] = useState(0);
 
   const nextStep = () => {
     if (isStepComplete()) {
@@ -123,8 +139,8 @@ const Appointment = ({ auth, branches, categories }) => {
   }
 
   const isStepComplete = () => {
-    if (currentStep === 0) return data.selectedBranch && data.category && data.date && data.time;
-    if (currentStep === 1) return data.name && data.age && data.gender && data.phone && data.email && data.address && data.date_of_birth && data.emergency_contact;
+    if (currentStep === 0) return data.selectedBranch && data.selectServices && data.appointment_date && data.appointment_time;
+    if (currentStep === 1) return data.fullname && data.age && data.gender && data.phone && data.email && data.address && data.date_of_birth && data.emergency_contact;
     if (currentStep === 3) return data.last_dental_visit;
     // Add more conditions for other steps as needed
     return true;
@@ -184,6 +200,13 @@ const Appointment = ({ auth, branches, categories }) => {
                         ))}
                       </Select>
 
+                      <InputLabel htmlFor="branch_location" value="Branch Location"/>
+                      <TextInput
+                      id="branch_location"
+                      name="branch_location"
+                      value={data.branchLocation ? data.branchLocation : ''}
+                      onChange={(e) => setData('branch_location', e.target.value)}
+                      />
                       <InputLabel htmlFor="services" value="Select a Dental Service"/>
                       <Select
                         id="services"
@@ -191,7 +214,7 @@ const Appointment = ({ auth, branches, categories }) => {
                         className="w-96 h-10"
                         placeholder="Select a service"
                         onChange={handleServiceChange}
-                        value={data.category}
+                        value={data.selectServices || null}
                         disabled={!data.selectedBranch}
                         required
                       >
@@ -212,43 +235,43 @@ const Appointment = ({ auth, branches, categories }) => {
                       </div>
 
                       <div className="flex flex-col gap-3 w-full max-w-80">
-                        <span className="text-sm">When would you like to come in?</span>
+                        <span className="text-sm mt-10">When would you like to come in?</span>
                         <div className="rounded-md shadow-xl py-4 px-4 flex flex-col gap-3">
                           <div className="flex flex-col divide-y divide-black">
                           <span className="font-black text-sm py-2">Schedule</span>
                           <span className="font-light text-xs py-2 text-gray-500">Choose Date and Time of your appointment</span>
                           </div>
                           
-                          <InputLabel htmlFor="date" value="Select Date" />
+                          <InputLabel htmlFor="appointment_date" value="Select Date" />
 
                           <DatePicker
-                              id="date"
-                              name="date" 
-                              value={data.date ? moment(data.date): null}  
+                              id="appointment_date"
+                              name="appointment_date" 
+                              value={data.appointment_date ? moment(data.appointment_date): null}  
                               className="block w-full"
-                              autoComplete="date" 
+                              autoComplete="appointment_date" 
                               size='large'
-                              onChange={(date) => setData('date', date ? date.format("YYYY-MM-DD"): null)}
+                              onChange={(date) => setData('appointment_date', date ? date.format("YYYY-MM-DD"): null)}
                               required
                           />
 
-                          <InputError message={errors.date} className="mt-2" /> 
+                          <InputError message={errors.appointment_date} className="mt-2" /> 
 
-                          <InputLabel htmlFor="time" value="Select Time" />
+                          <InputLabel htmlFor="appointment_time" value="Select Time" />
 
                           <TimePicker
-                            id="time"
-                            name="time"
-                            value={data.time ? moment(data.time, 'h:mm a') : null} 
-                            className="block w-full"
-                            autoComplete="time"
-                            size='large'
-                            format='h:mm a' 
-                            onChange={(time) => setData('time', time ? time.format("h:mm a") : null)}
-                            required
-                          />
+                          id="appointment_time"
+                          name="appointment_time"
+                          value={data.appointment_time ? moment(data.appointment_time, 'h:mm a') : null}
+                          className="block w-full"
+                          autoComplete="appointment_time"
+                          size='large'
+                          format='h:mm a' 
+                          onChange={(time) => setData('appointment_time', time ? time.format("HH:mm") : null)} 
+                          required
+                        />
 
-                          <InputError message={errors.time} className="mt-2" />
+                          <InputError message={errors.appointment_time} className="mt-2" />
                       </div>
                       </div>
                      
@@ -269,15 +292,14 @@ const Appointment = ({ auth, branches, categories }) => {
 
                       <div className="flex justify-around">
                         <div className="flex flex-col">
-                          <InputLabel htmlFor="name" value="Full Name" />
+                          <InputLabel htmlFor="fullname" value="name" />
                           <TextInput
-                            id="name"
-                            name="name"
-                            value={data.name}
+                            id="fullname"
+                            name="fullname"
+                            value={data.fullname}
                             className="block w-80 text-sm"
-                            autoComplete="name"
-                            isFocused={true}
-                            onChange={(e) => setData('name', e.target.value)}
+                            autoComplete="fullname"
+                            onChange={(e) => setData('fullname', e.target.value)}
                             required
                           />
                           <InputError message={errors.name} className="mt-2" />
@@ -538,14 +560,16 @@ const Appointment = ({ auth, branches, categories }) => {
                       <span>!</span>
                     </div>
                     <span className="font-black text-sm">Dental History</span>
-                    <div className="flex justify-evenly">
+                    <div className="flex flex-col justify-between">
                       <div className="flex flex-col gap-3">
-                      <InputLabel htmlFor="last_dental_visit" value="Your last dental visit (if first time choose your dental appointment date)" />
+                        <div>
+
+                      <InputLabel htmlFor="last_dental_visit" value="Your last dental visit (if first time, choose your dental appointment date)" />
                         <DatePicker
                             id="last_dental_visit"
                             type="date"
                             name="last_dental_visit"
-                            className="block w-80"
+                            className="block w-full"
                             size='large'
                             value={data.last_dental_visit ? moment(data.last_dental_visit) : null} 
                             onChange={(date) => setData('last_dental_visit', date ? date.format("YYYY-MM-DD"): null)}
@@ -553,27 +577,31 @@ const Appointment = ({ auth, branches, categories }) => {
                         />
 
                         <InputError className="mt-2" message={errors.last_dental_visit} />
+                        </div>
 
-                      <InputLabel htmlFor="last_dental_treatments" value="Last dental treatment" />
+                        <div>
+
+                      <InputLabel htmlFor="past_dental_treatments" value="Last dental treatment" />
 
                       <TextInput
-                          id="last_dental_treatments"
-                          name="last_dental_treatments"
-                          value={data.last_dental_treatments}
-                          className="mt-1 block w-80 text-sm"
-                          onChange={(e) => setData('last_dental_treatments', e.target.value)}
+                          id="past_dental_treatments"
+                          name="past_dental_treatments"
+                          value={data.past_dental_treatments}
+                          className="mt-1 block w-full text-sm"
+                          onChange={(e) => setData('past_dental_treatments', e.target.value)}
                           required
                       />
 
-                      <InputError message={errors.last_dental_treatments} className="mt-2" />
+                      <InputError message={errors.past_dental_treatments} className="mt-2" />
+                      </div>
 
-                      
+                      <div>
                       <InputLabel htmlFor="tooth_sensitivity" value="Tooth sensitivity" />
                       <Select
                             id="tooth_sensitivity"
                             name="tooth_sensitivity"
                             value={data.tooth_sensitivity}
-                            className="block w-80 text-sm"
+                            className="block w-full text-sm"
                             autoComplete="tooth_sensitivity"
                             size="large"
                             onChange={(value) => setData('tooth_sensitivity', value)}
@@ -584,12 +612,12 @@ const Appointment = ({ auth, branches, categories }) => {
                             <Option value="Cold">Cold</Option>
                             <Option value="Sweet">Sweet</Option>
                           </Select>
-
+                          </div>
                       </div>
 
-                      <div className="flex gap-3">
-                      
-                      <div className="flex flex-col justify-center gap-5">
+                      <div className="flex flex-col gap-5">
+                      <InputLabel htmlFor="last_dental_visit" value="If there's any, Please check the checkbox below." className='mt-5'/>
+                      <div className="flex flex-wrap gap-3">
 
                       <Checkbox
                         id="frequent_tooth_pain"
@@ -626,9 +654,6 @@ const Appointment = ({ auth, branches, categories }) => {
                       >
                         Orthodontic
                       </Checkbox>
-                      </div>
-
-                      <div className="flex flex-col justify-center gap-5">
 
                       <Checkbox
                         id="dental_implants"
@@ -648,7 +673,6 @@ const Appointment = ({ auth, branches, categories }) => {
                       >
                         Bleeding gums
                       </Checkbox>
-
                       </div>
 
 
@@ -673,20 +697,71 @@ const Appointment = ({ auth, branches, categories }) => {
                       <span>!</span>
                     </div>
                     <span className="font-black text-sm">Review Info</span>
-                      <div>
-                      <InputLabel htmlFor="branch_name" value="Last dental treatment" />
 
-                      <TextInput
-                          id="branch_name"
-                          name="branch_name"
-                          value={branch_name || null} 
-                          className="mt-1 block w-80 text-sm"
-                          onChange={(e) => setData('branch_name', e.target.value)}
-                          required
-                      />
+                      <div className="flex flex-col gap-3 justify-between px-3 py-4">
+
+                      <InputLabel value="Appointment Details"/>
+                      <div className="flex rounded-lg shadow-md py-4 px-4 justify-around">
+                      
+                        <div className="flex flex-col gap-2">
+                        <span className="font-black text-sm">Selected Branches: 
+                          <span className="font-normal"> {data.selectedBranchName ? data.selectedBranchName : ''} 
+                            </span>  </span>
+                        <span className="font-black text-sm">Selected Services: 
+                          <span className="font-normal"> {data.selectedServices ? data.selectedServices : ''}
+                            </span>  </span>
+                        <span className="font-black text-sm text-wrap w-full max-w-80">Branch Location: 
+                          <span className="font-normal"> {data.branchLocation ? data.branchLocation : ''} 
+                            </span>  </span>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                        <span className="font-black text-sm">Appointment Date: 
+                          <span className="font-normal"> {data.appointment_date ? data.appointment_date : ''} 
+                            </span>  </span>
+                        <span className="font-black text-sm">Appointment Time: 
+                          <span className="font-normal"> {data.appointment_time ? data.appointment_time : ''}
+                            </span>  </span>
+                        </div>
+                        </div>
+
+                      <InputLabel value="Personal Info"/>
+
+                        <div className="flex gap-3 rounded-lg shadow-md py-4 px-14">
+                        <div className="flex flex-col gap-2">
+
+                        <span className="font-black text-sm">Fullname: 
+                          <span className="font-normal"> {data.fullname ? data.fullname : ''}
+                            </span></span>
+                        <span className="font-black text-sm">Age: 
+                          <span className="font-normal"> {data.age ? data.age : ''} 
+                            </span> </span>
+                        <span className="font-black text-sm">Gender: 
+                          <span className="font-normal"> {data.gender ? data.gender : ''} 
+                            </span> </span>
+                        <span className="font-black text-sm">Date of Birth: 
+                          <span className="font-normal"> {data.date_of_birth ? data.date_of_birth : ''} 
+                            </span> </span>
+
+                        <span className="font-black text-sm">Email: 
+                          <span className="font-normal"> {data.email ? data.email : ''} 
+                            </span></span>
+                        <span className="font-black text-sm">Phone #:
+                          <span className="font-normal"> {data.phone ? data.phone : ''} 
+                            </span> </span>
+                        <span className="font-black text-sm">Address: 
+                          <span className="font-normal"> {data.address ? data.address : ''} 
+                            </span>  </span>
+                        <span className="font-black text-sm">Emergency Contact: 
+                          <span className="font-normal"> {data.emergency_contact ? data.emergency_contact : ''} 
+                            </span>  </span>
+                            </div>
+                        
+
+                        </div>
+                      </div>
                       </div>
 
-                    </div>
                     </div>
                     </>
                   )}
@@ -694,17 +769,17 @@ const Appointment = ({ auth, branches, categories }) => {
 
                   <div className="flex justify-between mt-4">
                     {currentStep > 0 && (
-                      <PrimaryButton onClick={previousStep}  disabled={currentStep === 0}>
+                      <TertiaryButton onClick={previousStep}  disabled={currentStep === 0}>
                         Previous
-                      </PrimaryButton>
+                      </TertiaryButton>
                     )}
 
                     {currentStep < 4 ? (
-                      <PrimaryButton onClick={nextStep} disabled={!isStepComplete()}> {/* add this  */}
+                      <TertiaryButton onClick={nextStep} disabled={!isStepComplete()}>
                         Next
-                      </PrimaryButton>
+                      </TertiaryButton>
                     ) : (
-                      <PrimaryButton className="flex justify-center" disabled={processing}>
+                      <PrimaryButton className="flex justify-center" disabled={processing} onClick={submit}>
                         Submit
                       </PrimaryButton>
                     )}

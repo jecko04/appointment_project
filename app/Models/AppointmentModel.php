@@ -10,34 +10,32 @@ class AppointmentModel extends Model
 {
     use HasFactory;
 
+    protected $table = 'appointments';
     //this is where the appointment inputed
     protected $fillable = [
-        'fullname',
-        'date_of_birth',
-        'age',
-        'gender',
-        'phone',
-        'email',
-        'address',
-        'emergency_contact',
-        'dental_services',
-        'appointment_date',
-        'appointment_time',
+        'selectedBranch',
+        'selectServices',
+        'appointment_date',  
+        'appointment_time',  
+        'user_id',        
         'reschedule_date',
         'reschedule_time',
+        'status',
         'qr_code',
         'check_in',
     ];
 
-    // Define the relationship with the MedicalHistory model
-    public function medicalHistory()
-    {
-        return $this->hasOne(MedicalHistoryModel::class, 'patient_id');
+    public function patient() {
+        return $this->belongsTo(PatientModel::class, 'patient_id'); // Linking to PatientModel
     }
 
-    // Define the relationship with the DentalHistory model
-    public function dentalHistory()
-    {
-        return $this->hasOne(DentalHistoryModel::class, 'patient_id');
+    // Define the relationship with the Branch model
+    public function branch() {
+        return $this->belongsTo(BranchModel::class, 'selectedBranch', 'Branch_ID'); 
+    }
+
+    // Define the relationship with the Services model
+    public function services() {
+        return $this->belongsTo(ServicesModel::class, 'selectServices', 'Categories_ID'); 
     }
 }
