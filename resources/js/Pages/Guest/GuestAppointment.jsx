@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import Navbar from '../Navbar/Navbar';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import Logo from '@/Components/Logo';
+import { Head, useForm, usePage, Link} from '@inertiajs/react';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
-import { Steps, Select, DatePicker, TimePicker, Checkbox } from "antd";
+import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Segmented, Space, notification} from "antd";
+import { DownloadOutlined } from '@ant-design/icons';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TertiaryButton from '@/Components/TertiaryButton';
 import moment from 'moment';
@@ -15,7 +17,7 @@ const { Step } = Steps;
 const { Option } = Select;
 
 const Appointment = ({ auth, branches, categories }) => {
-  const user= usePage().props.auth.user
+  const user= usePage().props.auth.user;
 
   const { data, setData, post, errors } = useForm({
     selectedBranch: null, 
@@ -25,7 +27,16 @@ const Appointment = ({ auth, branches, categories }) => {
     selectedServices: '',
     appointment_date: null,
     appointment_time: null,
-    
+    userId: user.id,
+
+    qr_code: JSON.stringify({ 
+      userId: user.id, 
+      selectedBranchName: '', 
+      selectedServices: '', 
+      appointment_date: '', 
+      appointment_time: ''
+    }),
+
     fullname: user.name || '',
     email: user.email || '',
     age: user.age || '',
@@ -57,6 +68,10 @@ const Appointment = ({ auth, branches, categories }) => {
   });
 
   const [processing, setProcessing] = useState();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [qrCodeData, setQrCodeData] = useState(null);
+  const [renderType, setRenderType] = useState('canvas');
+
 
   const submit = async (e) => {
     e.preventDefault();
@@ -69,15 +84,79 @@ const Appointment = ({ auth, branches, categories }) => {
           name: user.name,
       };
 
-      await post(route('guest.appointment.store', data), formattedData);
+      await post(route('guest.appointment.store', data), formattedData,{
+        onSuccess: () => {
+          notification.success({
+            message: 'Success',
+            description: 'Appointment created successfully!',
+            placement: 'bottomRight',
+            onClick: () => {
+              console.log('Notification Clicked!');
+            },
+            duration: 3,
+          });
+        },
+        onError: () => {
+          notification.error({
+            message: 'Error',
+            description: 'There was an error on your appointment.',
+            placement: 'bottomRight',
+            onClick: () => {
+              console.log('Notification Clicked!');
+            },
+            duration: 3, 
+          });
+        }
+      });
+
+      
+
 
   } catch (error) {
       console.error("Error during appointment submission:", error);
   } finally {
     setProcessing(false);
   }
+
   };
   
+ 
+
+  const showModal = () => {
+    setModalOpen(true);
+  }
+  const handleOk = () => {
+    setModalOpen(false);
+  }
+  const handleCancel = () => {
+    setModalOpen(false);
+  }
+
+  function doDownload(url, fileName) {
+    const a = document.createElement('a');
+    a.download = fileName;
+    a.href = url;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  const downloadCanvasQRCode = () => {
+    const canvas = document.getElementById('myqrcode')?.querySelector('canvas');
+    if (canvas) {
+      const url = canvas.toDataURL();
+      doDownload(url, 'QRCode.png');
+    }
+  };
+  const downloadSvgQRCode = () => {
+    const svg = document.getElementById('myqrcode')?.querySelector('svg');
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([svgData], {
+      type: 'image/svg+xml;charset=utf-8',
+    });
+    const url = URL.createObjectURL(blob);
+    doDownload(url, 'QRCode.png');
+  };
+
 
   const [isChecked, setIsChecked] = useState({
     heart_disease: false,
@@ -109,6 +188,22 @@ const Appointment = ({ auth, branches, categories }) => {
     }));
 
   };
+
+  const handleQRCode = (value) => {
+    try {
+      const parseValue = JSON.parse(value); // Parse the QR code value
+      setData((prevData) => ({
+          ...prevData,
+          userId: parseValue.value1,
+          selectServices: parseValue.value3,    
+          selectedBranch: parseValue.value2,      
+          appointment_date: parseValue.value4,    
+          appointment_time: parseValue.value5,    
+      }));
+  } catch (error) {
+      console.error('Error parsing QR code value:', error);
+  }
+  }
 
   
 
@@ -142,7 +237,6 @@ const Appointment = ({ auth, branches, categories }) => {
     if (currentStep === 0) return data.selectedBranch && data.selectServices && data.appointment_date && data.appointment_time;
     if (currentStep === 1) return data.fullname && data.age && data.gender && data.phone && data.email && data.address && data.date_of_birth && data.emergency_contact;
     if (currentStep === 3) return data.last_dental_visit;
-    // Add more conditions for other steps as needed
     return true;
   };
   
@@ -250,6 +344,7 @@ const Appointment = ({ auth, branches, categories }) => {
                               value={data.appointment_date ? moment(data.appointment_date): null}  
                               className="block w-full"
                               autoComplete="appointment_date" 
+                              needConfirm
                               size='large'
                               onChange={(date) => setData('appointment_date', date ? date.format("YYYY-MM-DD"): null)}
                               required
@@ -564,12 +659,14 @@ const Appointment = ({ auth, branches, categories }) => {
                       <div className="flex flex-col gap-3">
                         <div>
 
-                      <InputLabel htmlFor="last_dental_visit" value="Your last dental visit (if first time, choose your dental appointment date)" />
+                      <InputLabel htmlFor="last_dental_visit" value="Select your last dental visit date" />
+                      <span className="text-xs text-gray-500">if this is your first time, choose your appointment date.</span>
                         <DatePicker
                             id="last_dental_visit"
                             type="date"
                             name="last_dental_visit"
                             className="block w-full"
+                            needConfirm
                             size='large'
                             value={data.last_dental_visit ? moment(data.last_dental_visit) : null} 
                             onChange={(date) => setData('last_dental_visit', date ? date.format("YYYY-MM-DD"): null)}
@@ -674,8 +771,6 @@ const Appointment = ({ auth, branches, categories }) => {
                         Bleeding gums
                       </Checkbox>
                       </div>
-
-
                       </div>
                     </div>
                     </div>
@@ -727,7 +822,7 @@ const Appointment = ({ auth, branches, categories }) => {
 
                       <InputLabel value="Personal Info"/>
 
-                        <div className="flex gap-3 rounded-lg shadow-md py-4 px-14">
+                        <div className="flex justify-between rounded-lg shadow-md py-4 px-14">
                         <div className="flex flex-col gap-2">
 
                         <span className="font-black text-sm">Fullname: 
@@ -757,11 +852,29 @@ const Appointment = ({ auth, branches, categories }) => {
                             </span>  </span>
                             </div>
                         
+                        <div className="flex flex-col items-center text-center">
+                          <QRCode
+                          id="qr_code"
+                          name="qr_code"
+                          icon='/images/image.png'
+                          iconSize={30}
+                          size={200}
+                          status="loading"
+                          value={JSON.stringify({ 
+                            value1: data.userId ? data.userId : '', 
+                            value2: data.selectedBranchName ? data.selectedBranchName : '', 
+                            value3: data.selectedServices ? data.selectedServices : '', 
+                            value4: data.appointment_date ? data.appointment_date : '', 
+                            value5: data.appointment_time ? data.appointment_time : ''
+                          })}
+                          onChange={handleQRCode}
+                          />
+                        <InputLabel value="Obtain your QR code upon submitting the appointment request."/>
 
+                        </div>
                         </div>
                       </div>
                       </div>
-
                     </div>
                     </>
                   )}
@@ -779,10 +892,59 @@ const Appointment = ({ auth, branches, categories }) => {
                         Next
                       </TertiaryButton>
                     ) : (
-                      <PrimaryButton className="flex justify-center" disabled={processing} onClick={submit}>
+                      <PrimaryButton className="flex justify-center" disabled={processing} onClick={showModal}>
                         Submit
                       </PrimaryButton>
                     )}
+
+                          <Modal
+                            title="SMTC-Dental Care : Appointment QRCode"
+                            open={isModalOpen}                     
+                            onOk={handleOk}
+                            className="flex flex-col justify-around w-full"
+                            footer={[
+                                <Button key="okay" onClick={handleOk} color="primary" variant="solid" href="/dashboard">
+                                Okay
+                                </Button>
+                            ]}
+                            >
+                              <Space id="myqrcode" direction="vertical">
+                              <Segmented options={['canvas', 'svg']} onChange={(val) => setRenderType(val)} />
+                              <div className="flex gap-10">
+                                <div className="flex flex-col items-center">
+
+                                <span className="font-medium text-sm">Fullname: 
+                                  <span className="font-normal"> {data.fullname ? data.fullname : ''}
+                                    </span></span>
+                                <QRCode
+                                          id="qr_code"
+                                          name="qr_code"
+                                          type={renderType}
+                                          icon='/images/image.png'
+                                          iconSize={30}
+                                          size={200}
+                                          status="active"
+                                          value={JSON.stringify({ 
+                                            value1: data.userId || '', 
+                                            value2: data.selectedBranchName || '', 
+                                            value3: data.selectedServices || '', 
+                                            value4: data.appointment_date || '', 
+                                            value5: data.appointment_time || ''
+                                          })}
+                                          onChange={handleQRCode}
+                                          />
+                                  <Button
+                                    type="primary"
+                                    icon={<DownloadOutlined />}
+                                    onClick={renderType === 'canvas' ? downloadCanvasQRCode : downloadSvgQRCode}
+                                  >
+                                    Download
+                                  </Button>
+                                  </div>
+                                <Logo/>
+                              </div>
+                            </Space>
+                            </Modal>
                   </div>
                 </form>
               </div>

@@ -6,7 +6,6 @@ import { useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 import { DatePicker, notification, Select } from "antd";
 import moment from 'moment';
-import { useState } from 'react';
 
 const { Option } = Select;
 
@@ -69,16 +68,17 @@ const user= usePage().props.auth.user
               <div>
                   <InputLabel htmlFor="date_of_birth" value="Date of Birth" />
 
-                    <DatePicker
-                        id="date_of_birth"
-                        name="date_of_birth"
-                        className="mt-1 block w-full"
-                        size='large'
-                        value={data.date_of_birth ? moment(data.date_of_birth) : null} 
-                        onChange={(date) => setData('date_of_birth', date ? date.format("YYYY-MM-DD"): null)}
-                        required
-                        autoComplete="date_of_birth"
-                    />
+                  <DatePicker
+                            id="date_of_birth"
+                            name="date_of_birth"
+                            type="date"
+                            className="block w-full"
+                            size='large'
+                            value={data.date_of_birth ? moment(data.date_of_birth) : null} 
+                            onChange={(date) => setData('date_of_birth', date ? date.format("YYYY-MM-DD"): null)}
+                            required
+                            autoComplete="date_of_birth"
+                        />
 
                     <InputError className="mt-2" message={errors.date_of_birth} />
                 </div>

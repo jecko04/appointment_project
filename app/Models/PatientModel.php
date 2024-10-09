@@ -19,6 +19,7 @@ class PatientModel extends Model
         'gender',
         'phone',
         'address',
+        'email',
         'emergency_contact',
         'Branch_ID',
     ];

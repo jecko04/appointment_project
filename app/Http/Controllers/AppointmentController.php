@@ -27,7 +27,7 @@ class AppointmentController extends Controller
         ]);
     }
 
-    public function storeAppointment(Request $request): RedirectResponse
+    public function storeAppointment(Request $request)
     {
         $validate = $request->validate([
             'fullname' => 'required|string|max:255',
@@ -42,6 +42,7 @@ class AppointmentController extends Controller
             'selectServices' => 'required|integer',
             'appointment_date' => 'required|date', 
             'appointment_time' => 'required|string|date_format:H:i',
+            'qr_code' => 'required|string',
 
         ]);
 
@@ -103,18 +104,19 @@ class AppointmentController extends Controller
             $dentalHistoryData
         );
 
+        $qrCodeData = json_decode($request->qr_code, true);
+
         $appointment = AppointmentModel::create([
             'selectedBranch' => $request->selectedBranch,
             'selectServices' => $request->selectServices,
             'appointment_date' => $dateformatted,
             'appointment_time' => $timeformatted,
             'user_id' => $patient->id, 
+            'qr_code' => json_encode($qrCodeData),
         ]);
 
         $appointment->save();
 
-        return redirect(route('dashboard', absolute: false));
+        return;
     }
-
-
 }
