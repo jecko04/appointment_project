@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AppointmentModel;
 use App\Models\User;
 use App\Models\BranchModel;
+use App\Models\OfficeHourModel;
 use App\Models\PatientModel;
 use App\Models\ServicesModel;
 use Carbon\Carbon;
@@ -17,13 +18,17 @@ class AppointmentController extends Controller
     public function appointment() {
         $branches = BranchModel::all(); 
         $categories = ServicesModel::with('branch')->get();
-        
+        $office_hours = OfficeHourModel::with('branch')
+        ->where('IsClosed', true)
+        ->get(); 
+
         $patients = PatientModel::with(['medicalHistory', 'dentalHistory'])->get();
 
         return Inertia::render('Guest/GuestAppointment', [
             'branches' => $branches, 
             'categories' => $categories, 
             'patients' => $patients, 
+            'office_hours' => $office_hours,
         ]);
     }
 

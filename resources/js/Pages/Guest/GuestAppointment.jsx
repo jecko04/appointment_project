@@ -12,11 +12,14 @@ import { DownloadOutlined } from '@ant-design/icons';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TertiaryButton from '@/Components/TertiaryButton';
 import moment from 'moment';
+import { CalendarOutlined, IdcardOutlined, MedicineBoxOutlined, SmileOutlined,CheckCircleOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
+
 
 const { Step } = Steps;
 const { Option } = Select;
 
-const Appointment = ({ auth, branches, categories }) => {
+const Appointment = ({ auth, branches, categories, office_hours }) => {
   const user= usePage().props.auth.user;
 
   const { data, setData, post, errors } = useForm({
@@ -72,6 +75,31 @@ const Appointment = ({ auth, branches, categories }) => {
   const [qrCodeData, setQrCodeData] = useState(null);
   const [renderType, setRenderType] = useState('canvas');
 
+  const disableDate = (current) => {
+    if (!Array.isArray(office_hours) || !current) return false;
+
+    const closedDays = office_hours
+        .filter(officeHour => officeHour.Branch_ID === data.selectedBranch && officeHour.IsClosed === 1)
+        .map(officeHour => officeHour.DayOfWeek); 
+
+    const closedDayNumbers = closedDays.map(day => {
+        switch(day) {
+            case 'Sunday': return 0;
+            case 'Monday': return 1;
+            case 'Tuesday': return 2;
+            case 'Wednesday': return 3;
+            case 'Thursday': return 4;
+            case 'Friday': return 5;
+            case 'Saturday': return 6;
+            default: return -1;
+        }
+    });
+
+    return closedDayNumbers.includes(current.day()) || current < dayjs().endOf('day');
+};
+
+
+  
 
   const submit = async (e) => {
     e.preventDefault();
@@ -247,41 +275,43 @@ const Appointment = ({ auth, branches, categories }) => {
       <Head title="SMTC - Dental Care" />
       <div className="text-xs">
         <div className="items-center justify-center selection:text-white">
-          <div className="relative w-full px-6 mt-2">
+          <div className="flex flex-col lg:w-full lg:mt-2">
             <header>
               <Navbar auth={auth} />
             </header>
-            <main className="mt-6 mx-28 ">
-              <div className="flex flex-col gap-4 py-9 px-14">
-                
-                <Steps current={currentStep} className="px-14">
-                  <Step title="Appointment" description="Appointment Details" />
-                  <Step title="Personal Info" description="Your details" />
-                  <Step title="Medical History" description="General" />
-                  <Step title="Dental History" description="Dental" />
-                  <Step title="Confirm" description="Review info" />
+            <main className="mt-6 lg:mx-28">
+              <div className="lg:flex justify-around lg:gap-4 lg:py-9">
+                <div className="hidden lg:block">
+                <Steps current={currentStep} direction="vertical" className="py-11">
+                  <Step icon={<CalendarOutlined />} title="Appointment" />
+                  <Step icon={<IdcardOutlined  />} title="Personal Info" />
+                  <Step icon={<MedicineBoxOutlined  />} title="Medical History"  />
+                  <Step icon={<SmileOutlined  />} title="Dental History" />
+                  <Step icon={<CheckCircleOutlined  />} title="Confirm" />
                 </Steps>
-                <form onSubmit={submit} className="px-20 py-10 flex flex-col gap-2">
+                </div>
+                <form onSubmit={submit} className="py-5 lg:py-10 flex flex-col items-start px-8 md:gap-2">
                   {currentStep === 0 && (
                     <>
                     
-                    <div className="flex p-5 gap-14 shadow-md rounded-lg">
+                    <div className="flex flex-col md:flex md:flex-row lg:p-5 md:gap-10 lg:gap-20 2xl:gap-32 lg:shadow-md rounded-lg">
                     
-                      <div className="flex flex-col gap-3">
-                      <div className="flex gap-2 text-lg">
+                      <div className="flex flex-col gap-3 items-center">
+                      <div className="flex gap-2 text-base md:text-lg">
                       <span>Welcome to</span>
                       <span className="text-[#ff4200]">SMTC</span>
                       <span className="text-[#2938DA]">Dental Care</span>
                       <span>!</span>
                     </div>
                       <span className="text-sm">Choose branch and dental service here.</span>
-                      <div className="flex flex-col gap-3 py-6">
+                      <div className="flex flex-col md:gap-3 md:py-6">
 
                       <InputLabel htmlFor="branches" value="Select Branch"/>
                       <Select
                         id="branches"
                         name="branches"
-                        className="w-96 h-10"
+                        className="w-60 md:w-80"
+                        size="large"
                         placeholder="Select a branch"
                         onChange={handleBranchChange}
                         value={data.selectedBranch || null} 
@@ -298,6 +328,7 @@ const Appointment = ({ auth, branches, categories }) => {
                       <TextInput
                       id="branch_location"
                       name="branch_location"
+                      className="w-60 md:w-80"
                       value={data.branchLocation ? data.branchLocation : ''}
                       onChange={(e) => setData('branch_location', e.target.value)}
                       />
@@ -305,7 +336,8 @@ const Appointment = ({ auth, branches, categories }) => {
                       <Select
                         id="services"
                         name="services"
-                        className="w-96 h-10"
+                        className="w-60 md:w-80"
+                        size="large"
                         placeholder="Select a service"
                         onChange={handleServiceChange}
                         value={data.selectServices || null}
@@ -320,7 +352,7 @@ const Appointment = ({ auth, branches, categories }) => {
                             </Option>
                           ))}
                       </Select>
-                      {categories.filter(category => category.Branch_ID === data.selectedBranch).length === 0 && (
+                      {data.selectedBranch && categories.filter(category => category.Branch_ID === data.selectedBranch).length === 0 && (
                         <div className="text-red-500">No services available for the selected branch.</div>
                       )}
                       {errors.category && <div className="text-red-500">{errors.category}</div>}
@@ -328,9 +360,9 @@ const Appointment = ({ auth, branches, categories }) => {
 
                       </div>
 
-                      <div className="flex flex-col gap-3 w-full max-w-80">
+                      <div className="flex flex-col gap-3">
                         <span className="text-sm mt-10">When would you like to come in?</span>
-                        <div className="rounded-md shadow-xl py-4 px-4 flex flex-col gap-3">
+                        <div className="rounded-md shadow-xl py-4 px-4 flex flex-col gap-3 ">
                           <div className="flex flex-col divide-y divide-black">
                           <span className="font-black text-sm py-2">Schedule</span>
                           <span className="font-light text-xs py-2 text-gray-500">Choose Date and Time of your appointment</span>
@@ -341,15 +373,17 @@ const Appointment = ({ auth, branches, categories }) => {
                           <DatePicker
                               id="appointment_date"
                               name="appointment_date" 
-                              value={data.appointment_date ? moment(data.appointment_date): null}  
-                              className="block w-full"
+                              disabledDate={disableDate}
+                              value={data.appointment_date ? moment(data.appointment_date): null}
+                              className="block w-60 md:w-80"
                               autoComplete="appointment_date" 
                               needConfirm
                               size='large'
                               onChange={(date) => setData('appointment_date', date ? date.format("YYYY-MM-DD"): null)}
                               required
-                          />
+                          >
 
+                          </DatePicker>
                           <InputError message={errors.appointment_date} className="mt-2" /> 
 
                           <InputLabel htmlFor="appointment_time" value="Select Time" />
@@ -358,7 +392,7 @@ const Appointment = ({ auth, branches, categories }) => {
                           id="appointment_time"
                           name="appointment_time"
                           value={data.appointment_time ? moment(data.appointment_time, 'h:mm a') : null}
-                          className="block w-full"
+                          className="block w-60 md:w-80"
                           autoComplete="appointment_time"
                           size='large'
                           format='h:mm a' 
@@ -375,8 +409,8 @@ const Appointment = ({ auth, branches, categories }) => {
                   )}
 
                   {currentStep === 1 && (
-                    <div className="flex flex-col p-5 gap-3 shadow-md rounded-lg">
-                      <div className="flex gap-2 text-lg">
+                    <div className="flex flex-col md:p-5 gap-3 md:shadow-md rounded-lg">
+                      <div className="flex gap-2 text-base md:text-lg">
                         <span>Welcome to</span>
                         <span className="text-[#ff4200]">SMTC</span>
                         <span className="text-[#2938DA]">Dental Care</span>
@@ -385,14 +419,14 @@ const Appointment = ({ auth, branches, categories }) => {
                       
                       <span className="font-black text-sm">Patient Info (Required)</span>
 
-                      <div className="flex justify-around">
+                      <div className="flex flex-col md:flex-row justify-around gap-2">
                         <div className="flex flex-col">
-                          <InputLabel htmlFor="fullname" value="name" />
+                          <InputLabel htmlFor="fullname" value="Fullname" />
                           <TextInput
                             id="fullname"
                             name="fullname"
                             value={data.fullname}
-                            className="block w-80 text-sm"
+                            className="block w-60 md:w-80 text-sm"
                             autoComplete="fullname"
                             onChange={(e) => setData('fullname', e.target.value)}
                             required
@@ -406,7 +440,7 @@ const Appointment = ({ auth, branches, categories }) => {
                             id="age"
                             name="age"
                             value={data.age}
-                            className="block w-80 text-sm"
+                            className="block w-60 md:w-80 text-sm"
                             autoComplete="age"
                             onChange={(e) => setData('age', e.target.value)}
                             required
@@ -415,14 +449,14 @@ const Appointment = ({ auth, branches, categories }) => {
                         </div>
                       </div>
 
-                      <div className="flex justify-around">
+                      <div className="flex flex-col md:flex-row justify-around gap-2">
                         <div className="flex flex-col">
                           <InputLabel htmlFor="gender" value="Gender" />
                           <Select
                             id="gender"
                             name="gender"
                             value={data.gender}
-                            className="block w-80 text-sm"
+                            className="block w-60 md:w-80 text-sm"
                             autoComplete="gender"
                             size="large"
                             onChange={(value) => setData('gender', value)}
@@ -442,7 +476,8 @@ const Appointment = ({ auth, branches, categories }) => {
                             id="date_of_birth"
                             name="date_of_birth"
                             type="date"
-                            className="block w-80"
+                            className="block w-60 md:w-80"
+                            needConfirm
                             size='large'
                             value={data.date_of_birth ? moment(data.date_of_birth) : null} 
                             onChange={(date) => setData('date_of_birth', date ? date.format("YYYY-MM-DD"): null)}
@@ -459,7 +494,7 @@ const Appointment = ({ auth, branches, categories }) => {
 
                      
 
-                      <div className="flex justify-around">
+                      <div className="flex flex-col md:flex-row justify-around gap-2">
                       <div className="flex flex-col gap-3">
 
                       <div className="flex flex-col">
@@ -468,7 +503,7 @@ const Appointment = ({ auth, branches, categories }) => {
                             id="phone"
                             name="phone"
                             value={data.phone}
-                            className="block w-80 text-sm"
+                            className="block w-60 md:w-80 text-sm"
                             autoComplete="phone"
                             onChange={(e) => setData('phone', e.target.value)}
                             required
@@ -483,7 +518,7 @@ const Appointment = ({ auth, branches, categories }) => {
                               id="address"
                               name="address"
                               value={data.address}
-                              className="block w-80 text-sm"
+                              className="block w-60 md:w-80 text-sm"
                               autoComplete="address"
                               onChange={(e) => setData('address', e.target.value)}
                               required
@@ -501,7 +536,7 @@ const Appointment = ({ auth, branches, categories }) => {
                             id="email"
                             name="email"
                             value={data.email}
-                            className="block w-80 text-sm"
+                            className="block w-60 md:w-80 text-sm"
                             autoComplete="email"
                             onChange={(e) => setData('email', e.target.value)}
                             required
@@ -515,7 +550,7 @@ const Appointment = ({ auth, branches, categories }) => {
                             id="emergency_contact"
                             name="emergency_contact"
                             value={data.emergency_contact}
-                            className="block w-80 text-sm"
+                            className="block w-60 md:w-80 text-sm"
                             autoComplete="emergency_contact"
                             onChange={(e) => setData('emergency_contact', e.target.value)}
                             required
@@ -531,23 +566,23 @@ const Appointment = ({ auth, branches, categories }) => {
                   {currentStep === 2 && (
                     <>
                     <div>
-                      <div className="flex flex-col p-5 gap-5 shadow-md rounded-lg">
+                      <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg">
                     
-                    <div className="flex gap-2 text-lg">
+                    <div className="flex gap-2 text-base md:text-lg">
                       <span>Welcome to</span>
                       <span className="text-[#ff4200]">SMTC</span>
                       <span className="text-[#2938DA]">Dental Care</span>
                       <span>!</span>
                     </div>
                     <span className="font-black text-sm">Medical History</span>
-                    <div className="flex justify-evenly">
+                    <div className="flex flex-col md:flex-row md:gap-2 justify-evenly">
                       <div className="flex flex-col gap-3">
                       <InputLabel htmlFor="medical_condition" value="Medical Condition (if there's any)" />
                       <TextInput
                           id="medical_condition"
                           name="medical_condition"
                           value={data.medical_condition}
-                          className="mt-1 block w-80 text-sm"
+                          className="mt-1 block w-60 md:w-80 text-sm"
                           onChange={(e) => setData('medical_condition', e.target.value)}
                           required
                       />
@@ -558,7 +593,7 @@ const Appointment = ({ auth, branches, categories }) => {
                           id="current_medication"
                           name="current_medication"
                           value={data.current_medication}
-                          className="mt-1 block w-80 text-sm"
+                          className="mt-1 block w-60 md:w-80 text-sm"
                           onChange={(e) => setData('current_medication', e.target.value)}
                           required
                       />
@@ -569,7 +604,7 @@ const Appointment = ({ auth, branches, categories }) => {
                           id="allergies"
                           name="allergies"
                           value={data.allergies}
-                          className="mt-1 block w-80 text-sm"
+                          className="mt-1 block w-60 md:w-80 text-sm"
                           onChange={(e) => setData('allergies', e.target.value)}
                           required
                       />
@@ -580,7 +615,7 @@ const Appointment = ({ auth, branches, categories }) => {
                           id="past_surgeries"
                           name="past_surgeries"
                           value={data.past_surgeries}
-                          className="mt-1 block w-80 text-sm"
+                          className="mt-1 block w-60 md:w-80 text-sm"
                           onChange={(e) => setData('past_surgeries', e.target.value)}
                           required
                       />
@@ -593,7 +628,7 @@ const Appointment = ({ auth, branches, categories }) => {
                           id="family_medical_history"
                           name="family_medical_history"
                           value={data.family_medical_history}
-                          className="mt-1 block w-80 text-sm"
+                          className="mt-1 block w-60 md:w-80 text-sm"
                           onChange={(e) => setData('family_medical_history', e.target.value)}
                           required
                       />
@@ -604,7 +639,7 @@ const Appointment = ({ auth, branches, categories }) => {
                           id="blood_pressure"
                           name="blood_pressure"
                           value={data.blood_pressure}
-                          className="mt-1 block w-80 text-sm"
+                          className="mt-1 block w-60 md:w-80 text-sm"
                           onChange={(e) => setData('blood_pressure', e.target.value)}
                           required
                       />
@@ -646,9 +681,9 @@ const Appointment = ({ auth, branches, categories }) => {
                   {currentStep === 3 && (
                     <>
                     <div>
-                      <div className="flex flex-col p-5 gap-5 shadow-md rounded-lg">
+                      <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg">
                     
-                    <div className="flex gap-2 text-lg">
+                    <div className="flex gap-2 text-base md:text-lg">
                       <span>Welcome to</span>
                       <span className="text-[#ff4200]">SMTC</span>
                       <span className="text-[#2938DA]">Dental Care</span>
@@ -667,6 +702,7 @@ const Appointment = ({ auth, branches, categories }) => {
                             name="last_dental_visit"
                             className="block w-full"
                             needConfirm
+                            autoFocus={true}
                             size='large'
                             value={data.last_dental_visit ? moment(data.last_dental_visit) : null} 
                             onChange={(date) => setData('last_dental_visit', date ? date.format("YYYY-MM-DD"): null)}
@@ -783,9 +819,9 @@ const Appointment = ({ auth, branches, categories }) => {
                   {currentStep === 4 && (
                     <>
                     <div>
-                    <div className="flex flex-col p-5 gap-5 shadow-md rounded-lg">
+                    <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg">
                     
-                    <div className="flex gap-2 text-lg">
+                    <div className="flex gap-2 text-base md:text-lg">
                       <span>Welcome to</span>
                       <span className="text-[#ff4200]">SMTC</span>
                       <span className="text-[#2938DA]">Dental Care</span>
@@ -793,10 +829,10 @@ const Appointment = ({ auth, branches, categories }) => {
                     </div>
                     <span className="font-black text-sm">Review Info</span>
 
-                      <div className="flex flex-col gap-3 justify-between px-3 py-4">
+                      <div className="flex flex-col gap-6 justify-between px-3 py-4">
 
                       <InputLabel value="Appointment Details"/>
-                      <div className="flex rounded-lg shadow-md py-4 px-4 justify-around">
+                      <div className="flex flex-col md:flex-row gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4 md:justify-around">
                       
                         <div className="flex flex-col gap-2">
                         <span className="font-black text-sm">Selected Branches: 
@@ -805,7 +841,7 @@ const Appointment = ({ auth, branches, categories }) => {
                         <span className="font-black text-sm">Selected Services: 
                           <span className="font-normal"> {data.selectedServices ? data.selectedServices : ''}
                             </span>  </span>
-                        <span className="font-black text-sm text-wrap w-full max-w-80">Branch Location: 
+                        <span className="font-black text-sm text-wrap w-60 md:w-full md:max-w-80">Branch Location: 
                           <span className="font-normal"> {data.branchLocation ? data.branchLocation : ''} 
                             </span>  </span>
                         </div>
@@ -822,7 +858,7 @@ const Appointment = ({ auth, branches, categories }) => {
 
                       <InputLabel value="Personal Info"/>
 
-                        <div className="flex justify-between rounded-lg shadow-md py-4 px-14">
+                        <div className="flex flex-col md:flex-row gap-5 md:gap-0 justify-around rounded-lg md:shadow-md md:py-4 md:px-14">
                         <div className="flex flex-col gap-2">
 
                         <span className="font-black text-sm">Fullname: 
@@ -852,7 +888,7 @@ const Appointment = ({ auth, branches, categories }) => {
                             </span>  </span>
                             </div>
                         
-                        <div className="flex flex-col items-center text-center">
+                        <div className="flex flex-col items-center text-center px-4">
                           <QRCode
                           id="qr_code"
                           name="qr_code"
@@ -869,7 +905,7 @@ const Appointment = ({ auth, branches, categories }) => {
                           })}
                           onChange={handleQRCode}
                           />
-                        <InputLabel value="Obtain your QR code upon submitting the appointment request."/>
+                          <InputLabel value="Obtain your QR code upon submitting the appointment request."/>
 
                         </div>
                         </div>
@@ -880,7 +916,7 @@ const Appointment = ({ auth, branches, categories }) => {
                   )}
                   
 
-                  <div className="flex justify-between mt-4">
+                  <div className="flex justify-between w-full mt-4">
                     {currentStep > 0 && (
                       <TertiaryButton onClick={previousStep}  disabled={currentStep === 0}>
                         Previous
@@ -910,13 +946,13 @@ const Appointment = ({ auth, branches, categories }) => {
                             >
                               <Space id="myqrcode" direction="vertical">
                               <Segmented options={['canvas', 'svg']} onChange={(val) => setRenderType(val)} />
-                              <div className="flex gap-10">
-                                <div className="flex flex-col items-center">
+                              <div className="flex flex-col md:flex-row items-center gap-4">
+                                <div className="flex flex-col items-center px-7">
 
                                 <span className="font-medium text-sm">Fullname: 
                                   <span className="font-normal"> {data.fullname ? data.fullname : ''}
                                     </span></span>
-                                <QRCode
+                                          <QRCode
                                           id="qr_code"
                                           name="qr_code"
                                           type={renderType}
