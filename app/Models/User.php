@@ -11,13 +11,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    // protected $table = 'superadmin'; // Ensure this matches your actual table name
-    
     protected $fillable = [
         'name',
         'email',
@@ -30,6 +23,10 @@ class User extends Authenticatable
         'emergency_contact'
 
     ];
+
+    public function appointments() {
+        return $this->hasMany(AppointmentModel::class, 'id'); 
+    }
 
     
 

@@ -91,7 +91,7 @@ const Home = () => {
 
         <div className="flex flex-wrap items-center w-full max-w-md mt-4">
                 
-                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute w-72 lg:w-full lg:max-w-72 lg:bottom-72 2xl:right-1/4 lg:right-96 sm:bottom-80 bottom-96 left-10 sm:left-52 lg:left-1/2">
+                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute lg:w-full lg:max-w-72 lg:bottom-72 2xl:right-1/4 lg:right-96 sm:bottom-80 bottom-96 left-10 sm:left-52 lg:left-1/2">
                   <div className="flex lg:text-lg text-sm font-black gap-1">
                 <FaLocationDot className="text-2xl "/>
                     <span>Accessible </span>
@@ -102,7 +102,7 @@ const Home = () => {
                     Visit us at any of our easily reachable clinics, making dental care close to home.</span>
                 </div>
 
-                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute w-72 lg:w-full lg:max-w-72 2xl:right-72 lg:right-40 lg:bottom-36  sm:bottom-40 bottom-72 left-10 sm:left-72 lg:left-2/3" >
+                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute lg:w-full lg:max-w-72 2xl:right-72 lg:right-40 lg:bottom-36  sm:bottom-40 bottom-72 left-10 sm:left-72 lg:left-2/3" >
                 <div className="flex lg:text-lg text-sm font-black gap-1">
                 <TbDental className="text-2xl"/>
                   <span>Full-Service </span>
@@ -113,7 +113,7 @@ const Home = () => {
                     Offering a wide range of dental treatments for all ages, from routine checkups to advanced cosmetic procedures.</span>
                 </div>
 
-                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute w-72 lg:w-full lg:max-w-72 lg:right-96 lg:bottom-0 sm:bottom-4 bottom-52 left-10 sm:left-52 lg:left-1/2">
+                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute lg:w-full lg:max-w-72 lg:right-96 lg:bottom-0 sm:bottom-4 bottom-52 left-10 sm:left-52 lg:left-1/2">
                 <div className="flex lg:text-lg text-sm font-black gap-1">
                 <LuCalendarCheck2 className="text-2xl "/>
                   <span>Hassle-Free </span>

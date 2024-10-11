@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar/Navbar';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
@@ -18,6 +18,13 @@ import dayjs from 'dayjs';
 
 const { Step } = Steps;
 const { Option } = Select;
+const [processing, setProcessing] = useState();
+const [isModalOpen, setModalOpen] = useState(false);
+const [qrCodeData, setQrCodeData] = useState(null);
+const [renderType, setRenderType] = useState('canvas');
+const [openLocation, setOpenLocation] = useState(false);
+const [currentStep, setCurrentStep] = useState(0);
+
 
 const Appointment = ({ auth, branches, categories, office_hours }) => {
   const user= usePage().props.auth.user;
@@ -31,14 +38,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
     appointment_date: null,
     appointment_time: null,
     userId: user.id,
-
-    qr_code: JSON.stringify({ 
-      userId: user.id, 
-      selectedBranchName: '', 
-      selectedServices: '', 
-      appointment_date: '', 
-      appointment_time: ''
-    }),
 
     fullname: user.name || '',
     email: user.email || '',
@@ -70,10 +69,24 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
     bleeding_gums: false,
   });
 
-  const [processing, setProcessing] = useState();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [qrCodeData, setQrCodeData] = useState(null);
-  const [renderType, setRenderType] = useState('canvas');
+  useEffect(() => {
+    setData((prevData) => ({
+      ...prevData,
+      qr_code: JSON.stringify({
+        userId: user.id,
+        branch_name: prevData.selectedBranchName,
+        services: prevData.selectedServices,
+        appointment_date: prevData.appointment_date,
+        appointment_time: prevData.appointment_time,
+      }),
+    }));
+  }, [
+    user.id,
+    data.selectedBranchName,
+    data.selectedServices,
+    data.appointment_date,
+    data.appointment_time,
+  ]);
 
   const disableDate = (current) => {
     if (!Array.isArray(office_hours) || !current) return false;
@@ -94,12 +107,8 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
             default: return -1;
         }
     });
-
     return closedDayNumbers.includes(current.day()) || current < dayjs().endOf('day');
 };
-
-
-  
 
   const submit = async (e) => {
     e.preventDefault();
@@ -136,17 +145,26 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
           });
         }
       });
-
-      
-
-
   } catch (error) {
       console.error("Error during appointment submission:", error);
   } finally {
     setProcessing(false);
-  }
+  }};
 
-  };
+
+  const showLocation = (value) => {
+    const branchLocation = branches.find(branch => branch.Branch_ID === parseInt(value));
+    setData((prevData) => ({
+      ...prevData,
+      branchLocation: branchLocation 
+      ? `${branchLocation.BuildingNumber}, ${branchLocation.Street}, ${branchLocation.Barangay}, ${branchLocation.City}, ${branchLocation.Province}, ${branchLocation.PostalCode}`
+      : '',
+    }));
+    setOpenLocation(!!branchLocation);
+  }
+  const offLocation = () => {
+    setOpenLocation(false);
+  }
   
  
 
@@ -184,8 +202,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
     const url = URL.createObjectURL(blob);
     doDownload(url, 'QRCode.png');
   };
-
-
   const [isChecked, setIsChecked] = useState({
     heart_disease: false,
     diabetes: false,
@@ -214,17 +230,17 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
       selectServices: value,
       selectedServices: selectServices ? selectServices.Title : '',
     }));
-
   };
 
   const handleQRCode = (value) => {
     try {
-      const parseValue = JSON.parse(value); // Parse the QR code value
+      const parseValue = JSON.parse(value);
+      console.log(parseValue);
       setData((prevData) => ({
           ...prevData,
           userId: parseValue.value1,
-          selectServices: parseValue.value3,    
-          selectedBranch: parseValue.value2,      
+          branch_name: parseValue.value3,    
+          services: parseValue.value2,      
           appointment_date: parseValue.value4,    
           appointment_time: parseValue.value5,    
       }));
@@ -232,8 +248,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
       console.error('Error parsing QR code value:', error);
   }
   }
-
-  
 
   const handleCheckboxChange = (checkbox, checked) => {
     setData((prevChecked) => ({
@@ -243,7 +257,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
     console.log(checkbox);
   };
 
-  const [currentStep, setCurrentStep] = useState(0);
 
   const nextStep = () => {
     if (isStepComplete()) {
@@ -296,7 +309,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                     
                     <div className="flex flex-col md:flex md:flex-row lg:p-5 md:gap-10 lg:gap-20 2xl:gap-32 lg:shadow-md rounded-lg">
                     
-                      <div className="flex flex-col gap-3 items-center">
+                      <div className="flex flex-col gap-3 items-start">
                       <div className="flex gap-2 text-base md:text-lg">
                       <span>Welcome to</span>
                       <span className="text-[#ff4200]">SMTC</span>
@@ -324,14 +337,17 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                         ))}
                       </Select>
 
+                      <div className={`${data.branchLocation ? '' : 'hidden'}` }>
                       <InputLabel htmlFor="branch_location" value="Branch Location"/>
                       <TextInput
                       id="branch_location"
                       name="branch_location"
                       className="w-60 md:w-80"
                       value={data.branchLocation ? data.branchLocation : ''}
-                      onChange={(e) => setData('branch_location', e.target.value)}
+                      readOnly
                       />
+                      </div>
+
                       <InputLabel htmlFor="services" value="Select a Dental Service"/>
                       <Select
                         id="services"
@@ -376,7 +392,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                               disabledDate={disableDate}
                               value={data.appointment_date ? moment(data.appointment_date): null}
                               className="block w-60 md:w-80"
-                              autoComplete="appointment_date" 
                               needConfirm
                               size='large'
                               onChange={(date) => setData('appointment_date', date ? date.format("YYYY-MM-DD"): null)}
@@ -393,7 +408,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                           name="appointment_time"
                           value={data.appointment_time ? moment(data.appointment_time, 'h:mm a') : null}
                           className="block w-60 md:w-80"
-                          autoComplete="appointment_time"
                           size='large'
                           format='h:mm a' 
                           onChange={(time) => setData('appointment_time', time ? time.format("HH:mm") : null)} 
@@ -695,7 +709,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                         <div>
 
                       <InputLabel htmlFor="last_dental_visit" value="Select your last dental visit date" />
-                      <span className="text-xs text-gray-500">if this is your first time, choose your appointment date.</span>
+                      <span className="text-xs text-gray-500">If this is your first time, kindly choose your appointment date.</span>
                         <DatePicker
                             id="last_dental_visit"
                             type="date"
@@ -906,7 +920,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                           onChange={handleQRCode}
                           />
                           <InputLabel value="Obtain your QR code upon submitting the appointment request."/>
-
+                          
                         </div>
                         </div>
                       </div>

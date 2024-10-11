@@ -11,7 +11,7 @@ class AppointmentModel extends Model
     use HasFactory;
 
     protected $table = 'appointments';
-    //this is where the appointment inputed
+
     protected $fillable = [
         'selectedBranch',
         'selectServices',
@@ -25,8 +25,8 @@ class AppointmentModel extends Model
         'check_in',
     ];
 
-    public function patient() {
-        return $this->belongsTo(PatientModel::class, 'patient_id'); // Linking to PatientModel
+    public function users() {
+        return $this->belongsTo(User::class, 'user_id', 'id'); 
     }
 
     // Define the relationship with the Branch model

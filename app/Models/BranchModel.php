@@ -25,10 +25,13 @@ class BranchModel extends Model
 
     public function services() {
         return $this->hasMany(ServicesModel::class, 'Branch_ID');
-        return $this->hasMany(AppointmentModel::class, 'Branch_ID'); // Establish a one-to-many relationship to ServicesModel
     }
-
+    
     public function appointments() {
-        return $this->belongsToMany(AppointmentModel::class, 'guest.appointment'); // Ensure this is correct
+        return $this->hasMany(AppointmentModel::class, 'Branch_ID'); // One-to-many relationship to AppointmentModel
+    }
+    
+    public function appointmentDetails() {
+        return $this->hasMany(AppointmentModel::class, 'Branch_ID'); // Use this for details if needed
     }
 }

@@ -8,6 +8,6 @@ use Inertia\Inertia;
 class UserRecordAppointmentController extends Controller
 {
     public function showRecordAppointment() {
-        return Inertia::render('Users/Record');
+        return Inertia::render('Auth/Record');
     }
 }

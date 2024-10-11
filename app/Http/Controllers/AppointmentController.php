@@ -11,6 +11,7 @@ use App\Models\ServicesModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class AppointmentController extends Controller
@@ -21,6 +22,7 @@ class AppointmentController extends Controller
         $office_hours = OfficeHourModel::with('branch')
         ->where('IsClosed', true)
         ->get(); 
+        
 
         $patients = PatientModel::with(['medicalHistory', 'dentalHistory'])->get();
 
@@ -60,6 +62,7 @@ class AppointmentController extends Controller
         $patient = PatientModel::updateOrCreate(
             ['email' => $request->email], // Find by email
             [
+                'user_id' => $request->userId,
                 'fullname' => $request->fullname,
                 'date_of_birth' => $dobformatted,
                 'age' => $request->age,
@@ -116,7 +119,7 @@ class AppointmentController extends Controller
             'selectServices' => $request->selectServices,
             'appointment_date' => $dateformatted,
             'appointment_time' => $timeformatted,
-            'user_id' => $patient->id, 
+            'user_id' => Auth::id(), 
             'qr_code' => json_encode($qrCodeData),
         ]);
 
