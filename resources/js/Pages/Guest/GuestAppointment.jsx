@@ -3,7 +3,7 @@ import Navbar from '../Navbar/Navbar';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import Logo from '@/Components/Logo';
-import { Head, useForm, usePage, Link} from '@inertiajs/react';
+import { Head, useForm, usePage} from '@inertiajs/react';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
@@ -18,13 +18,6 @@ import dayjs from 'dayjs';
 
 const { Step } = Steps;
 const { Option } = Select;
-const [processing, setProcessing] = useState();
-const [isModalOpen, setModalOpen] = useState(false);
-const [qrCodeData, setQrCodeData] = useState(null);
-const [renderType, setRenderType] = useState('canvas');
-const [openLocation, setOpenLocation] = useState(false);
-const [currentStep, setCurrentStep] = useState(0);
-
 
 const Appointment = ({ auth, branches, categories, office_hours }) => {
   const user= usePage().props.auth.user;
@@ -87,6 +80,13 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
     data.appointment_date,
     data.appointment_time,
   ]);
+
+  const [processing, setProcessing] = useState();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [qrCodeData, setQrCodeData] = useState(null);
+  const [renderType, setRenderType] = useState('canvas');
+  const [openLocation, setOpenLocation] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const disableDate = (current) => {
     if (!Array.isArray(office_hours) || !current) return false;
@@ -176,7 +176,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
   }
   const handleCancel = () => {
     setModalOpen(false);
-  }
+  };
 
   function doDownload(url, fileName) {
     const a = document.createElement('a');
@@ -951,6 +951,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                             title="SMTC-Dental Care : Appointment QRCode"
                             open={isModalOpen}                     
                             onOk={handleOk}
+                            onCancel={handleCancel}
                             className="flex flex-col justify-around w-full"
                             footer={[
                                 <Button key="okay" onClick={handleOk} color="primary" variant="solid" href="/dashboard">

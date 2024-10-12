@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AppointmentModel;
 use App\Models\BranchModel;
+use App\Models\OfficeHourModel;
 use App\Models\PatientModel;
 use App\Models\ServicesModel;
 use App\Models\User;
@@ -19,6 +20,9 @@ class UsersAppointmentController extends Controller
         $users = User::all();
         $categories = ServicesModel::with('branch')->get();
         $patients = PatientModel::with(['medicalHistory', 'dentalHistory'])->get();
+        $office_hours = OfficeHourModel::with('branch')
+        ->where('IsClosed', true)
+        ->get(); 
     
         $userId = Auth::id(); 
         $appointmentDetails = AppointmentModel::where('user_id', $userId)->with('users', 'branch', 'services')->get(); 
@@ -30,6 +34,7 @@ class UsersAppointmentController extends Controller
             'categories' => $categories, 
             'patients' => $patients,
             'appointmentDetails' => $appointmentDetails,
+            'office_hours' => $office_hours,
         ]);
     }
 }
