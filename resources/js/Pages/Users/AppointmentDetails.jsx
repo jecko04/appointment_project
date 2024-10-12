@@ -4,6 +4,7 @@ import { Head, useForm, usePage, Link} from '@inertiajs/react';
 import { DownloadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
+import Logo from '@/Components/Logo';
 import moment from 'moment';
 import dayjs from 'dayjs';
 
@@ -24,29 +25,6 @@ const AppointmentDetails = ({ auth }) => {
       appointment_time: '',
       qr_code: '',
     })
-
-    const disableDate = (current, branch) => {
-      if (!Array.isArray(office_hours) || !current || !branch) return false;
-  
-      const closedDays = office_hours
-          .filter(officeHour => officeHour.Branch_ID === branch.Branch_ID && officeHour.IsClosed === 1)
-          .map(officeHour => officeHour.DayOfWeek); 
-  
-      const closedDayNumbers = closedDays.map(day => {
-          switch(day) {
-              case 'Sunday': return 0;
-              case 'Monday': return 1;
-              case 'Tuesday': return 2;
-              case 'Wednesday': return 3;
-              case 'Thursday': return 4;
-              case 'Friday': return 5;
-              case 'Saturday': return 6;
-              default: return -1;
-          }
-      });
-      return closedDayNumbers.includes(current.day()) || current < dayjs().endOf('day');
-  };
-  
 
     const submit = async (e) => {
       e.preventDefault();
@@ -93,6 +71,7 @@ const AppointmentDetails = ({ auth }) => {
     const [isReschedModalOpen, setReschedModalOpen] = useState(false);
     const [currentQRCode, setCurrentQRCode] = useState('');
     const [renderType, setRenderType] = useState('canvas');
+    const [selectedRecord, setSelectedRecord] = useState(null); 
 
     const showQRModal = (qrCode) => {
       setCurrentQRCode(qrCode);
@@ -107,10 +86,7 @@ const AppointmentDetails = ({ auth }) => {
       setQRModalOpen(false);
     };
 
-    // const showReschedModal = () => {
-    //   handleBranchData();
-    //   setReschedModalOpen(true);
-    // }
+    
 
     const reschedHandleOk = () => {
       setReschedModalOpen(false);
@@ -248,7 +224,8 @@ const AppointmentDetails = ({ auth }) => {
             >
               <Space id="myqrcode" direction="vertical">
                 {/* <Segmented options={['canvas', 'svg']} onChange={(val) => setRenderType(val)} /> */}
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex gap-10 ">
+                  <div className='flex flex-col items-center gap-4'>
                   <span className="font-medium text-sm">QRCode</span>
                   <QRCode
                     id="qrCode"
@@ -266,6 +243,8 @@ const AppointmentDetails = ({ auth }) => {
                   >
                     Download
                   </Button>
+                  </div>
+                <Logo/>
                 </div>
               </Space>
             </Modal>
@@ -277,25 +256,43 @@ const AppointmentDetails = ({ auth }) => {
           dataIndex: 'selectedBranch',
           key: 'action',
           render: (text, record) => {
-            const branch = appointmentDetails.find(b => b.selectedBranch === record.selectedBranch);
+            //const branch = record.selectedBranch || '{}';
 
-            const handleBranchData = (current) => {
-            
-              if (branch) {
-                return disableDate(current, branch); 
-              }
-              return false; 
-            };
-
-            const showReschedModal = () => {
+            const showReschedModal = (rowData) => {
               setReschedModalOpen(true);
+              setSelectedRecord(rowData)
             };
+
+            const disableDate = (current) => {
+              if (!Array.isArray(office_hours) || !current) return false;
+          
+              const closedDays = office_hours
+                  .filter(officeHour => officeHour.Branch_ID === selectedRecord.selectedBranch && officeHour.IsClosed === 1)
+                  .map(officeHour => officeHour.DayOfWeek); 
+          
+              const closedDayNumbers = closedDays.map(day => {
+                  switch(day) {
+                      case 'Sunday': return 0;
+                      case 'Monday': return 1;
+                      case 'Tuesday': return 2;
+                      case 'Wednesday': return 3;
+                      case 'Thursday': return 4;
+                      case 'Friday': return 5;
+                      case 'Saturday': return 6;
+                      default: return -1;
+                  }
+                  });
+                  return closedDayNumbers.includes(current.day()) || current < dayjs().endOf('day');
+              };
+
             return <>
             <div className='flex gap-3'>
               <EditOutlined
               className='text-blue-500 text-lg'
-              onClick={showReschedModal}
+              onClick={() => showReschedModal(record)}
               />
+              {selectedRecord && (
+
               <Modal
               title="SMTC-Dental Care : Reschedule Appointment"
               open={isReschedModalOpen}
@@ -322,7 +319,7 @@ const AppointmentDetails = ({ auth }) => {
                           <DatePicker
                               id={'appointment_date'} 
                               name={'appointment_date'}
-                              disabledDate={(current) => handleBranchData(current)}
+                              disabledDate={disableDate}
                               value={data.appointment_date ? moment(data.appointment_date): null}
                               className="block w-60 md:w-80"
                               needConfirm
@@ -353,7 +350,7 @@ const AppointmentDetails = ({ auth }) => {
               </form>
               </>
             </Modal>
-
+              )}
               <DeleteOutlined
               className='text-red-500 text-lg'
               />
