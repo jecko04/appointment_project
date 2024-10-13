@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError';
 import Logo from '@/Components/Logo';
 import moment from 'moment';
 import dayjs from 'dayjs';
+import PrimaryButton from '@/Components/PrimaryButton';
 
 
 const AppointmentDetails = ({ auth }) => {
@@ -15,7 +16,6 @@ const AppointmentDetails = ({ auth }) => {
     const user= usePage().props.auth.user;
 
     const qrCodeData = JSON.parse( appointmentDetails.qr_code || "{}");
-
     
     const {data, setData, post, errors }= useForm({
       fullname: '',
@@ -24,6 +24,9 @@ const AppointmentDetails = ({ auth }) => {
       appointment_date: '',
       appointment_time: '',
       qr_code: '',
+      
+      reschedule_date: null,
+      reschedule_time: null,
     })
 
     const submit = async (e) => {
@@ -32,11 +35,12 @@ const AppointmentDetails = ({ auth }) => {
       try {
         const formattedData = {
             ...data,
-            date: data.date ? moment(data.date).format('YYYY-MM-DD') : null,
-            appointment_time: data.appointment_time
+            id: selectedRecord.id,
+            date: data.reschedule_date ? moment(data.reschedule_date).format('YYYY-MM-DD') : null,
+            reschedule_time: data.reschedule_time
         };
   
-        await post(route('guest.appointment.store', data), formattedData,{
+        await post(route('appointment.reschedule', data), formattedData,{
           onSuccess: () => {
             notification.success({
               message: 'Success',
@@ -85,8 +89,6 @@ const AppointmentDetails = ({ auth }) => {
     const handleQRCancel = () => {
       setQRModalOpen(false);
     };
-
-    
 
     const reschedHandleOk = () => {
       setReschedModalOpen(false);
@@ -216,6 +218,9 @@ const AppointmentDetails = ({ auth }) => {
               open={isQRModalOpen}
               onOk={handleQROk}
               onCancel={handleQRCancel}
+              style={{
+                top: 20,
+              }}
               footer={[
                 <Button key="okay" onClick={handleQROk} color="primary">
                   Okay
@@ -223,7 +228,6 @@ const AppointmentDetails = ({ auth }) => {
               ]}
             >
               <Space id="myqrcode" direction="vertical">
-                {/* <Segmented options={['canvas', 'svg']} onChange={(val) => setRenderType(val)} /> */}
                 <div className="flex gap-10 ">
                   <div className='flex flex-col items-center gap-4'>
                   <span className="font-medium text-sm">QRCode</span>
@@ -261,6 +265,11 @@ const AppointmentDetails = ({ auth }) => {
             const showReschedModal = (rowData) => {
               setReschedModalOpen(true);
               setSelectedRecord(rowData)
+              setData({
+                ...data,
+                reschedule_date: rowData.appointment_date,
+                reschedule_time: rowData.appointment_time
+              });
             };
 
             const disableDate = (current) => {
@@ -298,53 +307,61 @@ const AppointmentDetails = ({ auth }) => {
               open={isReschedModalOpen}
               onOk={reschedHandleOk}
               onCancel={reschedHandleCancel}
+              style={{
+                top: 20,
+              }}
+              width={800}
               footer={[
-                <Button key="okay" onClick={reschedHandleOk} color="primary">
-                  Okay
-                </Button>
+                <PrimaryButton className="max-w-24 flex justify-center" key="submit" onClick={submit} disabled={processing}>
+                  Reschedule
+                </PrimaryButton>
               ]}
             >
               <>
               <form onSubmit={submit}>
               <div className="flex flex-col gap-3">
-                        <span className="text-sm mt-10">When would you like to come in?</span>
                         <div className="rounded-md shadow-xl py-4 px-4 flex flex-col gap-3 ">
                           <div className="flex flex-col divide-y divide-black">
-                          <span className="font-black text-sm py-2">Schedule</span>
+                          <span className="font-black text-sm py-2">Reschedule :
+                          <span className="text-sm font-normal px-2">When would you like to come in?</span></span>
                           <span className="font-light text-xs py-2 text-gray-500">Choose Date and Time of your appointment</span>
                           </div>
-                          
-                          <InputLabel htmlFor="appointment_date" value="Select Date" />
+                          <div className='flex justify-around'>
+                          <div className='flex flex-col'>
+                          <InputLabel htmlFor="reschedule_date" value="Select new Date" />
 
                           <DatePicker
-                              id={'appointment_date'} 
-                              name={'appointment_date'}
+                              id={'reschedule_date'} 
+                              name={'reschedule_date'}
                               disabledDate={disableDate}
-                              value={data.appointment_date ? moment(data.appointment_date): null}
+                              value={data.reschedule_date ? moment(data.reschedule_date): null}
                               className="block w-60 md:w-80"
                               needConfirm
                               size='large'
-                              onChange={(date) => setData('appointment_date', date ? date.format("YYYY-MM-DD"): null)}
+                              onChange={(date) => setData('reschedule_date', date ? date.format("YYYY-MM-DD"): null)}
                               required
                           >
 
                           </DatePicker>
-                          <InputError message={errors.appointment_date} className="mt-2" /> 
-
-                          <InputLabel htmlFor="appointment_time" value="Select Time" />
+                          <InputError message={errors.reschedule_date} className="mt-2" /> 
+                          </div>
+                          <div className='flex flex-col'>
+                          <InputLabel htmlFor="reschedule_time" value="Select new Time" />
 
                           <TimePicker
-                          id="appointment_time"
-                          name="appointment_time"
-                          value={data.appointment_time ? moment(data.appointment_time, 'h:mm a') : null}
+                          id="reschedule_time"
+                          name="reschedule_time"
+                          value={data.reschedule_time ? moment(data.reschedule_time, 'h:mm a') : null}
                           className="block w-60 md:w-80"
                           size='large'
                           format='h:mm a' 
-                          onChange={(time) => setData('appointment_time', time ? time.format("HH:mm") : null)} 
+                          onChange={(time) => setData('reschedule_time', time ? time.format("HH:mm") : null)} 
                           required
                         />
 
-                          <InputError message={errors.appointment_time} className="mt-2" />
+                          <InputError message={errors.reschedule_time} className="mt-2" />
+                          </div>
+                          </div>
                       </div>
                       </div>
               </form>

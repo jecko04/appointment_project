@@ -34,8 +34,6 @@ Route::middleware('ifNotUser')->group(function (){
     Route::get('/guest/appointment', [AppointmentController::class, 'appointment'])->name('guest.appointment');
     Route::post('/guest/appointment', [AppointmentController::class, 'storeAppointment'])->name('guest.appointment.store');
 
-    Route::get('/guest/appointment/forchild', [AppointmentChildForm::class, 'childForm'])->name('guest.appointment.forchild');
-
     //Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
     Route::get('/record', [UserRecordAppointmentController::class, 'showRecordAppointment'])->name('record');
 });
@@ -52,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/personal-info', [ProfileController::class, 'updateinfo'])->name('profile.update.info');
 
     Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
+    Route::post('/appointment/reschedule', [UsersAppointmentController::class, 'storeReschedule'])->name('appointment.reschedule');
+
 });
 
 require __DIR__.'/auth.php';

@@ -1,7 +1,7 @@
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import AppointmentDetail from '../Users/AppointmentDetails';
+import DentalAppointment from '../Users/DentalAppointment';
 
 export default function AdminDashboard({ auth }) {
     return (
@@ -11,7 +11,7 @@ export default function AdminDashboard({ auth }) {
         >
             <Head title="Dental Appointment" />
             <main>
-                <AppointmentDetail/>
+                <DentalAppointment/>
             </main>
         </AuthenticatedLayout>
     );

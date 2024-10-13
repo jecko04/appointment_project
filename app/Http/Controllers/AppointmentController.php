@@ -59,9 +59,28 @@ class AppointmentController extends Controller
 
         $request->merge(['email' => strtolower($request->email)]);
 
-        $patient = PatientModel::updateOrCreate(
-            ['email' => $request->email], // Find by email
+        $patient = PatientModel::firstOrCreate(
             [
+                'email' => $request->email, 
+                'Branch_ID' => $request->selectedBranch
+            ], 
+            [
+                // Only populate these fields if a new record is being created
+                'user_id' => $request->userId,
+                'fullname' => $request->fullname,
+                'date_of_birth' => $dobformatted,
+                'age' => $request->age,
+                'gender' => $request->gender,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'emergency_contact' => $request->emergency_contact,
+                'Branch_ID' => $request->selectedBranch,
+            ]
+        );
+        
+        // If patient already exists, update fields except for Branch_ID
+        if (!$patient->wasRecentlyCreated) {
+            $patient->update([
                 'user_id' => $request->userId,
                 'fullname' => $request->fullname,
                 'date_of_birth' => $dobformatted,
@@ -71,9 +90,8 @@ class AppointmentController extends Controller
                 'email' => $request->email,
                 'address' => $request->address,
                 'emergency_contact' => $request->emergency_contact,
-                'Branch_ID' => $request->selectedBranch,
-            ]
-        );
+            ]);
+        }
 
         $medicalHistoryData = [
             'patient_id' => $patient->id,

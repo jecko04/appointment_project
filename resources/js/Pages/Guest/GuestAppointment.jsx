@@ -232,22 +232,49 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
     }));
   };
 
-  const handleQRCode = (value) => {
+  const [qrValue, setQrValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
+
+  const onFinish = (values) => {
+    setLoading(true);
+
+    // Generate QR code data
+    const qrData = JSON.stringify({
+        userId: values.userId || '',
+        selectedBranchName: values.selectedBranchName || '',
+        selectedServices: values.selectedServices || '',
+        appointment_date: values.appointment_date || '',
+        appointment_time: values.appointment_time || ''
+    });
+
+    setQrValue(qrData);
+    setShowQRCode(true); // Show QR code after generating it
+    setLoading(false);
+
+    message.success('Appointment request submitted!');
+};
+
+const handleQRCode = (value) => {
     try {
-      const parseValue = JSON.parse(value);
-      console.log(parseValue);
-      setData((prevData) => ({
-          ...prevData,
-          userId: parseValue.userId,
-          branch_name: parseValue.branch_name,    
-          services: parseValue.services,      
-          appointment_date: parseValue.appointment_date,    
-          appointment_time: parseValue.appointment_time,    
-      }));
-  } catch (error) {
-      console.error('Error parsing QR code value:', error);
-  }
-  }
+        const parseValue = JSON.parse(value);
+        console.log(parseValue);
+        
+        setData((prevData) => ({
+            ...prevData,
+            userId: parseValue.userId,
+            branch_name: parseValue.selectedBranchName, 
+            services: parseValue.selectedServices,
+            appointment_date: parseValue.appointment_date,
+            appointment_time: parseValue.appointment_time,
+        }));
+
+        message.success('QR Code data parsed successfully!');
+    } catch (error) {
+        console.error('Error parsing QR code value:', error);
+        message.error('Failed to parse QR code data.'); 
+    }
+};
 
   const handleCheckboxChange = (checkbox, checked) => {
     setData((prevChecked) => ({
@@ -709,7 +736,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                         <div>
 
                       <InputLabel htmlFor="last_dental_visit" value="Select your last dental visit date" />
-                      <span className="text-xs text-gray-500">If this is your first time, kindly choose your appointment date.</span>
+                      <span className="text-sm text-[#FF4200]">If this is your first time, kindly choose your appointment date you previously inputted.</span>
                         <DatePicker
                             id="last_dental_visit"
                             type="date"
@@ -872,7 +899,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
 
                       <InputLabel value="Personal Info"/>
 
-                        <div className="flex flex-col md:flex-row gap-5 md:gap-0 justify-around rounded-lg md:shadow-md md:py-4 md:px-14">
+                        <div className="flex flex-col md:flex-row gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4">
                         <div className="flex flex-col gap-2">
 
                         <span className="font-black text-sm">Fullname: 
@@ -901,27 +928,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                           <span className="font-normal"> {data.emergency_contact ? data.emergency_contact : ''} 
                             </span>  </span>
                             </div>
-                        
-                        <div className="flex flex-col items-center text-center px-4">
-                          <QRCode
-                          id="qr_code"
-                          name="qr_code"
-                          icon='/images/image.png'
-                          iconSize={30}
-                          size={200}
-                          status="loading"
-                          value={JSON.stringify({ 
-                            value1: data.userId ? data.userId : '', 
-                            value2: data.selectedBranchName ? data.selectedBranchName : '', 
-                            value3: data.selectedServices ? data.selectedServices : '', 
-                            value4: data.appointment_date ? data.appointment_date : '', 
-                            value5: data.appointment_time ? data.appointment_time : ''
-                          })}
-                          onChange={handleQRCode}
-                          />
-                          <InputLabel value="Obtain your QR code upon submitting the appointment request."/>
-                          
-                        </div>
+                    
                         </div>
                       </div>
                       </div>

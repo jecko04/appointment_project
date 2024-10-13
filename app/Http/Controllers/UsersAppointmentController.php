@@ -8,7 +8,7 @@ use App\Models\OfficeHourModel;
 use App\Models\PatientModel;
 use App\Models\ServicesModel;
 use App\Models\User;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -37,4 +37,34 @@ class UsersAppointmentController extends Controller
             'office_hours' => $office_hours,
         ]);
     }
+
+    public function storeReschedule(Request $request)
+    {
+        $validate = $request->validate([
+            'selectedBranch' => 'required|integer',
+            'selectServices' => 'required|integer',
+            'reschedule_date' => 'required|date', 
+            'reschedule_time' => 'required|string|date_format:H:i',
+        ]);
+
+        $dateformatted = Carbon::createFromFormat('Y-m-d', $validate['reschedule_date'])->format('Y-m-d');
+        $timeformatted = Carbon::createFromFormat('H:i', $validate['reschedule_time'])->format('H:i:s');
+
+        $appointment = AppointmentModel::updateOrCreate(
+        [
+            'user_id' => Auth::id(), 
+            'selectedBranch' => $request->selectedBranch,
+            'selectServices' => $request->selectServices,
+        ],     
+        [
+            'reschedule_date' => $dateformatted,
+            'reschedule_time' => $timeformatted,
+        ]);
+
+        $appointment->save();
+
+        return;
+    }
+
+
 }
