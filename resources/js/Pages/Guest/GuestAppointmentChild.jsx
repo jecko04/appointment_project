@@ -15,7 +15,6 @@ import moment from 'moment';
 import { CalendarOutlined, IdcardOutlined, MedicineBoxOutlined, SmileOutlined,CheckCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
-
 const { Step } = Steps;
 const { Option } = Select;
 
@@ -32,14 +31,14 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
     appointment_time: null,
     userId: user.id,
 
-    fullname: user.name || '',
-    email: user.email || '',
-    age: user.age || '',
-    gender: user.gender || '',
-    date_of_birth: user.date_of_birth || '',
-    phone: user.phone || '',
-    address: user.address || '',
-    emergency_contact: user.emergency_contact || '',
+    fullname: '',
+    email: '',
+    age: '',
+    gender: '',
+    date_of_birth: '',
+    phone: '',
+    address: '',
+    emergency_contact: '',
 
     medical_condition: '',
     current_medication: '',
@@ -383,7 +382,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                           <span className="font-black text-sm py-2">Schedule</span>
                           <span className="font-light text-xs py-2 text-gray-500">Choose Date and Time of your appointment</span>
                           </div>
-                          
                           <InputLabel htmlFor="appointment_date" value="Select Date" />
 
                           <DatePicker
@@ -441,7 +439,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                             name="fullname"
                             value={data.fullname}
                             className="block w-60 md:w-80 text-sm"
-                            autoComplete="fullname"
                             onChange={(e) => setData('fullname', e.target.value)}
                             required
                           />
@@ -455,7 +452,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                             name="age"
                             value={data.age}
                             className="block w-60 md:w-80 text-sm"
-                            autoComplete="age"
                             onChange={(e) => setData('age', e.target.value)}
                             required
                           />
@@ -471,7 +467,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                             name="gender"
                             value={data.gender}
                             className="block w-60 md:w-80 text-sm"
-                            autoComplete="gender"
                             size="large"
                             onChange={(value) => setData('gender', value)}
                             required
@@ -496,7 +491,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                             value={data.date_of_birth ? moment(data.date_of_birth) : null} 
                             onChange={(date) => setData('date_of_birth', date ? date.format("YYYY-MM-DD"): null)}
                             required
-                            autoComplete="date_of_birth"
                         />
 
                         <InputError className="mt-2" message={errors.date_of_birth} />
@@ -518,7 +512,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                             name="phone"
                             value={data.phone}
                             className="block w-60 md:w-80 text-sm"
-                            autoComplete="phone"
                             onChange={(e) => setData('phone', e.target.value)}
                             required
                           />
@@ -533,7 +526,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                               name="address"
                               value={data.address}
                               className="block w-60 md:w-80 text-sm"
-                              autoComplete="address"
                               onChange={(e) => setData('address', e.target.value)}
                               required
                             />
@@ -551,7 +543,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                             name="email"
                             value={data.email}
                             className="block w-60 md:w-80 text-sm"
-                            autoComplete="email"
                             onChange={(e) => setData('email', e.target.value)}
                             required
                           />
@@ -565,7 +556,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
                             name="emergency_contact"
                             value={data.emergency_contact}
                             className="block w-60 md:w-80 text-sm"
-                            autoComplete="emergency_contact"
                             onChange={(e) => setData('emergency_contact', e.target.value)}
                             required
                           />

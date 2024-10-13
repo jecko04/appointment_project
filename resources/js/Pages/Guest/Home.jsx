@@ -1,16 +1,26 @@
-import { React, useState } from 'react'
+import React, { useState } from 'react'
 import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 import { Link } from '@inertiajs/react';
 import { FaLocationDot } from "react-icons/fa6";
 import { TbDental } from "react-icons/tb";
 import { LuCalendarCheck2 } from "react-icons/lu";
-
-
+import { Modal, Button } from 'antd';
 
 const Home = () => {
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const showModal = () => {
+    setModalOpen(true);
+  }
+  const handleOk = () => {
+    setModalOpen(false);
+  }
+  const handleCancel = () => {
+    setModalOpen(false);
+  }
 
   return (
     <>
@@ -40,11 +50,29 @@ const Home = () => {
     </div>
 
       <div className="flex justify-center lg:justify-start mt-7 lg:m-7">
-        <Link href={route('guest.appointment')}>
-        <SecondaryButton >
+        <SecondaryButton onClick={showModal}>
             Request Appointment
           </SecondaryButton>
-        </Link>
+          <Modal
+            title="SMTC-Dental Care : Appointment For"
+            open={isModalOpen}                     
+            onOk={handleOk}
+            onCancel={handleCancel}
+            className="flex flex-col justify-around w-full"
+          >
+            <div className='flex justify-center gap-7 p-7'>
+            <Link href={route('guest.appointment.forchild')}>
+            <Button size='large' variant="solid" className='bg-[#ff4200] text-white px-9 py-6'>
+              For Children?
+            </Button>
+            </Link>  
+            <Link href={route('guest.appointment')}>
+            <Button size='large' variant="solid" className='bg-[#ff4200] text-white px-9 py-6'>
+              For Yourself?
+            </Button>
+            </Link>      
+            </div>          
+          </Modal>
     </div>
       </div>
       <div className="hidden lg:block">

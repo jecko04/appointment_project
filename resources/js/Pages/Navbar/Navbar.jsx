@@ -44,9 +44,9 @@ const Navbar = ({ auth }) => {
         {isOpen && (
             <div className="flex flex-col items-center w-full lg:hidden">
                 <ResponsiveNavLink href={route('home')} className="text-black hover:text-amber-400 text-xs">Home</ResponsiveNavLink>
-                <ResponsiveNavLink href={route('login')} className="text-black hover:text-amber-400 text-xs">About</ResponsiveNavLink>
-                <ResponsiveNavLink href={route('login')} className="text-black hover:text-amber-400 text-xs">Services</ResponsiveNavLink>
-                <ResponsiveNavLink href={route('login')} className="text-black hover:text-amber-400 text-xs">Contact</ResponsiveNavLink>
+                <ResponsiveNavLink href={route('about')} className="text-black hover:text-amber-400 text-xs">About</ResponsiveNavLink>
+                <ResponsiveNavLink href={route('services')} className="text-black hover:text-amber-400 text-xs">Services</ResponsiveNavLink>
+                <ResponsiveNavLink href={route('contact')} className="text-black hover:text-amber-400 text-xs">Contact</ResponsiveNavLink>
                 {auth.user ? (
                 
                 <ResponsiveNavLink href={route('dashboard')} className="text-black text-xs "
@@ -102,19 +102,19 @@ const Navbar = ({ auth }) => {
                         Home
                     </Link>
                     <Link 
-                        href={route('login')} 
+                        href={route('about')} 
                         className="flex items-center text-gray-500 hover:text-amber-400 text-sm"
                     >
                         About
                     </Link>
                     <Link 
-                        href={route('login')} 
+                        href={route('services')} 
                         className="text-gray-500 hover:text-amber-400 text-sm"
                     >
                         Services
                     </Link>
                     <Link 
-                        href={route('login')} 
+                        href={route('contact')} 
                         className="flex items-center text-gray-500 hover:text-amber-400 text-sm"
                     >
                         Contact
