@@ -23,6 +23,7 @@ class UsersAppointmentController extends Controller
         $office_hours = OfficeHourModel::with('branch')
         ->where('IsClosed', true)
         ->get(); 
+        
     
         $userId = Auth::id(); 
         $appointmentDetails = AppointmentModel::where('user_id', $userId)->with('users', 'branch', 'services')->get(); 
@@ -52,19 +53,23 @@ class UsersAppointmentController extends Controller
 
         $appointment = AppointmentModel::updateOrCreate(
         [
-            'user_id' => Auth::id(), 
-            'selectedBranch' => $request->selectedBranch,
-            'selectServices' => $request->selectServices,
+            'user_id' => Auth::id(),
+            'selectedBranch' => $validate['selectedBranch'],  
+            'selectServices' => $validate['selectServices'], 
         ],     
         [
             'reschedule_date' => $dateformatted,
             'reschedule_time' => $timeformatted,
         ]);
 
-        $appointment->save();
-
-        return;
+        return redirect()->back()->with('success', 'Appointment saved successfully!');
     }
 
+    public function destroy($id)
+    {
+    $appointment = AppointmentModel::findOrFail($id);
 
+    $appointment->delete();
+    return redirect()->back()->with('success', 'Appointment deleted successfully.');
+    }
 }

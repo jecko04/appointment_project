@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AppointmentChildForm;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserRecordAppointmentController;
 use App\Http\Controllers\UsersAppointmentController;
@@ -38,9 +39,7 @@ Route::middleware('ifNotUser')->group(function (){
     Route::get('/record', [UserRecordAppointmentController::class, 'showRecordAppointment'])->name('record');
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -51,6 +50,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
     Route::post('/appointment/reschedule', [UsersAppointmentController::class, 'storeReschedule'])->name('appointment.reschedule');
+    Route::delete('/appointment/destroy{id}', [UsersAppointmentController::class, 'destroy'])->name('appointment.destroy');
 
 });
 

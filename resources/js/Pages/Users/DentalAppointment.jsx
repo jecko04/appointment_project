@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker } from "antd";
+import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification  } from "antd";
 import { Head, useForm, usePage, Link} from '@inertiajs/react';
 import { DownloadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InputLabel from '@/Components/InputLabel';
@@ -9,7 +9,6 @@ import moment from 'moment';
 import dayjs from 'dayjs';
 import PrimaryButton from '@/Components/PrimaryButton';
 
-
 const AppointmentDetails = ({ auth }) => {
     const { appointmentDetails, branches, categories, users, office_hours} = usePage().props;
 
@@ -17,7 +16,7 @@ const AppointmentDetails = ({ auth }) => {
 
     const qrCodeData = JSON.parse( appointmentDetails.qr_code || "{}");
     
-    const {data, setData, post, errors }= useForm({
+    const {data, setData, post, delete: destroy, errors }= useForm({
       fullname: '',
       selectedBranchName: '',
       selectedServices: '',
@@ -25,6 +24,9 @@ const AppointmentDetails = ({ auth }) => {
       appointment_time: '',
       qr_code: '',
       
+
+      selectedBranch: null,
+      selectServices: null,
       reschedule_date: null,
       reschedule_time: null,
     })
@@ -32,43 +34,70 @@ const AppointmentDetails = ({ auth }) => {
     const submit = async (e) => {
       e.preventDefault();
       setProcessing(true);
+      
       try {
-        const formattedData = {
-            ...data,
-            id: selectedRecord.id,
-            date: data.reschedule_date ? moment(data.reschedule_date).format('YYYY-MM-DD') : null,
-            reschedule_time: data.reschedule_time
-        };
+          const formattedData = {
+              ...data,
+              id: selectedRecord.id,
+              reschedule_date: moment(data.reschedule_date).format('YYYY-MM-DD'),
+              reschedule_time: moment(data.reschedule_time).format('HH:mm'),
+          };
   
-        await post(route('appointment.reschedule', data), formattedData,{
-          onSuccess: () => {
-            notification.success({
-              message: 'Success',
-              description: 'Appointment date and time updated successfully!',
-              placement: 'bottomRight',
-              onClick: () => {
-                console.log('Notification Clicked!');
+          await post(route('appointment.reschedule', formattedData), {
+              onSuccess: () => {
+                  notification.success({
+                      message: 'Success',
+                      description: 'Appointment date and time updated successfully!',
+                      placement: 'bottomRight',
+                  });
               },
-              duration: 3,
-            });
-          },
-          onError: () => {
-            notification.error({
-              message: 'Error',
-              description: 'There was an error on your appointment.',
-              placement: 'bottomRight',
-              onClick: () => {
-                console.log('Notification Clicked!');
+              onError: () => {
+                  notification.error({
+                      message: 'Error',
+                      description: 'There was an error updating your appointment.',
+                      placement: 'bottomRight',
+                  });
+              }
+          });
+      } catch (error) {
+          console.error("Error during appointment submission:", error);
+      } finally {
+          setProcessing(false);
+      }
+  };   
+
+  const destroyAppointment = async () => {
+      setProcessing(true);
+      
+      try {
+          const formattedData = {
+              ...data,
+              id: selectedRecord.id,
+          };
+  
+          await destroy(route('appointment.destroy', formattedData), {
+              onSuccess: () => {
+                  notification.success({
+                      message: 'Success',
+                      description: 'Cancelled Appointment!',
+                      placement: 'bottomRight',
+                  });
               },
-              duration: 3, 
+              onError: () => {
+                  notification.error({
+                      message: 'Error',
+                      description: 'There was an error on your appointment.',
+                      placement: 'bottomRight',
+                  });
+              }
             });
-          }
-        });
-    } catch (error) {
-        console.error("Error during appointment submission:", error);
-    } finally {
-      setProcessing(false);
-    }};
+            setIsDeleteModalOpen(false);
+      } catch (error) {
+          console.error("Error during appointment submission:", error);
+      } finally {
+          setProcessing(false);
+      }
+  }
 
     const [processing, setProcessing] = useState();
     const [isQRModalOpen, setQRModalOpen] = useState(false);
@@ -76,6 +105,7 @@ const AppointmentDetails = ({ auth }) => {
     const [currentQRCode, setCurrentQRCode] = useState('');
     const [renderType, setRenderType] = useState('canvas');
     const [selectedRecord, setSelectedRecord] = useState(null); 
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const showQRModal = (qrCode) => {
       setCurrentQRCode(qrCode);
@@ -97,8 +127,6 @@ const AppointmentDetails = ({ auth }) => {
     const reschedHandleCancel = () => {
       setReschedModalOpen(false);
     };
-
-  
     
     const downloadCanvasQRCode = () => {
       const canvas = document.getElementById('myqrcode')?.querySelector('canvas');
@@ -259,18 +287,37 @@ const AppointmentDetails = ({ auth }) => {
           title: 'Action',
           dataIndex: 'selectedBranch',
           key: 'action',
-          render: (text, record) => {
-            //const branch = record.selectedBranch || '{}';
+          render: (text, record) => { 
 
             const showReschedModal = (rowData) => {
               setReschedModalOpen(true);
               setSelectedRecord(rowData)
               setData({
                 ...data,
+                selectedBranch: rowData.selectedBranch,
+                selectServices: rowData.selectServices,
                 reschedule_date: rowData.appointment_date,
                 reschedule_time: rowData.appointment_time
               });
             };
+
+            const showDeleteModal = (record) => {
+              setIsDeleteModalOpen(true);
+              setSelectedRecord(record)
+              setData({
+                ...data,
+                id: record.id,
+                selectedBranch: record.selectedBranch,
+                selectServices: record.selectServices,
+                reschedule_date: record.appointment_date,
+                reschedule_time: record.appointment_time
+              });
+              console.log(record);
+            }
+
+            const handleCancel = () => {
+              setIsDeleteModalOpen(false);
+            }
 
             const disableDate = (current) => {
               if (!Array.isArray(office_hours) || !current) return false;
@@ -292,7 +339,7 @@ const AppointmentDetails = ({ auth }) => {
                   }
                   });
                   return closedDayNumbers.includes(current.day()) || current < dayjs().endOf('day');
-              };
+              }; 
 
             return <>
             <div className='flex gap-3'>
@@ -319,6 +366,7 @@ const AppointmentDetails = ({ auth }) => {
             >
               <>
               <form onSubmit={submit}>
+              @csrf
               <div className="flex flex-col gap-3">
                         <div className="rounded-md shadow-xl py-4 px-4 flex flex-col gap-3 ">
                           <div className="flex flex-col divide-y divide-black">
@@ -357,8 +405,7 @@ const AppointmentDetails = ({ auth }) => {
                           format='h:mm a' 
                           onChange={(time) => setData('reschedule_time', time ? time.format("HH:mm") : null)} 
                           required
-                        />
-
+                          />
                           <InputError message={errors.reschedule_time} className="mt-2" />
                           </div>
                           </div>
@@ -370,7 +417,31 @@ const AppointmentDetails = ({ auth }) => {
               )}
               <DeleteOutlined
               className='text-red-500 text-lg'
+              onClick={() => showDeleteModal(record)}
               />
+              <Modal
+              title="Are you sure you want to cancel this appointment?"
+              open={isDeleteModalOpen}
+              closable={false}
+              style={{
+                top: 20,
+              }}z
+              width={400}
+              footer={[
+              ]}
+            >
+              <>
+              <div className="flex flex-col gap-3">
+              <Button className='bg-red-600 text-white transition ease-in-out duration-300' onClick={() => destroyAppointment(selectedRecord.id)} disabled={processing}>
+                  sure
+              </Button>
+                <Button onClick={handleCancel}>
+                  cancel
+                </Button>
+              </div>
+              
+              </>
+            </Modal>
             </div>
            
             </>
