@@ -40,7 +40,7 @@ const AppointmentDetails = ({ auth }) => {
               ...data,
               id: selectedRecord.id,
               reschedule_date: moment(data.reschedule_date).format('YYYY-MM-DD'),
-              reschedule_time: moment(data.reschedule_time).format('HH:mm'),
+              reschedule_time: data.reschedule_time,
           };
   
           await post(route('appointment.reschedule', formattedData), {
@@ -234,13 +234,13 @@ const AppointmentDetails = ({ auth }) => {
           key: 'qrcode',
           render: (qrCode, record) => {
             return <>
-            <Button
-            className='text-sm text-white bg-[#ff4200] rounded-md p-3 hover:bg-[#ff400]/80'
+            <p
+            className='text-sm text-[#2938DA] hover:text-blue-300 p-3 cursor-pointer'
             size='small'
             onClick={() => showQRModal(qrCode)}
             >
-              Open
-            </Button>
+              Show
+            </p>
             <Modal
               title="SMTC-Dental Care : Appointment QRCode"
               open={isQRModalOpen}
@@ -303,16 +303,7 @@ const AppointmentDetails = ({ auth }) => {
 
             const showDeleteModal = (record) => {
               setIsDeleteModalOpen(true);
-              setSelectedRecord(record)
-              setData({
-                ...data,
-                id: record.id,
-                selectedBranch: record.selectedBranch,
-                selectServices: record.selectServices,
-                reschedule_date: record.appointment_date,
-                reschedule_time: record.appointment_time
-              });
-              console.log(record);
+              setSelectedRecord(record);
             }
 
             const handleCancel = () => {
@@ -366,7 +357,6 @@ const AppointmentDetails = ({ auth }) => {
             >
               <>
               <form onSubmit={submit}>
-              @csrf
               <div className="flex flex-col gap-3">
                         <div className="rounded-md shadow-xl py-4 px-4 flex flex-col gap-3 ">
                           <div className="flex flex-col divide-y divide-black">
@@ -460,6 +450,7 @@ const AppointmentDetails = ({ auth }) => {
       dataSource={appointmentDetails} 
       columns={columns}       
       rowKey="id"
+      size='small'
     />
     </div>
     </>

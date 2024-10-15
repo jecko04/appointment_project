@@ -27,13 +27,13 @@ const DashboardContent = () => {
 
     console.log(appointmentDetails);
     console.log(user);
-
-    
-
   return (
     <>
     
-         {appointmentDetails.length > 0 ? (
+
+    <div className='px-4 py-3'>
+    
+         {appointmentDetails && appointmentDetails.length > 0 ? (
     appointmentDetails.map((appointmentDetail) => {
         const branchName = branches
             .filter(b => b.Branch_ID === appointmentDetail.selectedBranch)
@@ -78,9 +78,6 @@ const DashboardContent = () => {
         .join(', ') || 'No Description Found';
         console.log(appointmentDetail.selectServices);
 
-
-
-
         const [isModalOpen, setIsModalOpen] = useState(false);
 
         const showModal = () => {
@@ -89,7 +86,10 @@ const DashboardContent = () => {
         const cancelModal = () => {
             setIsModalOpen(false);
         }
+
         return (
+
+            
             
             <Card
                 key={appointmentDetail.id} 
@@ -102,7 +102,7 @@ const DashboardContent = () => {
             >
                 <div className='flex justify-between'>
                 <div className='flex items-center'>
-                <img src="/images/image.png" alt="" className='w-10 h-10'/>
+                <img src="/images/image.png" alt="" className='w-10 h-10 hidden md:block'/>
                 <div className='p-2'>
                 <p>Branch Name: {branchName}</p>
                 <p>Services: {services}</p>
@@ -189,7 +189,8 @@ const DashboardContent = () => {
 ) : (
     <p>No appointment details available.</p>
 )}
-    
+    </div>
+
     </>
 
   )

@@ -37,16 +37,31 @@ export default function Authenticated({ user, header, children, }) {
                         Dashboard
                     </NavLink>
                     <NavLink href={route('appointment')} active={route().current('appointment')}>
-                    <svg
-                        fill="currentColor"
-                        viewBox="0 0 16 16"
-                        height="1em"
-                        width="1em"
-                        className='mr-5 w-6 h-6'
-                        >
-                        <path d="M11 7.5a.5.5 0 01.5-.5h1a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-1a.5.5 0 01-.5-.5v-1z" />
-                        <path d="M3.5 0a.5.5 0 01.5.5V1h8V.5a.5.5 0 011 0V1h1a2 2 0 012 2v11a2 2 0 01-2 2H2a2 2 0 01-2-2V3a2 2 0 012-2h1V.5a.5.5 0 01.5-.5zM2 2a1 1 0 00-1 1v11a1 1 0 001 1h12a1 1 0 001-1V3a1 1 0 00-1-1H2z" />
-                        <path d="M2.5 4a.5.5 0 01.5-.5h10a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H3a.5.5 0 01-.5-.5V4z" />
+                    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fill="#000000" className='mr-5 w-6 h-6'>
+                        <g strokeWidth="0"></g>
+                        <g strokeLinecap="round" strokeLinejoin="round"></g>
+                        <g>
+                        <defs>
+                            <style>
+                            {`.a, .b {fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}
+                            .b {stroke-width:0.9965px;}`}
+                            </style>
+                        </defs>
+                        <path
+                            className="a"
+                            d="M24.2827,31a5.975,5.975,0,0,0,6,6A5.79,5.79,0,0,0,36.06,31V25a5.9314,5.9314,0,0,0-5.7778-6,6.12,6.12,0,0,0-6,6Z"
+                        />
+                        <line className="b" x1="34.7271" y1="21.2222" x2="25.8382" y2="34.7778" />
+                        <line className="a" x1="11.9396" y1="37" x2="20.9396" y2="37" />
+                        <line className="a" x1="11.9396" y1="21.475" x2="16.4396" y2="19" />
+                        <line className="a" x1="16.4396" y1="19" x2="16.4396" y2="37" />
+                        <circle className="a" cx="32.5" cy="11" r="2.5" />
+                        <circle className="a" cx="15.5" cy="11" r="2.5" />
+                        <path
+                            className="a"
+                            d="M7.5,5.5a2,2,0,0,0-2,2v33a2,2,0,0,0,2,2h33a2,2,0,0,0,2-2V7.5a2,2,0,0,0-2-2Z"
+                        />
+                        </g>
                     </svg>
                         Dental Appointment
                     </NavLink>
@@ -60,7 +75,7 @@ export default function Authenticated({ user, header, children, }) {
                     >
                     <path d="M19 2H6c-1.206 0-3 .799-3 3v14c0 2.201 1.794 3 3 3h15v-2H6.012C5.55 19.988 5 19.806 5 19s.55-.988 1.012-1H21V4c0-1.103-.897-2-2-2zm0 14H5V5c0-.806.55-.988 1-1h13v12z" />
                     </svg>
-                        Appointment Records
+                        Appointment History
                     </NavLink>
                 </div>
             </div>

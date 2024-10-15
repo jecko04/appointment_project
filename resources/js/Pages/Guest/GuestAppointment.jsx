@@ -7,7 +7,7 @@ import { Head, useForm, usePage} from '@inertiajs/react';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
-import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Segmented, Space, notification} from "antd";
+import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Space, notification} from "antd";
 import { DownloadOutlined } from '@ant-design/icons';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TertiaryButton from '@/Components/TertiaryButton';
@@ -967,7 +967,6 @@ const handleQRCode = (value) => {
                             ]}
                             >
                               <Space id="myqrcode" direction="vertical">
-                              <Segmented options={['canvas', 'svg']} onChange={(val) => setRenderType(val)} />
                               <div className="flex flex-col md:flex-row items-center gap-4">
                                 <div className="flex flex-col items-center px-7">
 
