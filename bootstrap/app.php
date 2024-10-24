@@ -1,10 +1,8 @@
 <?php
 
-use App\Http\Middleware\RedirectIfAdmin;
+use App\Http\Middleware\CheckAppointment;
 use App\Http\Middleware\RedirectIfAuthenticated;
-use App\Http\Middleware\RedirectIfNotAdmin;
 use App\Http\Middleware\RedirectIfNotUsers;
-use App\Http\Middleware\RedirectIfUser;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -27,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'ifNotUser' => RedirectIfNotUsers::class,
             'IfAuthenticate' => RedirectIfAuthenticated::class,
+            'checkAppointment' => CheckAppointment::class,
         ]);
     })
     

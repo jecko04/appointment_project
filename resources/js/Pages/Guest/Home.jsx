@@ -94,7 +94,7 @@ const Home = () => {
         </span>
 
         <div className="mt-2">
-          <img src="/images/2.png" alt="" className="rounded-bl-3xl rounded-tr-3xl"/>
+          <img src="/images/image2.jpg" alt="" className="rounded-bl-3xl rounded-tr-3xl"/>
     </div>
 
       </div>

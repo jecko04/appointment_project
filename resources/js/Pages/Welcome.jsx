@@ -10,10 +10,12 @@ export default function Welcome({ auth }) {
 
     return (
         <>
+        <div className='bg-gradient-to-t from-white to-[#FADC12]/30'>
+            
             <Header />
                 <Head title="SMTC - Dental Care" />
-                <div className="text-xs">
-                    <div className="items-center justify-center selection:text-white">
+                <div className="text-xs ">
+                    <div className="items-center justify-center selection:text-blue-500  ">
                         <div className="relative w-full px-6 mt-2 ">
                             <header>
                                 <Navbar auth={auth} />
@@ -27,6 +29,7 @@ export default function Welcome({ auth }) {
                     </div>
                 </div>
                 <Footer />
+                </div>
            </>
     );
 }

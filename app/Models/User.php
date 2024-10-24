@@ -25,7 +25,7 @@ class User extends Authenticatable
     ];
 
     public function appointments() {
-        return $this->hasMany(AppointmentModel::class, 'id'); 
+        return $this->hasMany(AppointmentModel::class, 'user_id');
     }
 
     

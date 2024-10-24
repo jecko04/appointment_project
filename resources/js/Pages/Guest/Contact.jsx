@@ -16,6 +16,7 @@ import Logo from '@/Components/Logo';
 const Contact = ({ auth }) => {
   return (
     <>
+    <div className='bg-gradient-to-t from-white to-[#FADC12]/30'>
     <Header/>
     <Head title="SMTC - Dental Care" />
     <div className="text-xs">
@@ -40,28 +41,33 @@ const Contact = ({ auth }) => {
         <div className='p-5 md:flex md:flex-col items-center'>
         <div className='flex flex-row justify-center gap-2 mt-4'>
             <img
-            src="/images/11.png"
+            src="/images/image1.jpg"
             className='md:rounded-tl-xl w-36 h-36 md:w-48 md:h-48'
             />
             <img
             className=' md:rounded-tr-xl  w-36 h-36 md:w-48 md:h-48'
-            src="/images/12.png"
+            src="/images/image2.jpg"
+
             />
           </div>
-          <div className='flex gap-2 justify-center'>
+          <div className='flex gap-2 justify-center mt-2'>
             <img
             className='md:rounded-bl-xl  w-36 h-36 md:w-48 md:h-48'
-            src="/images/13.png"
+            src="/images/image3.jpg"
+
             />
             <img
             className='md:rounded-br-xl  w-36 h-36 md:w-48 md:h-48'
-            src="/images/14.png"
+            src="/images/image4.jpg"
+            style={{ 
+             }}
+
             />
           </div>
         </div>
         </div>
 
-        <div className='flex flex-col gap-4 rounded-md shadow-md items-center p-8 '>
+        <div className='flex flex-col gap-4 rounded-xl shadow-xl bg-white items-center p-8 '>
           <div className='flex text-xl font-black mt-4'>
             <span className='text-[#FF4200] ml-1'>Open</span>
             <span className='text-[#2938DA] ml-1'>Hours</span>
@@ -130,6 +136,7 @@ const Contact = ({ auth }) => {
     </div>
     </div>
     <Header/>
+    </div>
     </>
   )
 }

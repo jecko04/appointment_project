@@ -3,11 +3,11 @@ import Navbar from '../Navbar/Navbar';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import Logo from '@/Components/Logo';
-import { Head, useForm, usePage} from '@inertiajs/react';
+import { Head, Link, useForm, usePage} from '@inertiajs/react';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
-import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Space, notification} from "antd";
+import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Space, notification, Divider} from "antd";
 import { DownloadOutlined } from '@ant-design/icons';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TertiaryButton from '@/Components/TertiaryButton';
@@ -83,6 +83,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
 
   const [processing, setProcessing] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isTermOpen, setTermOpen] = useState(false);
   const [qrCodeData, setQrCodeData] = useState(null);
   const [renderType, setRenderType] = useState('canvas');
   const [openLocation, setOpenLocation] = useState(false);
@@ -167,6 +168,15 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
   }
   
  
+  const showTermCondition = () => {
+    setTermOpen(true);
+  }
+  const closeterm = () => {
+    setTermOpen(false);
+  }
+  const cancelTerm = () => {
+    setTermOpen(false);
+  };
 
   const showModal = () => {
     setModalOpen(true);
@@ -177,6 +187,8 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
   const handleCancel = () => {
     setModalOpen(false);
   };
+
+  const currentDate = new Date().toLocaleDateString();
 
   function doDownload(url, fileName) {
     const a = document.createElement('a');
@@ -305,12 +317,14 @@ const handleQRCode = (value) => {
     if (currentStep === 0) return data.selectedBranch && data.selectServices && data.appointment_date && data.appointment_time;
     if (currentStep === 1) return data.fullname && data.age && data.gender && data.phone && data.email && data.address && data.date_of_birth && data.emergency_contact;
     if (currentStep === 3) return data.last_dental_visit;
+    if (currentStep === 4) return data.termCondition;
     return true;
   };
   
 
   return (
     <>
+    <div className='bg-gradient-to-t from-white to-[#FADC12]/30'>    
       <Header />
       <Head title="SMTC - Dental Care" />
       <div className="text-xs">
@@ -334,7 +348,7 @@ const handleQRCode = (value) => {
                   {currentStep === 0 && (
                     <>
                     
-                    <div className="flex flex-col md:flex md:flex-row lg:p-5 md:gap-10 lg:gap-20 2xl:gap-32 lg:shadow-md rounded-lg">
+                    <div className="flex flex-col md:flex md:flex-row lg:p-5 md:gap-10 lg:gap-20 2xl:gap-32 lg:shadow-md rounded-lg bg-white">
                     
                       <div className="flex flex-col gap-3 items-start">
                       <div className="flex gap-2 text-base md:text-lg">
@@ -405,7 +419,7 @@ const handleQRCode = (value) => {
 
                       <div className="flex flex-col gap-3">
                         <span className="text-sm mt-10">When would you like to come in?</span>
-                        <div className="rounded-md shadow-xl py-4 px-4 flex flex-col gap-3 ">
+                        <div className="rounded-md shadow-xl py-4 px-4 flex flex-col gap-3 bg-white ">
                           <div className="flex flex-col divide-y divide-black">
                           <span className="font-black text-sm py-2">Schedule</span>
                           <span className="font-light text-xs py-2 text-gray-500">Choose Date and Time of your appointment</span>
@@ -450,7 +464,7 @@ const handleQRCode = (value) => {
                   )}
 
                   {currentStep === 1 && (
-                    <div className="flex flex-col md:p-5 gap-3 md:shadow-md rounded-lg">
+                    <div className="flex flex-col md:p-5 gap-3 md:shadow-md rounded-lg bg-white ">
                       <div className="flex gap-2 text-base md:text-lg">
                         <span>Welcome to</span>
                         <span className="text-[#ff4200]">SMTC</span>
@@ -607,7 +621,7 @@ const handleQRCode = (value) => {
                   {currentStep === 2 && (
                     <>
                     <div>
-                      <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg">
+                      <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg bg-white ">
                     
                     <div className="flex gap-2 text-base md:text-lg">
                       <span>Welcome to</span>
@@ -722,7 +736,7 @@ const handleQRCode = (value) => {
                   {currentStep === 3 && (
                     <>
                     <div>
-                      <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg">
+                      <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg bg-white ">
                     
                     <div className="flex gap-2 text-base md:text-lg">
                       <span>Welcome to</span>
@@ -860,7 +874,7 @@ const handleQRCode = (value) => {
                   {currentStep === 4 && (
                     <>
                     <div>
-                    <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg">
+                    <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg bg-white">
                     
                     <div className="flex gap-2 text-base md:text-lg">
                       <span>Welcome to</span>
@@ -873,7 +887,7 @@ const handleQRCode = (value) => {
                       <div className="flex flex-col gap-6 justify-between px-3 py-4">
 
                       <InputLabel value="Appointment Details"/>
-                      <div className="flex flex-col md:flex-row gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4 md:justify-around">
+                      <div className="flex flex-col md:flex-row gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4 md:justify-around bg-white ">
                       
                         <div className="flex flex-col gap-2">
                         <span className="font-black text-sm">Selected Branches: 
@@ -882,7 +896,7 @@ const handleQRCode = (value) => {
                         <span className="font-black text-sm">Selected Services: 
                           <span className="font-normal"> {data.selectedServices ? data.selectedServices : ''}
                             </span>  </span>
-                        <span className="font-black text-sm text-wrap w-60 md:w-full md:max-w-80">Branch Location: 
+                        <span className="font-black text-sm text-wrap w-60 md:w-full">Branch Location: 
                           <span className="font-normal"> {data.branchLocation ? data.branchLocation : ''} 
                             </span>  </span>
                         </div>
@@ -899,7 +913,7 @@ const handleQRCode = (value) => {
 
                       <InputLabel value="Personal Info"/>
 
-                        <div className="flex flex-col md:flex-row gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4">
+                        <div className="flex flex-col md:flex-row gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4 bg-white ">
                         <div className="flex flex-col gap-2">
 
                         <span className="font-black text-sm">Fullname: 
@@ -927,9 +941,24 @@ const handleQRCode = (value) => {
                         <span className="font-black text-sm">Emergency Contact: 
                           <span className="font-normal"> {data.emergency_contact ? data.emergency_contact : ''} 
                             </span>  </span>
+                            
                             </div>
-                    
+                            
                         </div>
+                        <div className='flex items-center justify-end'>
+                              <Checkbox
+                                id="termCondition"
+                                name="termCondition"
+                                checked={data.termCondition}
+                                onChange={(e) => handleCheckboxChange('termCondition', e.target.checked)}
+                              >
+                                  <span onClick={showTermCondition} className='underline underline-offset-2'>
+                                  Terms & Conditions
+                                </span>
+                              </Checkbox>
+                            </div>
+
+
                       </div>
                       </div>
                     </div>
@@ -949,9 +978,13 @@ const handleQRCode = (value) => {
                         Next
                       </TertiaryButton>
                     ) : (
-                      <PrimaryButton className="flex justify-center" disabled={processing} onClick={showModal}>
-                        Submit
-                      </PrimaryButton>
+                      <>
+                      <div className='flex'>
+                          <PrimaryButton className="flex justify-center" disabled={!isStepComplete()} onClick={showModal}>
+                            Submit
+                          </PrimaryButton>
+                      </div>
+                      </>
                     )}
 
                           <Modal
@@ -1002,6 +1035,167 @@ const handleQRCode = (value) => {
                               </div>
                             </Space>
                             </Modal>
+
+                            <Modal
+                            title="SMTC-Dental Care : Term & Condition"
+                            open={isTermOpen}                     
+                            onOk={closeterm}
+                            onCancel={cancelTerm}
+                            width={800}
+                            style={{ top: 20 }}
+                            className="flex flex-col justify-around w-full"
+                            footer={[
+                                <Button key="okay" onClick={closeterm} color="primary" variant="solid">
+                                Okay
+                                </Button>
+                            ]}
+                            >
+                              <Space id="termCondition" direction="vertical">
+                              <div className="flex flex-col md:flex-col items-center gap-2">
+                                <div className="flex flex-col items-center px-7">
+                                  </div>
+                                <Logo/>
+
+                                <Divider/>
+
+                                <span>
+                                  <span className='font-semibold'>
+
+                                Terms & Conditions
+
+                                Last Updated: {currentDate} 
+
+                                </span>
+
+                                
+                                <br />
+                                <br />
+
+                                Welcome to ORAL (Online Reservation Appointment for Local Dental Services). By using our services, you agree to comply with and be bound by the following terms and conditions. Please review the following carefully before using our website, desktop, or mobile application.
+                                </span>
+
+                                <span>
+                                1. Acceptance of Terms
+By accessing and using ORAL’s appointment system, you agree to these Terms & Conditions. If you do not agree, you may not use this service.
+
+<br />
+<br />
+
+2. User Responsibilities
+Users must:
+
+Provide accurate and up-to-date information when scheduling appointments.
+Confirm and follow their scheduled appointment times.
+Cancel or reschedule appointments at least 24 hours in advance if they are unable to attend.
+Respect the clinic’s policies regarding appointment availability, cancellations, and rescheduling.
+
+<br />
+<br />
+
+3. Patient Eligibility
+Patients using the system must:
+
+Be at least 18 years of age or have consent from a guardian.
+Use the system for legitimate medical or dental appointments only.
+Agree to provide valid and current contact information for appointment reminders and notifications.
+
+<br />
+<br />
+
+4. Dental Clinic Responsibilities
+Dental service providers agree to:
+
+Ensure that the services listed in the system are up-to-date and accurately described.
+Confirm appointments within a reasonable timeframe.
+Notify patients in a timely manner in case of any changes to appointment schedules.
+Maintain confidentiality and comply with applicable laws related to patient data and medical records.
+
+<br />
+<br />
+
+5. Appointment Cancellations and No-Shows
+Patients must adhere to the cancellation policy of the dental service provider, which may include:
+
+Cancellation at least 24 hours before the scheduled appointment.
+Repeated cancellations or no-shows may result in restrictions on future appointment bookings.
+
+<br />
+<br />
+
+6. Fees and Payment
+All payments for dental services will be handled directly between the patient and the clinic. ORAL is not responsible for handling payments.
+Patients are expected to pay for services based on the clinic’s billing policies, and any disputes related to fees should be resolved directly with the clinic.
+
+<br />
+<br />
+
+7. Modification of Services
+ORAL reserves the right to modify, suspend, or discontinue any part of the service at any time without notice.
+
+<br />
+<br />
+
+8. Limitation of Liability
+ORAL is a platform that facilitates the scheduling of dental appointments. We are not liable for:
+
+The quality of dental services provided by the clinics.
+Any disputes or issues arising between patients and dental service providers.
+Any missed appointments due to incorrect patient information or unforeseen circumstances.
+
+<br />
+<br />
+
+9. Data Privacy
+Your privacy is important to us. All patient data collected by ORAL is handled in accordance with our Privacy Policy. By using the system, you consent to the collection and use of your data as outlined.
+
+<br />
+<br />
+
+10. Changes to the Terms
+ORAL may update these Terms & Conditions from time to time. Changes will be communicated to users through the app or website. Continued use of the system after such changes are made constitutes acceptance of the new Terms & Conditions.
+
+<br />
+<br />
+
+11. Governing Law
+These Terms & Conditions are governed by and construed in accordance with the laws of Philippines. Any disputes arising out of or relating to the use of the service will be handled under the jurisdiction of Philippines courts.
+
+<br />
+<br />
+
+12. Contact Information
+For any questions or concerns about these Terms & Conditions, please contact us at
+
+ <br />
+
+<span className='font-semibold'>
+
+Ynares, DMJ Bldg, A. Mabini St, Rodriguez, Rizal
+
+<br />
+
+0933 821 2439
+
+<br />
+
+P4JR+4J4, L.M.Santos St, Rosario, Rodriguez, 1860 Rizal
+
+<br />
+
+0933 821 2439.
+</span>
+
+                                </span>
+
+                                <Divider/>
+
+                                <span className='font-semibold'>
+                                By booking an appointment through ORAL, you acknowledge that you have read, understood, and agree to these Terms & Conditions.
+                                </span>
+
+                              </div>
+                            </Space>
+                            </Modal>
                   </div>
                 </form>
               </div>
@@ -1010,6 +1204,7 @@ const handleQRCode = (value) => {
         </div>
       </div>
       <Footer />
+    </div>
     </>
   );
 }

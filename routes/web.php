@@ -31,13 +31,10 @@ Route::get('/services', [ServicesController::class, 'services'])->name('services
 Route::get('/contact', [ContactController::class, 'contact'])->name('contact');
 
 //learn how to make route
-Route::middleware('ifNotUser')->group(function (){
+Route::middleware(['ifNotUser', 'checkAppointment'])->group(function () {
     Route::get('/guest/appointment', [AppointmentController::class, 'appointment'])->name('guest.appointment');
-    Route::post('/guest/appointment', [AppointmentController::class, 'storeAppointment'])->name('guest.appointment.store');
-
-    //Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
-    Route::get('/record', [UserRecordAppointmentController::class, 'showRecordAppointment'])->name('record');
 });
+
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -47,6 +44,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::patch('/profile/personal-info', [ProfileController::class, 'updateinfo'])->name('profile.update.info');
+    Route::post('/guest/appointment', [AppointmentController::class, 'storeAppointment'])->name('guest.appointment.store');
+    Route::get('/record', [UserRecordAppointmentController::class, 'showRecordAppointment'])->name('record');
 
     Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
     Route::post('/appointment/reschedule', [UsersAppointmentController::class, 'storeReschedule'])->name('appointment.reschedule');

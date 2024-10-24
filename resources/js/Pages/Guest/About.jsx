@@ -10,6 +10,7 @@ import { Divider, Image } from 'antd';
 const About = ({ auth }) => {
   return (
     <>
+    <div className='bg-gradient-to-t from-white to-[#FADC12]/30'>
     <Header/>
     <Head title="SMTC - Dental Care" />
     <div className="text-xs">
@@ -35,7 +36,7 @@ const About = ({ auth }) => {
           <span className='text-sm'>We're a dedicated team of enthusiastic, values-driven dental professionals that are committed to giving outstanding treatment to everyone, from the young to the young at heart. To provide exceptional dental care, we blend cutting-edge technology with a warm and welcoming environment.</span>
           <span className='text-sm'>Discover all of your dental needs (and more) at our modern, intelligently built facility, which is dedicated to your comfort and well-being.</span>
         
-          <img src="/images/4.png" alt="" className='h-52 rounded-md'/>
+          <img src="/images/image3.jpg" alt="" className='h-52 rounded-md'/>
           </div>
 
           <div className='flex flex-col rounded-md shadow-md p-5 gap-5'>
@@ -118,6 +119,7 @@ const About = ({ auth }) => {
     </div>
     </div>
     <Footer/>
+    </div>
     </>
   )
 }
