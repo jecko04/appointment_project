@@ -447,7 +447,7 @@ const handleQRCode = (value) => {
                           <TimePicker
                           id="appointment_time"
                           name="appointment_time"
-                          value={data.appointment_time ? moment(data.appointment_time, 'h:mm a') : null}
+                          value={data.appointment_time ? moment(data.appointment_time, 'h:mm') : null}
                           className="block w-60 md:w-80"
                           size='large'
                           format='h:mm a' 

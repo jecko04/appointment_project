@@ -296,8 +296,6 @@ const AppointmentDetails = ({ auth }) => {
                 ...data,
                 selectedBranch: rowData.selectedBranch,
                 selectServices: rowData.selectServices,
-                reschedule_date: rowData.appointment_date,
-                reschedule_time: rowData.appointment_time
               });
             };
 
@@ -389,7 +387,7 @@ const AppointmentDetails = ({ auth }) => {
                           <TimePicker
                           id="reschedule_time"
                           name="reschedule_time"
-                          value={data.reschedule_time ? moment(data.reschedule_time, 'h:mm a') : null}
+                          value={data.reschedule_time ? moment(data.reschedule_time, 'h:mm') : null}
                           className="block w-60 md:w-80"
                           size='large'
                           format='h:mm a' 
