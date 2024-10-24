@@ -27,6 +27,6 @@ class ServicesModel extends Model
     }
 
     public function appointments() {
-        return $this->belongsToMany(AppointmentModel::class, 'guest.appointment'); // Make sure 'guest.appointment' is the correct pivot table name
+        return $this->hasMany(AppointmentModel::class, 'selectServices', 'Categories_ID');
     }
 }

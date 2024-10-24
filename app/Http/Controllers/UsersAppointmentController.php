@@ -8,9 +8,11 @@ use App\Models\OfficeHourModel;
 use App\Models\PatientModel;
 use App\Models\ServicesModel;
 use App\Models\User;
+use App\Notifications\AppointmentUpdated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 
 class UsersAppointmentController extends Controller
@@ -62,14 +64,33 @@ class UsersAppointmentController extends Controller
             'reschedule_time' => $timeformatted,
         ]);
 
+        $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($appointment->id);
+
+        $user = $appointment->users;
+
+
+        $adminEmail = 'smtc.dentalcare@gmail.com';
+        Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'rescheduled'));
+
         return redirect()->back()->with('success', 'Appointment saved successfully!');
     }
 
     public function destroy($id)
     {
-    $appointment = AppointmentModel::findOrFail($id);
-
-    $appointment->delete();
-    return redirect()->back()->with('success', 'Appointment deleted successfully.');
+        $appointment = AppointmentModel::with(['users', 'branch', 'services'])->findOrFail($id);
+    
+        if (!$appointment) {
+            return redirect()->back()->with('error', 'Appointment not found.');
+        }
+        
+        $user = $appointment->users;
+        
+        $appointment->delete();
+    
+        // Use Notification::route to send email notification
+        $adminEmail = 'smtc.dentalcare@gmail.com';
+        Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'canceled'));
+    
+        return redirect()->back()->with('success', 'Appointment deleted successfully.');
     }
 }

@@ -28,6 +28,7 @@ class AppointmentModel extends Model
     public function users() {
         return $this->belongsTo(User::class, 'user_id', 'id'); 
     }
+    
 
     // Define the relationship with the Branch model
     public function branch() {

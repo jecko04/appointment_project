@@ -8,10 +8,12 @@ use App\Models\BranchModel;
 use App\Models\OfficeHourModel;
 use App\Models\PatientModel;
 use App\Models\ServicesModel;
+use App\Notifications\AppointmentUpdated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 
 class AppointmentController extends Controller
@@ -140,6 +142,13 @@ class AppointmentController extends Controller
             'user_id' => Auth::id(), 
             'qr_code' => json_encode($qrCodeData),
         ]);
+
+        $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($appointment->id);
+
+        $user = $appointment->users;
+
+        $adminEmail = 'smtc.dentalcare@gmail.com';
+        Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'created'));
 
         $appointment->save();
 
