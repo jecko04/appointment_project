@@ -12,6 +12,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\UpdatePersonalInfomationFormController;
 
@@ -29,6 +30,7 @@ Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/about', [AboutController::class, 'about'])->name('about');
 Route::get('/services', [ServicesController::class, 'services'])->name('services');
 Route::get('/contact', [ContactController::class, 'contact'])->name('contact');
+Route::get('/location', [LocationController::class, 'location'])->name('location');
 
 //learn how to make route
 Route::middleware(['ifNotUser', 'checkAppointment'])->group(function () {

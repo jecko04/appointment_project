@@ -19,7 +19,11 @@ class DashboardController extends Controller
         $categories = ServicesModel::with('branch')->get();
 
         $userId = Auth::id(); 
-        $appointmentDetails = AppointmentModel::where('user_id', $userId)->with('users', 'branch', 'services')->get();
+        $appointmentDetails = AppointmentModel::where('user_id', $userId)
+        ->whereIn('status', ['pending', 'approved'])
+        ->with('users', 'branch', 'services')
+        ->get();
+        
         $user = User::where('id', $userId)->get();
         
         return Inertia::render('Dashboard', [

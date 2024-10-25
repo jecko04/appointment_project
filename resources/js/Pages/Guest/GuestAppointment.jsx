@@ -302,6 +302,10 @@ const handleQRCode = (value) => {
       if (currentStep < 4) {
         setCurrentStep(currentStep + 1);
       }
+
+      if (currentStep >= 4) {
+        return processing;
+      }
     } else {
       console.log('Step is incomplete');
     }
@@ -325,11 +329,10 @@ const handleQRCode = (value) => {
   return (
     <>
     <div className='bg-gradient-to-t from-white to-[#FADC12]/30'>    
-      <Header />
       <Head title="SMTC - Dental Care" />
       <div className="text-xs">
         <div className="items-center justify-center selection:text-white">
-          <div className="flex flex-col lg:w-full lg:mt-2">
+          <div className="flex flex-col lg:w-full pt-2">
             <header>
               <Navbar auth={auth} />
             </header>
@@ -425,7 +428,7 @@ const handleQRCode = (value) => {
                           <span className="font-light text-xs py-2 text-gray-500">Choose Date and Time of your appointment</span>
                           </div>
                           
-                          <InputLabel htmlFor="appointment_date" value="Select Date" />
+                          <InputLabel htmlFor="appointment_date" value="Select Date (Closed on Sundays)" />
 
                           <DatePicker
                               id="appointment_date"
@@ -442,7 +445,7 @@ const handleQRCode = (value) => {
                           </DatePicker>
                           <InputError message={errors.appointment_date} className="mt-2" /> 
 
-                          <InputLabel htmlFor="appointment_time" value="Select Time" />
+                          <InputLabel htmlFor="appointment_time" value="Choose a Time (Available: 9:00 am - 5:00 pm)" />
 
                           <TimePicker
                           id="appointment_time"
@@ -750,7 +753,7 @@ const handleQRCode = (value) => {
                         <div>
 
                       <InputLabel htmlFor="last_dental_visit" value="Select your last dental visit date" />
-                      <span className="text-sm text-[#FF4200]">If this is your first time, kindly choose your appointment date you previously inputted.</span>
+                      <span className="text-sm text-[#FF4200]">If this is your first time, kindly choose your appointment date you previously selected at the first step.</span>
                         <DatePicker
                             id="last_dental_visit"
                             type="date"

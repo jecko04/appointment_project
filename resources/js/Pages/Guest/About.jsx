@@ -11,11 +11,10 @@ const About = ({ auth }) => {
   return (
     <>
     <div className='bg-gradient-to-t from-white to-[#FADC12]/30'>
-    <Header/>
     <Head title="SMTC - Dental Care" />
     <div className="text-xs">
         <div className="items-center justify-center selection:text-white">
-          <div className="flex flex-col lg:w-full lg:mt-2">
+          <div className="flex flex-col lg:w-full pt-2">
     <header>
       <Navbar auth={auth} />
     </header>

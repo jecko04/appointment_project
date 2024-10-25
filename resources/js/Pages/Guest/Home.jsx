@@ -5,7 +5,7 @@ import { Link } from '@inertiajs/react';
 import { FaLocationDot } from "react-icons/fa6";
 import { TbDental } from "react-icons/tb";
 import { LuCalendarCheck2 } from "react-icons/lu";
-import { Modal, Button } from 'antd';
+import { Modal, Button, Carousel  } from 'antd';
 
 const Home = () => {
 
@@ -21,6 +21,16 @@ const Home = () => {
   const handleCancel = () => {
     setModalOpen(false);
   }
+
+  const contentStyle = {
+    height: 'auto',       
+    color: '#fff',
+    padding: '2px',            
+    textAlign: 'center',
+    objectFit: 'cover',        
+    borderRadius: '8px',
+    backgroundColor: "#FF4200"
+  };
 
   return (
     <>
@@ -94,7 +104,18 @@ const Home = () => {
         </span>
 
         <div className="mt-2">
-          <img src="/images/image2.jpg" alt="" className="rounded-bl-3xl rounded-tr-3xl"/>
+          {/* <img src="/images/image2.jpg" alt="" className="rounded-bl-3xl rounded-tr-3xl"/> */}
+          <Carousel autoplay>
+          <div>
+            <img src="/images/image1.jpg" alt="" className="" style={contentStyle}/>
+          </div>
+          <div>
+          <img src="/images/image2.jpg" alt="" className="" style={contentStyle}/>
+          </div>
+          <div>
+          <img src="/images/image3.jpg" alt="" className="" style={contentStyle}/>
+          </div>
+        </Carousel>
     </div>
 
       </div>

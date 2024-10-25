@@ -21,7 +21,9 @@ class CheckAppointment
 
             $id = Auth::id();
 
-            $hasAppointment = AppointmentModel::where('user_id', $id)->exists();
+            $hasAppointment = AppointmentModel::where('user_id', $id)
+            ->whereIn('status', ['pending', 'approved'])
+            ->exists();
 
             if($hasAppointment) {
                 return redirect()->route('dashboard');

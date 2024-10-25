@@ -16,7 +16,6 @@ export default function Dashboard({ auth }) {
             <div className='flex flex-col gap-1 px-4 py-3'>
                 <div className='flex items-center justify-between'>
                     <span className='text-xs lg:text-sm text-[#ff4200]'>Welcome Back!</span>
-                    <IoMdNotifications className='flex text-2xl mr-5'/>
                 </div>
 
             <span className='text-lg lg:text-2xl '>{user.name}</span>

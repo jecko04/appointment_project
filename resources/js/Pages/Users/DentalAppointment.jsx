@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification  } from "antd";
+import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification, Tag   } from "antd";
 import { Head, useForm, usePage, Link} from '@inertiajs/react';
 import { DownloadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InputLabel from '@/Components/InputLabel';
@@ -8,6 +8,14 @@ import Logo from '@/Components/Logo';
 import moment from 'moment';
 import dayjs from 'dayjs';
 import PrimaryButton from '@/Components/PrimaryButton';
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
 
 const AppointmentDetails = ({ auth }) => {
     const { appointmentDetails, branches, categories, users, office_hours} = usePage().props;
@@ -227,6 +235,39 @@ const AppointmentDetails = ({ auth }) => {
           title: 'Status',
           dataIndex: 'status',
           key: 'status',
+          render: (record) => {
+            if (record === 'pending'){
+              return (
+              <Tag icon={<SyncOutlined spin />} color="processing">
+                {record}
+              </Tag>
+              );
+            }
+
+            if (record === 'approved'){
+              return (
+              <Tag icon={<CheckCircleOutlined />} color="success">
+                {record}
+              </Tag>
+              );
+            }
+
+            if (record === 'cancelled'){
+              return (
+              <Tag icon={<CloseCircleOutlined />} color="error">
+                {record}
+              </Tag>
+              );
+            }
+
+            if (record === 'completed'){
+              return (
+              <Tag icon={<CheckCircleOutlined />} color="success">
+                {record}
+              </Tag>
+              );
+            }
+          } 
         },
         {
           title: 'QRCode',

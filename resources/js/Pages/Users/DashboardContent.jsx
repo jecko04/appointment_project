@@ -109,9 +109,15 @@ const DashboardContent = () => {
                 </div>
                 </div>
                 <p>Status: 
-                <Tag icon={<SyncOutlined spin />} color="processing" className='ml-1'>
-                    {appointmentDetail.status}
-                </Tag>
+                    {appointmentDetail.status === 'pending' ? (
+                        <Tag icon={<SyncOutlined spin />} color="processing" className="ml-1">
+                            {appointmentDetail.status}
+                        </Tag>
+                    ) : appointmentDetail.status === 'approved' ? (
+                        <Tag icon={<CheckCircleOutlined />} color="success">
+                            {appointmentDetail.status}
+                        </Tag>
+                    ) : null}
                 </p>
                 </div>
                 <Modal

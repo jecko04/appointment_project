@@ -47,6 +47,7 @@ const Navbar = ({ auth }) => {
                 <ResponsiveNavLink href={route('about')} className="text-black hover:text-amber-400 text-xs">About</ResponsiveNavLink>
                 <ResponsiveNavLink href={route('services')} className="text-black hover:text-amber-400 text-xs">Services</ResponsiveNavLink>
                 <ResponsiveNavLink href={route('contact')} className="text-black hover:text-amber-400 text-xs">Contact</ResponsiveNavLink>
+                <ResponsiveNavLink href={route('location')} className="text-black hover:text-amber-400 text-xs">Location</ResponsiveNavLink>
                 {auth.user ? (
                 
                 <ResponsiveNavLink href={route('dashboard')} className="text-black text-xs "
@@ -118,6 +119,12 @@ const Navbar = ({ auth }) => {
                         className="flex items-center text-gray-500 hover:text-amber-400 text-sm"
                     >
                         Contact
+                    </Link>
+                    <Link 
+                        href={route('location')} 
+                        className="flex items-center text-gray-500 hover:text-amber-400 text-sm"
+                    >
+                        Location
                     </Link>
                     </>
             {auth.user ? (

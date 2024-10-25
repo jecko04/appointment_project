@@ -58,8 +58,12 @@ const { Option } = Select;
             
 
             <form onSubmit={submit}>
+                <Link href='/' className='text-lg w-full'>
+                    <TbArrowBackUp />
+                </Link>
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+
+                    <InputLabel htmlFor="name" value="Name" className='mt-4' />
 
                     <TextInput
                         id="name"
@@ -245,10 +249,7 @@ const { Option } = Select;
                         </PrimaryButton>
                     </div>
 
-                <div className="flex items-center justify-end mt-4 max-w-full">
-                    <Link href='/' className='text-lg w-full'>
-                        <TbArrowBackUp />
-                    </Link>
+                <div className="flex mt-4">
 
                     <span className="w-full underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Already have an account?

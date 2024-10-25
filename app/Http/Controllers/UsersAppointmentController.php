@@ -26,10 +26,11 @@ class UsersAppointmentController extends Controller
         ->where('IsClosed', true)
         ->get(); 
         
-    
         $userId = Auth::id(); 
-        $appointmentDetails = AppointmentModel::where('user_id', $userId)->with('users', 'branch', 'services')->get(); 
-
+        $appointmentDetails = AppointmentModel::where('user_id', $userId)
+        ->whereIn('status', ['pending', 'approved'])
+        ->with('users', 'branch', 'services')
+        ->get(); 
         
         return Inertia::render('Auth/Appointment', [
             'branches' => $branches, 
