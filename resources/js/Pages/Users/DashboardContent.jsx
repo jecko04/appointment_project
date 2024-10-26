@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import React, { useState } from 'react'
-import { Card, Tag, Modal } from 'antd';
+import { Card, Tag, Modal, Empty } from 'antd';
 import {
     CheckCircleOutlined,
     ClockCircleOutlined,
@@ -90,14 +90,13 @@ const DashboardContent = () => {
         return (
 
             
-            
             <Card
                 key={appointmentDetail.id} 
                 type="inner" 
                 title={`Appointment ID: ${appointmentDetail.id}`} 
                 hoverable
                 size="small"
-                className='shadow-lg mb-2'
+                className='shadow-lg mb-2 bg-gradient-to-t from-white to-[#FADC12]/30'
                 extra={<a onClick={showModal}>Show more</a>}
             >
                 <div className='flex justify-between'>
@@ -193,7 +192,10 @@ const DashboardContent = () => {
         );
     })
 ) : (
-    <p>No appointment details available.</p>
+    <>
+    <Empty/>
+    <p className='text-center mt-2'>No appointment details available.</p>
+    </>
 )}
     </div>
 

@@ -3,7 +3,7 @@ import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import Navbar from '../Navbar/Navbar';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Card, Dropdown, Select, Space, Tag  } from 'antd';
+import { Button, Card, Dropdown, Select, Space, Tag  } from 'antd';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/TertiaryButton';
 
@@ -86,7 +86,7 @@ const Services = ({ auth }) => {
                 >
                   <div className='flex'>
                     <img src="/images/image.png" alt="" className='w-10 h-10 hidden md:block' />
-                    <div className='p-2 flex justify-between w-full'>
+                    <div className='p-2 flex flex-col md:flex-row justify-between w-full'>
                       <div>
                         <p>Branch Name: {category.Branch ? category.Branch.BranchName : ''}</p>
                         <p>Description: {category.Description}</p>
@@ -96,7 +96,7 @@ const Services = ({ auth }) => {
                         <p>Frequency: {category.Frequency}</p>
                         <p>Price: {category.Price}</p>
                         <Link href={(route('guest.appointment'))}>
-                          <PrimaryButton>Get Appointment</PrimaryButton>
+                          <Button type='primary' size='small' style={{ padding: "13px", backgroundColor: '#ff4200' }} className='w-full'>Get Appointment</Button>
                         </Link>
                       </div>
                     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification, Tag   } from "antd";
+import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification, Tag, Popover } from "antd";
 import { Head, useForm, usePage, Link} from '@inertiajs/react';
 import { DownloadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InputLabel from '@/Components/InputLabel';
@@ -114,6 +114,17 @@ const AppointmentDetails = ({ auth }) => {
     const [renderType, setRenderType] = useState('canvas');
     const [selectedRecord, setSelectedRecord] = useState(null); 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [open, setOpen] = useState(false);
+
+
+    const hide = () => {
+      const timer = setTimeout(() => {
+        setOpen(false);
+      }, 3000)
+    };
+    const handleOpenChange = (newOpen) => {
+      setOpen(newOpen);
+    };
 
     const showQRModal = (qrCode) => {
       setCurrentQRCode(qrCode);
@@ -373,10 +384,26 @@ const AppointmentDetails = ({ auth }) => {
 
             return <>
             <div className='flex gap-3'>
-              <EditOutlined
-              className='text-blue-500 text-lg'
-              onClick={() => showReschedModal(record)}
-              />
+              <Popover
+              content={
+              <Button 
+              type='primary' 
+              size='small' 
+              style={{ padding: "13px", backgroundColor: '#ff4200' }} className='w-full'
+              onClick={() => {showReschedModal(record),  hide()}}
+              
+              >Reschedule?</Button>
+              }
+              title="Reschedule Appointment"
+              trigger="click"
+              open={open}
+              onOpenChange={handleOpenChange}
+              >
+                <EditOutlined
+                className='text-blue-500 text-lg'
+                />
+              </Popover>
+
               {selectedRecord && (
 
               <Modal

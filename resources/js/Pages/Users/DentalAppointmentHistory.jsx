@@ -251,7 +251,7 @@ const DentalAppointmentHistory = ({ auth }) => {
 
   return (
     <>
-    <div className='m-5'>
+    <div className='m-5 '>
     <Table
       id="table"
       name="table"
