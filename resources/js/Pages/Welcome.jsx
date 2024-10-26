@@ -6,12 +6,20 @@ import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import Home from './Guest/Home';
 
+
 export default function Welcome({ auth }) {
+
+    // const [isLoading, setIsLoading] = useState(true);
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setIsLoading(false);
+    //     }, 3000)
+    // }, []);
 
     return (
         <>
         <div className='bg-gradient-to-t from-white to-[#FADC12]/30'>
-
                 <Head title="SMTC - Dental Care" />
                 <div className="text-xs ">
                     <div className="items-center justify-center selection:text-blue-500  ">
@@ -28,7 +36,7 @@ export default function Welcome({ auth }) {
                     </div>
                 </div>
                 <Footer />
-                </div>
-           </>
+        </div>
+       </>
     );
 }

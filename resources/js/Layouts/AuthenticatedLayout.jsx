@@ -10,7 +10,7 @@ export default function Authenticated({ user, header, children, }) {
     return (
 <div className="min-h-screen flex bg-gray-100 ">
     {/* Sidebar */}
-    <nav className="bg-white border-r border-gray-100 w-64 flex-col flex-shrink-0 hidden md:flex bg-gradient-to-t from-white to-[#FADC12]/30">
+    <nav className="bg-white border-r border-gray-100 w-64 flex-col flex-shrink-0 hidden md:flex">
         
         <div className="flex flex-col justify-between h-full">
             <div className="flex flex-col px-4 py-6">
