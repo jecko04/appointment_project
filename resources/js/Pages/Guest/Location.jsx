@@ -19,7 +19,7 @@ const Location = ({auth}) => {
               <Navbar auth={auth} />
             </header>
             <main className="mt-6 lg:mx-28">
-                <span className='text-2xl font-black text-[#FF4200] flex justify-center mb-20'>Location</span>
+                <span className='text-2xl font-black text-[#2938DA] flex justify-center mb-20'> <span className='text-[#FF4200] mr-2'>Contact </span>Us / Location</span>
                 <div className='flex flex-col gap-20 md:px-7 p-2'>
                     <div className='flex flex-col md:flex-row w-full justify-between'>
                         <div className='flex flex-col gap-2 md:items-start items-center'>

@@ -46,11 +46,11 @@ const Services = ({ auth }) => {
         }}
         />
         <span className='absolute inset-0 bg-black opacity-50 z-10' />
-        <span className='text-[#FFFFFF] text-3xl font-black flex flex-col items-center pt-44 md:pt-64 my-5 relative z-20'>
+        <span className='text-[#FFFFFF] text-3xl font-black flex flex-col items-center pt-44 md:pt-64 relative z-20'>
           SERVICES
         </span>
     </div>
-    <div className='p-10 flex flex-col gap-3'>
+    <div className='px-10 py-12 flex flex-col gap-3'>
     <InputLabel htmlFor="branches" value="Select Branch"/>
         <Select
         id="branches"

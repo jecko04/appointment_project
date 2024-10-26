@@ -29,7 +29,6 @@ const Home = () => {
     textAlign: 'center',
     objectFit: 'cover',        
     borderRadius: '8px',
-    backgroundColor: "#FF4200"
   };
 
   return (
