@@ -471,7 +471,7 @@ const handleQRCode = (value) => {
                       )}
 
                       {currentStep === 1 && (
-                        <div className="flex flex-col md:p-5 gap-3 p-3 w-full md:shadow-md rounded-lg bg-white ">
+                        <div className="flex flex-col md:p-5 gap-3 p-3 w-full md:shadow- max-w-[50rem] rounded-lg bg-white ">
                           <div className="flex gap-2 text-base md:text-lg">
                             <span>Welcome to</span>
                             <span className="text-[#ff4200]">SMTC</span>
@@ -481,7 +481,7 @@ const handleQRCode = (value) => {
                           
                           <span className="font-black text-sm">Patient Info (Required)</span>
 
-                          <div className="flex flex-col md:flex-row justify-around gap-x-28">
+                          <div className="flex flex-col md:flex-row justify-around gap-x-20">
                             <div className="flex flex-col">
                               <InputLabel htmlFor="fullname" value="Fullname" />
                               <TextInput
@@ -511,7 +511,7 @@ const handleQRCode = (value) => {
                             </div>
                           </div>
 
-                          <div className="flex flex-col md:flex-row justify-around gap-x-28">
+                          <div className="flex flex-col md:flex-row justify-around gap-x-20">
                             <div className="flex flex-col">
                               <InputLabel htmlFor="gender" value="Gender" />
                               <Select
@@ -556,7 +556,7 @@ const handleQRCode = (value) => {
 
                         
 
-                          <div className="flex flex-col md:flex-row justify-around gap-x-28">
+                          <div className="flex flex-col md:flex-row justify-around gap-x-20">
                           <div className="flex flex-col gap-3">
 
                           <div className="flex flex-col">
@@ -590,7 +590,7 @@ const handleQRCode = (value) => {
                           </div>
 
 
-                          <div className="flex flex-col gap-x-28">
+                          <div className="flex flex-col gap-x-20">
 
                           <div className="flex flex-col">
                               <InputLabel htmlFor="email" value="Email" />
@@ -628,7 +628,7 @@ const handleQRCode = (value) => {
                       {currentStep === 2 && (
                         <>
                         <div>
-                          <div className="flex flex-col md:p-5 gap-3 p-3 w-full md:shadow-md rounded-lg bg-white ">
+                          <div className="flex flex-col md:p-5 gap-3 p-3 w-full max-w-[50rem] md:shadow-md rounded-lg bg-white ">
                         
                         <div className="flex gap-2 text-base md:text-lg">
                           <span>Welcome to</span>
@@ -637,7 +637,7 @@ const handleQRCode = (value) => {
                           <span>!</span>
                         </div>
                         <span className="font-black text-sm">Medical History</span>
-                        <div className="flex flex-col md:flex-row md:gap-2 justify-evenly">
+                        <div className="flex flex-col md:flex-row md:gap-x-[4.9rem] justify-evenly">
                           <div className="flex flex-col gap-3">
                           <InputLabel htmlFor="medical_condition" value="Medical Condition (if there's any)" />
                           <TextInput
@@ -743,7 +743,7 @@ const handleQRCode = (value) => {
                       {currentStep === 3 && (
                         <>
                         <div>
-                          <div className="flex flex-col md:p-5 p-3 gap-5 md:shadow-md rounded-lg bg-white ">
+                          <div className="flex flex-col md:p-5 p-3 gap-5 md:shadow-md rounded-lg max-w-[50rem]  bg-white ">
                         
                         <div className="flex gap-2 text-base md:text-lg">
                           <span>Welcome to</span>
@@ -894,7 +894,7 @@ const handleQRCode = (value) => {
                           <div className="flex flex-col gap-6 justify-between px-3 py-4">
 
                           <InputLabel value="Appointment Details"/>
-                          <div className="flex flex-col md:flex-row gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4 md:justify-around bg-white ">
+                          <div className="flex flex-col md:flex-row gap-5 md:gap-x-16 rounded-lg md:shadow-md md:py-4 md:px-4 md:justify-around bg-white ">
                           
                             <div className="flex flex-col gap-2">
                             <span className="font-black text-sm">Selected Branches: 
