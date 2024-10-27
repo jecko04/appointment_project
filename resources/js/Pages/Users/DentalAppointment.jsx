@@ -229,6 +229,7 @@ const AppointmentDetails = ({ auth }) => {
           title: 'Appointment Time',
           dataIndex: 'appointment_time',
           key: 'appointment_time',
+          render: (time) => time ? moment(time, 'HH:mm').format('h:mm A') : ''
         },
         {
           title: 'Resched Date',
@@ -240,7 +241,7 @@ const AppointmentDetails = ({ auth }) => {
           title: 'Resched Time',
           dataIndex: 'reschedule_time',
           key: 'reschedule_time',
-          render: (time) => time ? time : '',
+          render: (time) => time ? moment(time, 'HH:mm').format('h:mm A') : ''
         },
         {
           title: 'Status',

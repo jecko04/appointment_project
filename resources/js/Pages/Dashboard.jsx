@@ -26,7 +26,11 @@ export default function Dashboard({ auth }) {
                 <div className='bg-[#2938DA] w-full flex gap-32 rounded-lg px-2'>
                 <div className='flex flex-col justify-center gap-2 lg:gap-0 text-white p-4 lg:p-0 '>
                 <span className='text-sm lg:text-xl'>Take care of your smile—schedule your dental appointment today!</span>
-                <a href={route('guest.appointment')} className='hover:text-blue-300 transition ease-in-out 300 text-xs lg:text-sm'>Book an appointment</a>
+                <span className='text-sm lg:text-xl'><b>Download</b> your <b>QRCode</b>  at Dental appointment page!</span>
+                <img src="/images/QRCode.png" alt="" className='h-[100px] w-[100px] bg-white rounded-sm' />
+                <a href={route('guest.appointment')} className=' mt-[4rem] hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg font-semibold'>Book an appointment</a>
+
+
                 </div>
                 <img src="/images/3.png" alt="" className='w-72 h-72 hidden md:block'/> 
                 </div>

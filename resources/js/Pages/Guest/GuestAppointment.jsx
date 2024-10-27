@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from '../Navbar/Navbar';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
@@ -8,18 +8,31 @@ import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Space, notification, Divider} from "antd";
-import { DownloadOutlined } from '@ant-design/icons';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TertiaryButton from '@/Components/TertiaryButton';
 import moment from 'moment';
-import { CalendarOutlined, IdcardOutlined, MedicineBoxOutlined, SmileOutlined,CheckCircleOutlined } from '@ant-design/icons';
+import { CalendarOutlined, IdcardOutlined, MedicineBoxOutlined, SmileOutlined, CheckCircleOutlined, SyncOutlined, DownloadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { SyncLoader } from 'react-spinners';
 
 const { Step } = Steps;
 const { Option } = Select;
 
 const Appointment = ({ auth, branches, categories, office_hours }) => {
   const user= usePage().props.auth.user;
+
+  
+  const [processing, setProcessing] = useState(false);
+  //const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isTermOpen, setTermOpen] = useState(false);
+  const [qrCodeData, setQrCodeData] = useState(null);
+  const [renderType, setRenderType] = useState('canvas');
+  const [openLocation, setOpenLocation] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [qrValue, setQrValue] = useState('');
+  const [showQRCode, setShowQRCode] = useState(false);
+  const controllerRef = useRef(null);
 
   const { data, setData, post, errors } = useForm({
     selectedBranch: null, 
@@ -61,49 +74,71 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
     bleeding_gums: false,
   });
 
+
   const submit = async (e) => {
     e.preventDefault();
-    setProcessing(true);
-    try {
 
-      if (!data.fullname || !data.selectServices || !data.appointment_time || !data.appointment_date) {
-        notification.error({
-            message: 'Validation Error',
-            description: 'Please fill out all required fields.',
-            placement: 'bottomRight',
-            duration: 3,
-        });
-        setProcessing(false);
-        return;
-    }
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
 
-      const formattedData = {
-          ...data,
-          date: data.date ? moment(data.date).format('YYYY-MM-DD') : null,
-          appointment_time: data.appointment_time,
-          name: user.name,
-      };
+      setProcessing(true);
 
-      const response = await post(route('guest.appointment.store', data), formattedData,{
-        onSuccess: () => {
-          if (response.success) {
-            notification.success({
-              message: 'Success',
-              description: 'Appointment created successfully!',
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      
+      controllerRef.current = new AbortController();
+      
+      try
+      {
+
+        if (!data.fullname || !data.selectServices || !data.appointment_time || !data.appointment_date) {
+          notification.error({
+              message: 'Validation Error',
+              description: 'Please fill out all required fields.',
               placement: 'bottomRight',
-              onClick: () => {
-                console.log('Notification Clicked!');
-              },
               duration: 3,
-            });
-          }
+          });
+          return;
         }
-      });
-  } catch (error) {
-      console.error("Error during appointment submission:", error);
-  } finally {
-    setProcessing(false);
-  }};
+
+        const formattedData = {
+            ...data,
+            date: data.date ? moment(data.date).format('YYYY-MM-DD') : null,
+            appointment_time: data.appointment_time,
+            name: user.name,
+        };
+
+        await post(route('guest.appointment.store', data), formattedData,{
+        signal: controllerRef.current.signal,
+
+          onSuccess: () => {
+            notification.success({
+                message: 'Success',
+                description: 'Appointment date and time updated successfully!',
+                placement: 'bottomRight',
+            });
+          },
+          onError: () => {
+              notification.error({
+                  message: 'Error',
+                  description: 'There was an error updating your appointment.',
+                  placement: 'bottomRight',
+              });
+          }
+        });
+      }
+      catch (error) {
+        console.error("Error during appointment submission:", error.message);
+        notification.error({
+          message: 'Submission Error',
+          description: error.message || 'An error occurred during the submission.',
+          placement: 'bottomRight',
+          duration: 3,
+        });
+      } finally {
+        setProcessing(false);
+      }
+  }
 
 
   useEffect(() => {
@@ -125,15 +160,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
   data.appointment_time
 ]);
 
-  const [processing, setProcessing] = useState();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [isTermOpen, setTermOpen] = useState(false);
-  const [qrCodeData, setQrCodeData] = useState(null);
-  const [renderType, setRenderType] = useState('canvas');
-  const [openLocation, setOpenLocation] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [qrValue, setQrValue] = useState('');
-  const [showQRCode, setShowQRCode] = useState(false);
+ 
 
   const disableDate = (current) => {
     if (!Array.isArray(office_hours) || !current) return false;
@@ -281,16 +308,10 @@ const handleQRCode = (value) => {
 
 
   const nextStep = () => {
-    if (isStepComplete()) {
-      if (currentStep < 4) {
-        setCurrentStep(currentStep + 1);
-      }
-
-      if (currentStep >= 4) {
-        return processing;
-      }
+    if (isStepComplete() && currentStep < 4) {
+      setCurrentStep(currentStep + 1);
     } else {
-      console.log('Step is incomplete');
+        console.log('Step is incomplete or already at the last step');
     }
   };
 
@@ -330,11 +351,11 @@ const handleQRCode = (value) => {
                     <Step icon={<CheckCircleOutlined  />} title="Confirm" />
                   </Steps>
                   </div>
-                    <form onSubmit={submit} className="py-5 lg:py-10 flex flex-col items-start px-8 md:gap-2">
+                    <form onSubmit={submit} className="py-5 lg:py-10 flex flex-col items-start px-2 md:gap-2">
                       {currentStep === 0 && (
                         <>
                         
-                        <div className="flex flex-col md:flex md:flex-row lg:p-5 md:gap-10 lg:gap-20 2xl:gap-32 lg:shadow-md rounded-lg bg-white">
+                        <div className="flex flex-col md:flex md:flex-row p-3 lg:p-5 md:gap-10 lg:gap-20 2xl:gap-32 lg:shadow-md rounded-lg bg-white">
                         
                           <div className="flex flex-col gap-3 items-start">
                           <div className="flex gap-2 text-base md:text-lg">
@@ -350,7 +371,7 @@ const handleQRCode = (value) => {
                           <Select
                             id="branches"
                             name="branches"
-                            className="w-60 md:w-80"
+                            className="w-[17.5rem] md:w-80"
                             size="large"
                             placeholder="Select a branch"
                             onChange={handleBranchChange}
@@ -364,12 +385,12 @@ const handleQRCode = (value) => {
                             ))}
                           </Select>
 
-                          <div className={`${data.branchLocation ? '' : 'hidden'}` }>
+                          <div className={`${data.branchLocation ? '' : 'hidden'}`  }>
                           <InputLabel htmlFor="branch_location" value="Branch Location"/>
                           <TextInput
                           id="branch_location"
                           name="branch_location"
-                          className="w-60 md:w-80"
+                          className="max-w-[17.5] w-full md:w-80"
                           value={data.branchLocation ? data.branchLocation : ''}
                           readOnly
                           />
@@ -379,7 +400,7 @@ const handleQRCode = (value) => {
                           <Select
                             id="services"
                             name="services"
-                            className="w-60 md:w-80"
+                            className="w-[17.5rem] md:w-80"
                             size="large"
                             placeholder="Select a service"
                             onChange={handleServiceChange}
@@ -450,7 +471,7 @@ const handleQRCode = (value) => {
                       )}
 
                       {currentStep === 1 && (
-                        <div className="flex flex-col md:p-5 gap-3 md:shadow-md rounded-lg bg-white ">
+                        <div className="flex flex-col md:p-5 gap-3 p-3 w-full md:shadow-md rounded-lg bg-white ">
                           <div className="flex gap-2 text-base md:text-lg">
                             <span>Welcome to</span>
                             <span className="text-[#ff4200]">SMTC</span>
@@ -460,14 +481,14 @@ const handleQRCode = (value) => {
                           
                           <span className="font-black text-sm">Patient Info (Required)</span>
 
-                          <div className="flex flex-col md:flex-row justify-around gap-2">
+                          <div className="flex flex-col md:flex-row justify-around gap-x-28">
                             <div className="flex flex-col">
                               <InputLabel htmlFor="fullname" value="Fullname" />
                               <TextInput
                                 id="fullname"
                                 name="fullname"
                                 value={data.fullname}
-                                className="block w-60 md:w-80 text-sm"
+                                className="block w-70 md:w-80 text-sm"
                                 autoComplete="fullname"
                                 onChange={(e) => setData('fullname', e.target.value)}
                                 required
@@ -481,7 +502,7 @@ const handleQRCode = (value) => {
                                 id="age"
                                 name="age"
                                 value={data.age}
-                                className="block w-60 md:w-80 text-sm"
+                                className="block  w-70 md:w-80 text-sm"
                                 autoComplete="age"
                                 onChange={(e) => setData('age', e.target.value)}
                                 required
@@ -490,14 +511,14 @@ const handleQRCode = (value) => {
                             </div>
                           </div>
 
-                          <div className="flex flex-col md:flex-row justify-around gap-2">
+                          <div className="flex flex-col md:flex-row justify-around gap-x-28">
                             <div className="flex flex-col">
                               <InputLabel htmlFor="gender" value="Gender" />
                               <Select
                                 id="gender"
                                 name="gender"
                                 value={data.gender}
-                                className="block w-60 md:w-80 text-sm"
+                                className="block w-70 md:w-80 text-sm"
                                 autoComplete="gender"
                                 size="large"
                                 onChange={(value) => setData('gender', value)}
@@ -517,7 +538,7 @@ const handleQRCode = (value) => {
                                 id="date_of_birth"
                                 name="date_of_birth"
                                 type="date"
-                                className="block w-60 md:w-80"
+                                className="block w-70 md:w-80"
                                 needConfirm
                                 size='large'
                                 value={data.date_of_birth ? moment(data.date_of_birth) : null} 
@@ -535,7 +556,7 @@ const handleQRCode = (value) => {
 
                         
 
-                          <div className="flex flex-col md:flex-row justify-around gap-2">
+                          <div className="flex flex-col md:flex-row justify-around gap-x-28">
                           <div className="flex flex-col gap-3">
 
                           <div className="flex flex-col">
@@ -544,7 +565,7 @@ const handleQRCode = (value) => {
                                 id="phone"
                                 name="phone"
                                 value={data.phone}
-                                className="block w-60 md:w-80 text-sm"
+                                className="block w-70 md:w-80 text-sm"
                                 autoComplete="phone"
                                 onChange={(e) => setData('phone', e.target.value)}
                                 required
@@ -559,7 +580,7 @@ const handleQRCode = (value) => {
                                   id="address"
                                   name="address"
                                   value={data.address}
-                                  className="block w-60 md:w-80 text-sm"
+                                  className="block w-[17.5rem] md:w-80 text-sm"
                                   autoComplete="address"
                                   onChange={(e) => setData('address', e.target.value)}
                                   required
@@ -569,7 +590,7 @@ const handleQRCode = (value) => {
                           </div>
 
 
-                          <div className="flex flex-col gap-3">
+                          <div className="flex flex-col gap-x-28">
 
                           <div className="flex flex-col">
                               <InputLabel htmlFor="email" value="Email" />
@@ -577,7 +598,7 @@ const handleQRCode = (value) => {
                                 id="email"
                                 name="email"
                                 value={data.email}
-                                className="block w-60 md:w-80 text-sm"
+                                className="block w-70 md:w-80 text-sm"
                                 autoComplete="email"
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
@@ -591,7 +612,7 @@ const handleQRCode = (value) => {
                                 id="emergency_contact"
                                 name="emergency_contact"
                                 value={data.emergency_contact}
-                                className="block w-60 md:w-80 text-sm"
+                                className="block w-70 md:w-80 text-sm"
                                 autoComplete="emergency_contact"
                                 onChange={(e) => setData('emergency_contact', e.target.value)}
                                 required
@@ -607,7 +628,7 @@ const handleQRCode = (value) => {
                       {currentStep === 2 && (
                         <>
                         <div>
-                          <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg bg-white ">
+                          <div className="flex flex-col md:p-5 gap-3 p-3 w-full md:shadow-md rounded-lg bg-white ">
                         
                         <div className="flex gap-2 text-base md:text-lg">
                           <span>Welcome to</span>
@@ -623,7 +644,7 @@ const handleQRCode = (value) => {
                               id="medical_condition"
                               name="medical_condition"
                               value={data.medical_condition}
-                              className="mt-1 block w-60 md:w-80 text-sm"
+                              className="mt-1 block w-[17.5rem] md:w-80 text-sm"
                               onChange={(e) => setData('medical_condition', e.target.value)}
                               required
                           />
@@ -634,7 +655,7 @@ const handleQRCode = (value) => {
                               id="current_medication"
                               name="current_medication"
                               value={data.current_medication}
-                              className="mt-1 block w-60 md:w-80 text-sm"
+                              className="mt-1 block  w-[17.5rem] md:w-80 text-sm"
                               onChange={(e) => setData('current_medication', e.target.value)}
                               required
                           />
@@ -645,7 +666,7 @@ const handleQRCode = (value) => {
                               id="allergies"
                               name="allergies"
                               value={data.allergies}
-                              className="mt-1 block w-60 md:w-80 text-sm"
+                              className="mt-1 block w-[17.5rem] md:w-80 text-sm"
                               onChange={(e) => setData('allergies', e.target.value)}
                               required
                           />
@@ -656,7 +677,7 @@ const handleQRCode = (value) => {
                               id="past_surgeries"
                               name="past_surgeries"
                               value={data.past_surgeries}
-                              className="mt-1 block w-60 md:w-80 text-sm"
+                              className="mt-1 block w-[17.5rem] md:w-80 text-sm"
                               onChange={(e) => setData('past_surgeries', e.target.value)}
                               required
                           />
@@ -669,7 +690,7 @@ const handleQRCode = (value) => {
                               id="family_medical_history"
                               name="family_medical_history"
                               value={data.family_medical_history}
-                              className="mt-1 block w-60 md:w-80 text-sm"
+                              className="mt-1 block w-[17.5rem] md:w-80 text-sm"
                               onChange={(e) => setData('family_medical_history', e.target.value)}
                               required
                           />
@@ -680,7 +701,7 @@ const handleQRCode = (value) => {
                               id="blood_pressure"
                               name="blood_pressure"
                               value={data.blood_pressure}
-                              className="mt-1 block w-60 md:w-80 text-sm"
+                              className="mt-1 block w-[17.5rem] md:w-80 text-sm"
                               onChange={(e) => setData('blood_pressure', e.target.value)}
                               required
                           />
@@ -722,7 +743,7 @@ const handleQRCode = (value) => {
                       {currentStep === 3 && (
                         <>
                         <div>
-                          <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg bg-white ">
+                          <div className="flex flex-col md:p-5 p-3 gap-5 md:shadow-md rounded-lg bg-white ">
                         
                         <div className="flex gap-2 text-base md:text-lg">
                           <span>Welcome to</span>
@@ -860,7 +881,7 @@ const handleQRCode = (value) => {
                       {currentStep === 4 && (
                         <>
                         <div>
-                        <div className="flex flex-col md:p-5 gap-5 md:shadow-md rounded-lg bg-white">
+                        <div className="flex flex-col md:p-5 p-3 gap-5 md:shadow-md rounded-lg bg-white">
                         
                         <div className="flex gap-2 text-base md:text-lg">
                           <span>Welcome to</span>
@@ -965,11 +986,13 @@ const handleQRCode = (value) => {
                           </TertiaryButton>
                         ) : (
                           <>
-                          <div className='flex'>
-                              <PrimaryButton className="flex justify-center" disabled={!isStepComplete() || isLoading} onClick={showModal}>
-                                Submit
-                              </PrimaryButton>
-                          </div>
+                            <PrimaryButton
+                              className="flex justify-center"
+                              disabled={!isStepComplete() || processing}
+                              onClick={submit}
+                            >
+                              {processing ? <SyncOutlined spin /> : 'Submit'}
+                            </PrimaryButton>
                           </>
                         )}
 

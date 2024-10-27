@@ -152,6 +152,6 @@ class AppointmentController extends Controller
 
         $appointment->save();
 
-        return;
+        return redirect()->route('dashboard')->with('success', 'Appointment created successfully.');
     }
 }

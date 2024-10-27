@@ -194,7 +194,6 @@ const DashboardContent = () => {
 ) : (
     <>
     <Empty/>
-    <p className='text-center mt-2'>No appointment details available.</p>
     </>
 )}
     </div>
