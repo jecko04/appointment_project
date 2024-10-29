@@ -152,6 +152,9 @@ class AppointmentController extends Controller
 
         $appointment->save();
 
-        return redirect()->route('dashboard')->with('success', 'Appointment created successfully.');
+        return response()->json([
+            'message' => 'Appointment created successfully!',
+            'redirect' => route('dashboard'), 
+        ], 201);
     }
 }

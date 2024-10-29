@@ -34,7 +34,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
   const [showQRCode, setShowQRCode] = useState(false);
   const controllerRef = useRef(null);
 
-  const { data, setData, post, errors } = useForm({
+  const { data, setData, errors } = useForm({
     selectedBranch: null, 
     selectedBranchName: '',
     branchLocation: '',
@@ -84,7 +84,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
 
       setProcessing(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      //await new Promise((resolve) => setTimeout(resolve, 3000));
       
       controllerRef.current = new AbortController();
       
@@ -108,25 +108,32 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
             name: user.name,
         };
 
-        await post(route('guest.appointment.store', data), formattedData,{
-        signal: controllerRef.current.signal,
-
-          onSuccess: () => {
-            notification.success({
-                message: 'Success',
-                description: 'Appointment date and time updated successfully!',
-                placement: 'bottomRight',
-            });
+        const response = await fetch(route('guest.appointment.store'), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
           },
-          onError: () => {
-              notification.error({
-                  message: 'Error',
-                  description: 'There was an error updating your appointment.',
-                  placement: 'bottomRight',
-              });
-          }
+          body: JSON.stringify(formattedData),
+          signal: controllerRef.current.signal,
+        }); 
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        // formattedData , {
+        //       signal: controllerRef.current.signal,
+        // });
+
+        notification.success({
+          message: 'Success',
+          description: 'Appointment date and time updated successfully!',
+          placement: 'bottomRight', 
         });
-      }
+    }
       catch (error) {
         console.error("Error during appointment submission:", error.message);
         notification.error({
@@ -140,6 +147,13 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
       }
   }
 
+  useEffect(() => {
+    return () => {
+        if (controllerRef.current) {
+            controllerRef.current.abort(); 
+        }
+    };
+}, []);
 
   useEffect(() => {
     setData((prevData) => ({
