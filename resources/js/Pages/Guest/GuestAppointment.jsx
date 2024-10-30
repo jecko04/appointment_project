@@ -339,7 +339,7 @@ const handleQRCode = (value) => {
       <div className='bg-gradient-to-t from-white to-[#FADC12]/30'>    
         <Head title="SMTC - Dental Care" />
         <div className="text-xs">
-          <div className="items-center justify-center selection:text-white">
+          <div className="items-center justify-center selection:text-blue-500">
             <div className="flex flex-col lg:w-full pt-2">
               <header>
                 <Navbar auth={auth} />

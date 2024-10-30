@@ -41,4 +41,13 @@ class ServicesController extends Controller
                 : null,
         ]);
     }
+
+    public function search(Request $request) {
+
+
+        $categories = ServicesModel::with('branch')->get();
+
+        
+
+    }
 }

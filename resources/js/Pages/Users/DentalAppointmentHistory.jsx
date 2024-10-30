@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification, Tag   } from "antd";
+import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification, Tag, Pagination  } from "antd";
 import { Head, useForm, usePage, Link} from '@inertiajs/react';
 import { DownloadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InputLabel from '@/Components/InputLabel';
@@ -259,6 +259,10 @@ const DentalAppointmentHistory = ({ auth }) => {
       columns={columns}       
       rowKey="id"
       size='small'
+      pagination={{ 
+        pageSize: 5,
+        showSizeChanger: false,
+       }}
     />
     </div>
     </>

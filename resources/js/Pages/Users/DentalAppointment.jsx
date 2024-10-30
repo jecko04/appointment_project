@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification, Tag, Popover } from "antd";
+import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification, Tag, Popover, Pagination } from "antd";
 import { Head, useForm, usePage, Link} from '@inertiajs/react';
 import { DownloadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InputLabel from '@/Components/InputLabel';
@@ -139,7 +139,6 @@ const AppointmentDetails = ({ auth }) => {
     const [selectedRecord, setSelectedRecord] = useState(null); 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [open, setOpen] = useState(false);
-
 
     const hide = () => {
       const timer = setTimeout(() => {
@@ -552,6 +551,10 @@ const AppointmentDetails = ({ auth }) => {
             columns={columns}       
             rowKey="id"
             size='small'
+            pagination={{ 
+              pageSize: 5,
+              showSizeChanger: false,
+             }}
             />
           </>
         )

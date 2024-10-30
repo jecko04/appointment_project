@@ -3,9 +3,11 @@ import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import Navbar from '../Navbar/Navbar';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Button, Card, Dropdown, Select, Space, Tag  } from 'antd';
+import { Button, Card, Dropdown, Input, Select, Space, Tag  } from 'antd';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/TertiaryButton';
+import TextInput from '@/Components/TextInput';
+import { SearchOutlined } from '@ant-design/icons';
 
 const Services = ({ auth }) => {
 
@@ -26,12 +28,14 @@ const Services = ({ auth }) => {
     }));
   }
 
+
+
   return (
     <>
     <div className='bg-gradient-to-t from-white to-[#FADC12]/30'>
     <Head title="SMTC - Dental Care" />
     <div className="text-xs">
-        <div className="items-center justify-center selection:text-white ">
+        <div className="items-center justify-center selection:text-blue-500 ">
           <div className="flex flex-col lg:w-full pt-2">
     <header>
       <Navbar auth={auth} />
@@ -52,6 +56,7 @@ const Services = ({ auth }) => {
     </div>
     <div className='px-10 py-12 flex flex-col gap-3'>
     <InputLabel htmlFor="branches" value="Select Branch"/>
+    <div className='flex justify-between w-full' >
         <Select
         id="branches"
         name="branches"
@@ -68,6 +73,17 @@ const Services = ({ auth }) => {
           </Option>
         ))}
         </Select>
+
+        {/* <Input
+        id="services"
+        name="services"
+        className="w-[17.5rem] md:w-80"
+        size="large"
+        placeholder="Search services"
+        prefix={<SearchOutlined />}
+        required
+        /> */}
+      </div>
 
         <div className='flex flex-wrap gap-x-5' >
         {categories && categories.length > 0 ? (

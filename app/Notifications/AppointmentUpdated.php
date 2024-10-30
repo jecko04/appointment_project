@@ -52,8 +52,7 @@ class AppointmentUpdated extends Notification
                 return $mailMessage->line("Reschedule Date: {$this->appointment->reschedule_date}")
                                     ->line("Reschedule Time: {$this->appointment->reschedule_time}");
             })
-            ->line("Status: {$this->appointment->status}")
-            ->line("Thank you for using our service!");
+            ->line("Status: {$this->appointment->status}");
         }
 
     /**

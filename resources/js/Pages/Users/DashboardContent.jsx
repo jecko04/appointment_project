@@ -123,9 +123,9 @@ const DashboardContent = () => {
                     title={<Logo/>}
                     open={isModalOpen}
                     onCancel={cancelModal}
+                    maskClosable={true}
                     width={600}
-                    footer={[
-                    ]}
+                    footer={null}
                     >
                     <>
                     <div className='flex flex-col gap-2'>
