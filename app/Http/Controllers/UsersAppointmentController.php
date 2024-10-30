@@ -73,7 +73,10 @@ class UsersAppointmentController extends Controller
         $adminEmail = 'smtc.dentalcare@gmail.com';
         Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'rescheduled'));
 
-        return redirect()->back()->with('success', 'Appointment saved successfully!');
+        return response()->json([
+            'redirect' => route('appointment'), 
+            'message' => 'Appointment rescheduled successfully!',
+        ], 201);
     }
 
     public function destroy($id)
@@ -92,6 +95,9 @@ class UsersAppointmentController extends Controller
         $adminEmail = 'smtc.dentalcare@gmail.com';
         Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'canceled'));
     
-        return redirect()->back()->with('success', 'Appointment deleted successfully.');
+        return response()->json([
+            'redirect' => route('appointment'), 
+            'message' => 'Appointment deleted successfully!',
+        ], 201);
     }
 }

@@ -16,6 +16,7 @@ import {
   MinusCircleOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
+import BarLoader from 'react-spinners/BarLoader';
 
 const AppointmentDetails = ({ auth }) => {
     const { appointmentDetails, branches, categories, users, office_hours} = usePage().props;
@@ -51,22 +52,35 @@ const AppointmentDetails = ({ auth }) => {
               reschedule_time: data.reschedule_time,
           };
   
-          await post(route('appointment.reschedule', formattedData), {
-              onSuccess: () => {
-                  notification.success({
-                      message: 'Success',
-                      description: 'Appointment date and time updated successfully!',
-                      placement: 'bottomRight',
-                  });
-              },
-              onError: () => {
-                  notification.error({
-                      message: 'Error',
-                      description: 'There was an error updating your appointment.',
-                      placement: 'bottomRight',
-                  });
-              }
+          const response = await fetch(route('appointment.reschedule', formattedData), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify(formattedData),
           });
+
+          if (response.ok) {
+            const result = await response.json();
+            notification.success({
+              message: 'Success',
+              description: 'Appointment date and time updated successfully!',
+              placement: 'bottomRight',
+            });
+            setReschedModalOpen(false);
+            window.location.href = route('appointment');
+
+          } else {
+            notification.error({
+              message: 'Error',
+              description: 'There was an error updating your appointment.',
+              placement: 'bottomRight',
+            });
+          }
+                  
+                  
       } catch (error) {
           console.error("Error during appointment submission:", error);
       } finally {
@@ -83,23 +97,33 @@ const AppointmentDetails = ({ auth }) => {
               id: selectedRecord.id,
           };
   
-          await destroy(route('appointment.destroy', formattedData), {
-              onSuccess: () => {
-                  notification.success({
-                      message: 'Success',
-                      description: 'Cancelled Appointment!',
-                      placement: 'bottomRight',
-                  });
-              },
-              onError: () => {
-                  notification.error({
-                      message: 'Error',
-                      description: 'There was an error on your appointment.',
-                      placement: 'bottomRight',
-                  });
-              }
+          const response = await fetch(route('appointment.destroy', formattedData), {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify(formattedData),
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            notification.success({
+                message: 'Success',
+                description: 'Cancelled Appointment!',
+                placement: 'bottomRight',
             });
             setIsDeleteModalOpen(false);
+            window.location.href = route('appointment');
+
+          } else {
+              notification.error({
+                  message: 'Error',
+                  description: 'There was an error with your appointment.',
+                  placement: 'bottomRight',
+              });
+          }
       } catch (error) {
           console.error("Error during appointment submission:", error);
       } finally {
@@ -510,15 +534,29 @@ const AppointmentDetails = ({ auth }) => {
 
   return (
     <>
+
     <div className='m-5'>
-    <Table
-      id="table"
-      name="table"
-      dataSource={appointmentDetails} 
-      columns={columns}       
-      rowKey="id"
-      size='small'
-    />
+      {
+        processing ? (
+          <>
+          <div className='mt-5 flex w-full' style={{ position: "absolute", top: "50%", left: "50%", x:"-50%", y: "-50%" }}>
+            <BarLoader color="#FF4200" />
+          </div>
+          </>
+        ) : (
+          <>
+          <Table
+            id="table"
+            name="table"
+            dataSource={appointmentDetails} 
+            columns={columns}       
+            rowKey="id"
+            size='small'
+            />
+          </>
+        )
+      }
+    
     </div>
     </>
 

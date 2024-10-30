@@ -9,20 +9,58 @@ import { Input } from 'antd';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import { TbArrowBackUp } from "react-icons/tb";
+import { notification } from 'antd';
+import { useState } from 'react';
+import { SyncOutlined } from '@ant-design/icons';
 
 export default function Login({ status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, errors, reset } = useForm({
         email: '',
         password: '',
         remember: false,
     });
 
-    const submit = (e) => {
+    const [processing, setProcessing] = useState(false);
+
+    const submit = async (e) => {
         e.preventDefault();
 
-        post(route('login'), {
-            onFinish: () => reset('password'),
-        });
+        setProcessing(true);
+
+        try {
+            const response = await fetch(route('login'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                  },
+                body: JSON.stringify(data),
+                //onFinish: () => reset('password'),
+            })
+    
+            const result = await response.json();
+
+            notification.success({
+                message: 'Success',
+                description: result.message || 'Login successfully!',
+                placement: 'bottomRight', 
+            });
+            window.location.href = route('dashboard');
+        }
+        catch (error) {
+            notification.error({
+                message: 'Submission Error',
+                description: error.message || 'An error occurred during the submission.',
+                placement: 'bottomRight',
+                duration: 3,
+            });
+        }
+        finally {
+            setProcessing(false);
+            reset('password');
+        }
+        
     };
 
     return (
@@ -102,7 +140,7 @@ export default function Login({ status, canResetPassword }) {
                     )}
                     <div className='ml-2'>
                     <PrimaryButton disabled={processing}>
-                        Log in
+                    {processing ? <SyncOutlined spin /> : 'Login'}
                     </PrimaryButton>
                     </div>
                 </div>

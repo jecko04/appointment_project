@@ -16,7 +16,9 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\UpdatePersonalInfomationFormController;
 
-Route::get('/', function () {
+Route::get('/', [HomeController::class, 'home'])->name('home');
+
+Route::get('/welcome', function () {
 
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -26,7 +28,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/about', [AboutController::class, 'about'])->name('about');
 Route::get('/services', [ServicesController::class, 'services'])->name('services');
 Route::get('/contact', [ContactController::class, 'contact'])->name('contact');

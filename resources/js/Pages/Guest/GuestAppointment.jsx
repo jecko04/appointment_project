@@ -112,6 +112,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
           },
           body: JSON.stringify(formattedData),
@@ -123,16 +124,13 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
         }
 
         const result = await response.json();
-        
-        // formattedData , {
-        //       signal: controllerRef.current.signal,
-        // });
 
         notification.success({
           message: 'Success',
-          description: 'Appointment date and time updated successfully!',
+          description: 'Dental appointment set successfully!',
           placement: 'bottomRight', 
         });
+        window.location.href = route('dashboard');
     }
       catch (error) {
         console.error("Error during appointment submission:", error.message);
@@ -146,14 +144,6 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
         setProcessing(false);
       }
   }
-
-  useEffect(() => {
-    return () => {
-        if (controllerRef.current) {
-            controllerRef.current.abort(); 
-        }
-    };
-}, []);
 
   useEffect(() => {
     setData((prevData) => ({
@@ -927,7 +917,7 @@ const handleQRCode = (value) => {
                               <span className="font-normal"> {data.appointment_date ? data.appointment_date : ''} 
                                 </span>  </span>
                             <span className="font-black text-sm">Appointment Time: 
-                              <span className="font-normal"> {data.appointment_time ? data.appointment_time : ''}
+                              <span className="font-normal"> {data.appointment_time ? moment(data.appointment_time, 'HH:mm').format('hh:mm A') : ''}
                                 </span>  </span>
                             </div>
                             </div>
