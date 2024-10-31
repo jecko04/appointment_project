@@ -37,49 +37,27 @@ class UsersAppointmentController extends Controller
             'users' => $users, 
             'categories' => $categories, 
             'patients' => $patients,
-            'appointmentDetails' => $appointmentDetails,
+            'appointmentDetails' => $appointmentDetails->isNotEmpty() 
+            ? $appointmentDetails->map(function ($appointment) {
+                return [
+                'id' => $appointment->id,
+                'selectedBranch' => $appointment->selectedBranch,
+                'selectServices' => $appointment->selectServices,
+                'status' => $appointment->status,
+                'user_id' => $appointment->user_id,
+                'appointment_date' => $appointment->appointment_date,
+                'appointment_time' => $appointment->appointment_time,
+                'reschedule_date' => $appointment->reschedule_date,
+                'reschedule_time' => $appointment->reschedule_time,
+                'qr_code' => $appointment->qr_code,
+                ];
+                }) 
+                : null,
             'office_hours' => $office_hours,
         ]);
     }
 
-    public function storeReschedule(Request $request)
-    {
-        $validate = $request->validate([
-            'selectedBranch' => 'required|integer',
-            'selectServices' => 'required|integer',
-            'reschedule_date' => 'required|date', 
-            'reschedule_time' => 'required|string|date_format:H:i',
-        ]);
-
-        $dateformatted = Carbon::createFromFormat('Y-m-d', $validate['reschedule_date'])->format('Y-m-d');
-        $timeformatted = Carbon::createFromFormat('H:i', $validate['reschedule_time'])->format('H:i:s');
-
-        $appointment = AppointmentModel::updateOrCreate(
-        [
-            'user_id' => Auth::id(),
-            'selectedBranch' => $validate['selectedBranch'],  
-            'selectServices' => $validate['selectServices'], 
-        ],     
-        [
-            'reschedule_date' => $dateformatted,
-            'reschedule_time' => $timeformatted,
-        ]);
-
-        $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($appointment->id);
-
-        $user = $appointment->users;
-
-
-        $adminEmail = 'smtc.dentalcare@gmail.com';
-        Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'rescheduled'));
-
-        return response()->json([
-            'redirect' => route('appointment'), 
-            'message' => 'Appointment rescheduled successfully!',
-        ], 201);
-    }
-
-    public function destroy($id)
+    public function cancelled(Request $request, $id)
     {
         $appointment = AppointmentModel::with(['users', 'branch', 'services'])->findOrFail($id);
     
@@ -88,16 +66,27 @@ class UsersAppointmentController extends Controller
         }
         
         $user = $appointment->users;
+
+        $validate = $request->validate([
+            'selectedBranch' => 'required|integer',
+            'selectServices' => 'required|integer',
+        ]);
         
-        $appointment->delete();
+        $appointment = AppointmentModel::where('id', $id)
+        ->where('user_id', Auth::id())
+        ->firstOrFail();
+        
+        $appointment->update([
+                'status' => 'cancelled',
+        ]);
     
         // Use Notification::route to send email notification
         $adminEmail = 'smtc.dentalcare@gmail.com';
         Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'canceled'));
     
         return response()->json([
-            'redirect' => route('appointment'), 
-            'message' => 'Appointment deleted successfully!',
-        ], 201);
+            'redirect' => route('appointment'),
+            'message' => 'Appointment status updated to canceled successfully!',
+        ], 200);
     }
 }

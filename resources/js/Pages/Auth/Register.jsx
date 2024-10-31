@@ -10,9 +10,11 @@ import { DatePicker, Input, Select } from 'antd';
 import moment from 'moment';
 import { TbArrowBackUp } from "react-icons/tb";
 import GuestLayout from '@/Layouts/GuestLayout';
+import { SyncOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 
 export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, errors, reset } = useForm({
         name: '',
         email: '',
         password: '',
@@ -26,12 +28,66 @@ export default function Register() {
     });
 
 const { Option } = Select;
+const [processing, setProcessing] = useState(false);
+const [errorMessage, setErrorMessage] = useState('');
 
-    const submit = (e) => {
+const handleValidation = (e) => {
+    setData({
+        ...data,
+        [e.target.name]: e.target.value,
+    })
+    setErrorMessage('');
+}
+
+const validatePassword = () => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(data.password && data.password_confirmation)) {
+        setErrorMessage('Your password must be at least 8 characters long and include at least one uppercase letter and one number.');
+    }
+    else {
+        setErrorMessage('');
+    }
+}
+
+
+    const submit = async (e) => {
         e.preventDefault();
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation',),
-        });
+        setProcessing(true);
+        validatePassword();
+
+        try {
+            const response = await fetch(route('register'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                  },
+                body: JSON.stringify(data),
+            })
+
+            const result = await response.json();
+
+            if (response.ok) {
+                notification.success({
+                    message: 'Success',
+                    description: result.message || 'Register successfully!',
+                    placement: 'bottomRight', 
+                });
+                window.location.href = route('dashboard');
+            }
+        }
+        catch (error) {
+            notification.error({
+                message: 'Error',
+                description: result.message || 'Error Register!',
+                placement: 'bottomRight', 
+            });
+        }
+        finally {
+            setProcessing(false);
+            reset('password', 'password_confirmation',);
+        }
     };
 
     return (
@@ -107,11 +163,12 @@ const { Option } = Select;
                         className="flex flex-1 mt-1 w-full "
                         size="middle"
                         autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={handleValidation}
                         required
                     />
 
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errorMessage}
+                    className="mt-2" />
                 </div>
 
                 <div className="mt-4">
@@ -125,11 +182,11 @@ const { Option } = Select;
                         className="mt-1 flex flex-1 w-full"
                         size="middle"
                         autoComplete="new-password"
-                        onChange={(e) => setData('password_confirmation', e.target.value)}
+                        onChange={handleValidation}
                         required
                     />
 
-                    <InputError message={errors.password_confirmation} className="mt-2" />
+                    <InputError amessage={errorMessage} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
@@ -245,7 +302,7 @@ const { Option } = Select;
 
                     <div className='mt-4'>
                         <PrimaryButton className="w-full flex justify-center"  disabled={processing}>
-                            Sign up
+                            {processing ? <SyncOutlined spin/> : 'Sign up'}
                         </PrimaryButton>
                     </div>
 

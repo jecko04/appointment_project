@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\RescheduleController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\UpdatePersonalInfomationFormController;
 
@@ -51,8 +52,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/record', [UserRecordAppointmentController::class, 'showRecordAppointment'])->name('record');
 
     Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
-    Route::post('/appointment/reschedule', [UsersAppointmentController::class, 'storeReschedule'])->name('appointment.reschedule');
-    Route::delete('/appointment/destroy{id}', [UsersAppointmentController::class, 'destroy'])->name('appointment.destroy');
+    Route::patch('/appointment/cancelled{id}', [UsersAppointmentController::class, 'cancelled'])->name('appointment.cancelled');
+    
+    Route::get('/reschedule', [RescheduleController::class, 'reschedule'])->name('reschedule');
+    Route::post('/appointment/reschedule', [RescheduleController::class, 'storeReschedule'])->name('appointment.reschedule');
+
 
 });
 

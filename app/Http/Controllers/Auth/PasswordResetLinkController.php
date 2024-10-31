@@ -20,6 +20,8 @@ class PasswordResetLinkController extends Controller
         return Inertia::render('Auth/ForgotPassword', [
             'status' => session('status'),
         ]);
+
+        
     }
 
     /**
@@ -27,7 +29,7 @@ class PasswordResetLinkController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
@@ -40,12 +42,14 @@ class PasswordResetLinkController extends Controller
             $request->only('email')
         );
 
-        if ($status == Password::RESET_LINK_SENT) {
-            return back()->with('status', __($status));
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json([
+                'message' => __('A password reset link has been sent to your email.'),
+            ], 200);
         }
 
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);
+        return response()->json([
+            'message' => trans($status),
+        ], 422);
     }
 }
