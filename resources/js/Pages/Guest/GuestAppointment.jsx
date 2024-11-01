@@ -14,11 +14,13 @@ import moment from 'moment';
 import { CalendarOutlined, IdcardOutlined, MedicineBoxOutlined, SmileOutlined, CheckCircleOutlined, SyncOutlined, DownloadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { SyncLoader } from 'react-spinners';
+import AppointmentDetails from '../Users/DentalAppointment';
 
 const { Step } = Steps;
 const { Option } = Select;
 
 const Appointment = ({ auth, branches, categories, office_hours }) => {
+  const { appointmentDetails, allAppointmentDate } = usePage.props;
   const user= usePage().props.auth.user;
 
   
@@ -33,6 +35,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
   const [qrValue, setQrValue] = useState('');
   const [showQRCode, setShowQRCode] = useState(false);
   const controllerRef = useRef(null);
+  const AppointmentLimit = 5;
 
   const { data, setData, errors } = useForm({
     selectedBranch: null, 
@@ -164,9 +167,19 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
   data.appointment_time
 ]);
 
- 
+const getAppointmentForDate = (date) => {
+  const appointments = allAppointmentDate.filter(appointment => {
+    if (appointment.reschedule_date && dayjs(appointment.reschedule_date).isSame(date, 'day')) {
+      return true;
+    }
 
-  const disableDate = (current) => {
+    return !appointment.reschedule_date && dayjs(appointment.appointment_date).isSame(date, 'day');
+  });
+  
+    return appointments.length;
+}
+
+const disableDate = (current) => {
     if (!Array.isArray(office_hours) || !current) return false;
 
     const closedDays = office_hours
@@ -185,8 +198,20 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
             default: return -1;
         }
     });
-    return closedDayNumbers.includes(current.day()) || current < dayjs().endOf('day');
+
+    if (closedDayNumbers.includes(current.day()) || current < dayjs().endOf('day')) {
+      return true
+    }
+
+    const appointmentsOnDate = getAppointmentForDate(current);
+    if (appointmentsOnDate >= AppointmentLimit) {
+        return true;
+    }
+
+    return false;
 };
+
+
 
   const showLocation = (value) => {
     const branchLocation = branches.find(branch => branch.Branch_ID === parseInt(value));

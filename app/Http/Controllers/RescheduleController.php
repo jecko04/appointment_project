@@ -27,6 +27,10 @@ class RescheduleController extends Controller
         ->with('users', 'branch', 'services')
         ->get();
         
+        $allAppointmentDate = AppointmentModel::whereIn('status', ['pending', 'approved'])
+        ->with('users', 'branch', 'services')
+        ->get();
+
         $office_hours = OfficeHourModel::with('branch')
         ->where('IsClosed', true)
         ->get(); 
@@ -43,9 +47,21 @@ class RescheduleController extends Controller
                 'selectServices' => $appointment->selectServices,
                 'status' => $appointment->status,
                 'user_id' => $appointment->user_id,
+                'appointment_date' => $appointment->appointment_date,
+                'reschedule_date' => $appointment->reschedule_date,
                 ];
                 }) 
-                : null,
+                : [],
+            'allAppointmentDate' => $allAppointmentDate->isNotEmpty() 
+            ? $allAppointmentDate->map(function ($appointment) {
+                return [
+                'id' => $appointment->id,
+                'user_id' => $appointment->user_id,
+                'appointment_date' => $appointment->appointment_date,
+                'reschedule_date' => $appointment->reschedule_date,
+                ];
+                }) 
+                : [],
             'branches' => $branches,
             'categories' => $categories,
             'office_hours' => $office_hours,
@@ -81,6 +97,7 @@ class RescheduleController extends Controller
         [
             'reschedule_date' => $dateformatted,
             'reschedule_time' => $timeformatted,
+            'status' => 'pending',
         ]);
 
         $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($appointment->id);

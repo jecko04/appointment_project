@@ -11,7 +11,7 @@ import BarLoader from 'react-spinners/BarLoader';
 
 
 const DentalAppointmentReschedule = () => {
-  const { appointmentDetails, branches, categories, user, office_hours} = usePage().props;
+  const { appointmentDetails, allAppointmentDate, branches, categories, user, office_hours} = usePage().props;
 
   const {data, setData, errors }= useForm({
 
@@ -19,6 +19,7 @@ const DentalAppointmentReschedule = () => {
     selectServices: null,
     reschedule_date: null,
     reschedule_time: null,
+    status: '',
   })
 
   const [processing, setProcessing] = useState();
@@ -70,6 +71,7 @@ const DentalAppointmentReschedule = () => {
             ...data,
             reschedule_date: moment(data.reschedule_date).format('YYYY-MM-DD'),
             reschedule_time: data.reschedule_time,
+            status: 'pending',
         };
 
         const response = await fetch(route('appointment.reschedule', formattedData), {
@@ -107,14 +109,41 @@ const DentalAppointmentReschedule = () => {
     }
 };   
 
+  // const [sameAppointmentCount, setSameAppointmentCount] = useState(0); 
+  // useEffect(() => {
+  //   const count = [];
+  //   if (allAppointmentDate && allAppointmentDate.length > 0) {
+  //     allAppointmentDate.forEach(appointment => {
+  //         count.push(appointment.appointment_date); 
+  //     });
+
+  //     setSameAppointmentCount(count.length); 
+  // }
+  // console.log(count);
+  // }, [allAppointmentDate]);
+  
+  const getAppointmentForDate = (date) => {
+      const appointments = allAppointmentDate.filter(appointment => {
+        if (appointment.reschedule_date && dayjs(appointment.reschedule_date).isSame(date, 'day')) {
+          return true;
+        }
+
+        return !appointment.reschedule_date && dayjs(appointment.appointment_date).isSame(date, 'day');
+      });
+      
+        return appointments.length;
+  }
+
 const disableDate = (current) => {
+  const AppointmentLimit = 5;
+
   if (!Array.isArray(office_hours) || !current) return false;
 
   let closedDays = [];
 
   if (appointmentDetails && appointmentDetails.length > 0) {
     closedDays = office_hours
-      .filter(officeHour => officeHour.Branch_ID === appointmentDetails[0]?.selectedBranch && officeHour.IsClosed === 1)
+      .filter(officeHour => officeHour.Branch_ID === data.selectedBranch && officeHour.IsClosed === 1)
       .map(officeHour => officeHour.DayOfWeek);
   }
 
@@ -131,7 +160,17 @@ const disableDate = (current) => {
     }
   }).filter(day => day !== -1); 
 
-  return closedDayNumbers.includes(current.day()) || current < dayjs().endOf('day');
+  if (closedDayNumbers.includes(current.day()) || current < dayjs().endOf('day')) {
+    return true
+  }
+
+  const appointmentsOnDate = getAppointmentForDate(current);
+  
+  if (appointmentsOnDate >= AppointmentLimit) {
+      return true;
+  }
+
+  return false;
 };
 
   return (
