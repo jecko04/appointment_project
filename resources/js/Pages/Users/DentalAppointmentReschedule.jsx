@@ -88,7 +88,7 @@ const DentalAppointmentReschedule = () => {
           const result = await response.json();
           notification.success({
             message: 'Success',
-            description: 'Appointment date and time updated successfully!',
+            description: 'Updated successfully, waiting for approval.',
             placement: 'bottomRight',
           });
           window.location.href = route('appointment');
@@ -121,7 +121,7 @@ const DentalAppointmentReschedule = () => {
   // }
   // console.log(count);
   // }, [allAppointmentDate]);
-  
+
   const getAppointmentForDate = (date) => {
       const appointments = allAppointmentDate.filter(appointment => {
         if (appointment.reschedule_date && dayjs(appointment.reschedule_date).isSame(date, 'day')) {
@@ -181,6 +181,7 @@ const disableDate = (current) => {
       </div>
     ) : (
       <>
+      <span className='px-[3rem] italic'><b>Note:</b> If you reschedule, approval will be required again before the new appointment is confirmed.</span>
       <div className='flex flex-col md:flex-row items-center md:py-[2rem] md:px-[2rem]'>
         <div className='md:px-4 py-4 md:py-0 flex flex-col gap-3 justify-center '>
           <div className='flex flex-col'>

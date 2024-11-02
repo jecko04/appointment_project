@@ -20,7 +20,7 @@ const { Step } = Steps;
 const { Option } = Select;
 
 const Appointment = ({ auth, branches, categories, office_hours }) => {
-  const { appointmentDetails, allAppointmentDate } = usePage.props;
+  const { allAppointmentDate } = usePage().props;
   const user= usePage().props.auth.user;
 
   
@@ -148,6 +148,8 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
       }
   }
 
+
+  
   useEffect(() => {
     setData((prevData) => ({
       ...prevData,
@@ -283,7 +285,6 @@ const disableDate = (current) => {
   });
 
   const handleBranchChange = (value) => {
-    console.log('Selected Branch:', value);
     const selectBranchName = branches.find(branch => branch.Branch_ID === parseInt(value));
     const branchLocation = branches.find(branch => branch.Branch_ID === parseInt(value));
     setData((prevData) => ({
@@ -297,7 +298,6 @@ const disableDate = (current) => {
   };
 
   const handleServiceChange = (value) => {
-    console.log('Selected Services:', value);
     const selectServices = categories.find(category => category.Categories_ID === parseInt(value));
     setData((prevData) => ({
       ...prevData,
@@ -332,7 +332,6 @@ const handleQRCode = (value) => {
       ...prevChecked,
       [checkbox]: checked,
     }));
-    console.log(checkbox);
   };
 
 
