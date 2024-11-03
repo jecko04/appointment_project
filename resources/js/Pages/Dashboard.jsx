@@ -28,7 +28,11 @@ export default function Dashboard({ auth }) {
                 <span className='text-sm lg:text-xl'>Take care of your smile—schedule your dental appointment today!</span>
                 <span className='text-sm lg:text-xl'><b>Download</b> your <b>QRCode</b>  at Dental appointment page!</span>
                 <img src="/images/QRCode.png" alt="" className='h-[100px] w-[100px] bg-white rounded-sm' />
-                <a href={route('guest.appointment')} className=' mt-[4rem] hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg font-semibold'>Book an appointment</a>
+
+                <div className='flex flex-col mt-[4rem]'>
+                    <a href={route('guest.appointment')} className='hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg font-semibold'>Book an appointment</a>
+                    <a href={route('home')} className='hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg font-semibold'>Back to Home</a>
+                </div>
 
 
                 </div>

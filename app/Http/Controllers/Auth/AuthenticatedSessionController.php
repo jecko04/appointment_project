@@ -33,15 +33,14 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
         
         return response()->json([
-            'redirect' => route('dashboard'), 
             'message' => 'Login successfully!',
-        ], 201);
+        ], 200);
     }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
 
@@ -49,6 +48,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return response()->json([
+            'message' => 'Logout successfully!',
+        ], 200);
     }
 }

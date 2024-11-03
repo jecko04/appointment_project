@@ -9,7 +9,6 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import BarLoader from 'react-spinners/BarLoader';
 
-
 const DentalAppointmentReschedule = () => {
   const { appointmentDetails, allAppointmentDate, branches, categories, user, office_hours} = usePage().props;
 
@@ -92,7 +91,6 @@ const DentalAppointmentReschedule = () => {
             placement: 'bottomRight',
           });
           window.location.href = route('appointment');
-
         } else {
           notification.error({
             message: 'Error',
@@ -256,15 +254,16 @@ const disableDate = (current) => {
                           <div className='flex flex-col'>
                           <InputLabel htmlFor="reschedule_time" value="Select new Time" />
 
-                          <TimePicker
-                          id="reschedule_time"
-                          name="reschedule_time"
-                          value={data.reschedule_time ? moment(data.reschedule_time, 'h:mm') : null}
-                          className="block w-60 md:w-80"
-                          size='large'
-                          format='h:mm a' 
-                          onChange={(time) => setData('reschedule_time', time ? time.format("HH:mm") : null)} 
-                          required
+                          <TimePicker 
+                            id="reschedule_time"
+                            name="reschedule_time"
+                            use12Hours={true}
+                            value={data.reschedule_time ? moment(data.reschedule_time, 'HH:mm') : null}
+                            className="block w-60 md:w-80"
+                            size="large"
+                            format="h:mm a"
+                            onChange={(time) => setData('reschedule_time', time ? time.format("HH:mm") : null)}
+                            required
                           />
                           <InputError message={errors.reschedule_time} className="mt-2" />
                           </div>

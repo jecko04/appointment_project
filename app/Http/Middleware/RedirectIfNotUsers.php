@@ -18,7 +18,7 @@ class RedirectIfNotUsers
     {
         if (!Auth::guard('web')->check()) {
             // Redirect to the login page if not authenticated as admin
-            return redirect()->route('dashboard');
+            return redirect()->route('home');
         }
         return $next($request);
     }

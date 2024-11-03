@@ -987,8 +987,12 @@ const handleQRCode = (value) => {
                                     checked={data.termCondition}
                                     onChange={(e) => handleCheckboxChange('termCondition', e.target.checked)}
                                   >
-                                      <span onClick={showTermCondition} className='underline underline-offset-2'>
-                                      Terms & Conditions
+                                      <span >
+                                      I have read the 
+                                        <span onClick={showTermCondition} className='underline underline-offset-2'>
+                                          Terms & Conditions 
+                                        </span> 
+                                      and fully understand them.
                                     </span>
                                   </Checkbox>
                                 </div>

@@ -137,7 +137,7 @@ const Navbar = ({ auth }) => {
                 
             ) : (
                 <>
-                <ResponsiveNavLink href={route('login')} className="rounded-md px-3 py-2 text-xs text-black ">Login</ResponsiveNavLink>
+                {/* <ResponsiveNavLink href={route('login')} className="rounded-md px-3 py-2 text-xs text-black ">Login</ResponsiveNavLink> */}
                 <ResponsiveNavLink href={route('register')} className="rounded-md px-3 py-2 text-xs text-black ">Sign Up</ResponsiveNavLink>
                 </>
             )} 
@@ -187,12 +187,12 @@ const Navbar = ({ auth }) => {
                 <>
                     
                     <div className="flex gap-1">
-                    <Link
+                    {/* <Link
                         href={route('login')}
                         className="rounded-md px-4 py-2 text-white bg-[#FF4200] transition duration-150 ease-in-out hover:bg-[#FF4200]/80 focus:outline-none focus:ring-2 focus:ring-[#FF2D20] focus:ring-opacity-50"
                     >
                         Login
-                    </Link>
+                    </Link> */}
                     <Link
                         href={route('register')}
                         className="rounded-md px-4 py-2 text-white bg-[#FF4200] transition duration-150 ease-in-out hover:bg-[#FF4200]/80 focus:outline-none focus:ring-2 focus:ring-[#FF2D20] focus:ring-opacity-50"

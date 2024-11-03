@@ -93,19 +93,19 @@ const validatePassword = () => {
     return (
         <>
         <Header/>
-        <div className="flex flex-col gap-9 items-center mt-8">
+        <div className="flex flex-col gap-9 items-center mt-8 p-2 md:p-0">
             <div>
-                <div className="flex flex-col items-center sm:flex-row lg:flex-row">
-                    <span className="font-extrabold text-2xl tracking-widest">Welcome To</span>
-                    <img src="/images/image.png" alt="Logo" className="h-16 w-16 mr-2" />
-                    <span style={{ color: '#FF4200' }} className="mr-2 text-2xl tracking-widest">SMTC</span>
-                    <span style={{ color: '#2938DA' }} className="text-2xl tracking-widest">Dental Care</span>
+                <div className="flex items-center justify-center sm:flex-row lg:flex-row">
+                    <span className="font-extrabold text-xs md:text-2xl tracking-widest">Welcome To</span>
+                    <img src="/images/image.png" alt="Logo" className="h-12 w-12 md:h-16 md:w-16 mr-2" />
+                    <span style={{ color: '#FF4200' }} className="mr-2 text-xs md:text-2xl tracking-widest">SMTC</span>
+                    <span style={{ color: '#2938DA' }} className="text-xs md:text-2xl tracking-widest">Dental Care</span>
                 </div>
                 <span className="text-xs sm:text-sm lg:text-base tracking-widest">General Dentistry & Orthodontics w/ Dental X-Ray</span>
             </div>
             
-            <div className="flex flex-col items-center tracking-widest">
-                <span className="text-xs sm:text-sm lg:text-base text-gray-400 ">Sign up now to book your dental appointment easily with</span>
+            <div className="flex flex-col items-center justify-center">
+                <span className="text-xs sm:text-sm lg:text-base text-gray-400">Sign up now to book your dental appointment easily with</span>
                 <span className="text-gray-400 text-xs sm:text-sm lg:text-base">SMTC Dental Care</span>
             </div>
         </div>
@@ -126,6 +126,7 @@ const validatePassword = () => {
                         name="name"
                         value={data.name}
                         className="mt-1 block w-full text-xs"
+                        placeholder="Juan Dela Cruz"
                         autoComplete="name"
                         isFocused={true}
                         onChange={(e) => setData('name', e.target.value)}
@@ -274,7 +275,6 @@ const validatePassword = () => {
                         value={data.address}
                         className="mt-1 block w-full text-xs"
                         autoComplete="address"
-                        isFocused={true}
                         onChange={(e) => setData('address', e.target.value)}
                         required
                     />
@@ -290,6 +290,7 @@ const validatePassword = () => {
                         name="emergency_contact"
                         value={data.emergency_contact}
                         className="mt-1 block w-full text-xs"
+                        placeholder="Juan Dela Cruz - 09xxxxxxxxx"
                         autoComplete="emergency_contact"
                         onChange={(e) => setData('emergency_contact', e.target.value)}
                         required
@@ -308,14 +309,13 @@ const validatePassword = () => {
 
                 <div className="flex mt-4">
 
+                    <Link
+                        href={route('home')}
+                        className='text-[#FF4200] hover:text-[#3498DB] ease-in-out duration-300 flex justify-end'
+                           >
                     <span className="w-full underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Already have an account?
                     </span>
-                    <Link
-                        href={route('login')}
-                        className='text-[#FF4200] hover:text-[#3498DB] ease-in-out duration-300'
-                           >
-                        Login
                     </Link>
 
                     

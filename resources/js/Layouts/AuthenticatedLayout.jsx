@@ -3,9 +3,54 @@ import Logo from '@/Components/Logo';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
+import { notification } from 'antd';
 
 export default function Authenticated({ user, header, children, }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+            try {
+                const response = await fetch(route('logout'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                });
+    
+                const result = await response.json();
+            
+            if (response.ok) {
+                notification.success({
+                    message: 'Success',
+                    description: result.message || 'Logout successfully!',
+                    placement: 'bottomRight',
+                    duration: 3,
+                });
+                window.location.href = route('home');
+            }
+            else {
+                notification.error({
+                    message: 'Error',
+                    description: result.message || 'Logout Failed!',
+                    placement: 'bottomRight', 
+                    duration: 3,
+                });
+            }
+            }
+            catch (error) {
+                notification.error({
+                    message: 'Error',
+                    description: result.message || 'Logout Failed!',
+                    placement: 'bottomRight', 
+                    duration: 3,
+                });
+            }
+    };
+    
+    
 
     return (
 <div className="min-h-screen flex bg-gray-100 ">
@@ -97,7 +142,7 @@ export default function Authenticated({ user, header, children, }) {
             <div className="px-4 pb-6 ">
                 <div className="block flex-col px-4">
                     {/* Logout Button */}
-                    <Link href={route('logout')} method="post" as="button" className="flex text-center mt-4">
+                    <Link href={route('logout')} method="post" as="button" className="flex text-center mt-4" onClick={handleLogout}>
                         <svg
                         viewBox="0 0 24 24"
                         fill="currentColor"
@@ -199,7 +244,7 @@ export default function Authenticated({ user, header, children, }) {
             <div className='px-4 pb-6 '>
             <div className="block flex-col px-4">
                     {/* Logout Button */}
-                    <Link href={route('logout')} method="post" as="button" className="flex text-center mt-4">
+                    <Link href={route('logout')} method="post" as="button" className="flex text-center mt-4" onClick={handleLogout}>
                         <svg
                         viewBox="0 0 24 24"
                         fill="currentColor"

@@ -37,16 +37,27 @@ export default function Login({ status, canResetPassword }) {
                   },
                 body: JSON.stringify(data),
                 //onFinish: () => reset('password'),
-            })
-    
-            const result = await response.json();
-
-            notification.success({
-                message: 'Success',
-                description: result.message || 'Login successfully!',
-                placement: 'bottomRight', 
             });
-            window.location.href = route('dashboard');
+            const result = await response.json();
+            
+            if (response.ok) {
+                notification.success({
+                    message: 'Success',
+                    description: result.message || 'Login successfully!',
+                    placement: 'bottomRight',
+                    duration: 3,
+                });
+                window.location.href = route('dashboard');
+            }
+            else {
+                notification.error({
+                    message: 'Error',
+                    description: result.message || 'Login Failed!',
+                    placement: 'bottomRight', 
+                    duration: 3,
+                });
+            }
+            
         }
         catch (error) {
             notification.error({
@@ -110,7 +121,7 @@ export default function Login({ status, canResetPassword }) {
                         name="password"
                         value={data.password}
                         className="flex flex-1 mt-1 w-full text-sm"
-                        size='middle'
+                        size='large'
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
                     />
