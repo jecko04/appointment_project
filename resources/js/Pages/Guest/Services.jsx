@@ -19,6 +19,12 @@ const Services = ({ auth }) => {
     selectedBranchName: '',
   });
 
+  useEffect(() => {
+    if (branches.length > 0) {
+        setData({ selectedBranch: branches[0].Branch_ID }); // Pre-select the first branch
+    }
+}, [branches]);
+
   const handleBranchChange = (value) => {
     const selectBranchName = branches.find(branch => branch.Branch_ID === parseInt(value));
     setData((prevData) => ({
@@ -51,7 +57,7 @@ const Services = ({ auth }) => {
         />
         <span className='absolute inset-0 bg-black opacity-50 z-10' />
         <span className='text-[#FFFFFF] text-3xl font-black flex flex-col items-center pt-44 md:pt-64 relative z-20'>
-          SERVICES
+          OUR DENTAL SERVICES
         </span>
     </div>
     <div className='px-10 py-12 flex flex-col gap-3'>

@@ -11,6 +11,8 @@ import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import Checkbox from '@/Components/Checkbox';
 import { SyncOutlined } from '@ant-design/icons';
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+
 
 const Home = ({ status, canResetPassword }) => {
   const user= usePage().props.auth.user;
@@ -163,18 +165,7 @@ const submit = async (e) => {
 
         {user ? (
           <>
-          {/* <div className="hidden lg:block">'
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" fill="#FF4200" transform="scale(-1, 1) translate(-480, 0)"
-            className="w-96 h-96 absolute lg:inset-x-32 xl:inset-x-72 2xl:inset-x-96"
-            >
-                <path d="M0 0h230c138 0 250 112 250 250v230H250C112 480 0 368 0 230V0Z"></path>
-            </svg>
-            <img 
-              src="/images/1.png" 
-              alt="img"
-              className='relative w-96 h-96 z-auto mt-10'
-              />        
-              </div> */}
+          
           </>
         ) : (
           <>
@@ -272,15 +263,87 @@ const submit = async (e) => {
         </div>
     </div>
     
-    <div className='h-[23rem] lg:h-[100vh] flex flex-col lg:justify-center justify-end md:p-0 p-2'>
+    <div className=' flex flex-col lg:flex-row md:p-0 lg:p-2'>
 
-    <div className="flex flex-col items-center md:w-[30rem] lg:mt-0 justify-center rounded-tl-3xl rounded-br-3xl shadow-md p-2">
-    <span className="2xl:text-3xl lg:text-3xl text-lg text-center lg:text-left tracking-widest font-black">
-        <span className="text-[#FF4200]">Lifelong  </span>
-        <span className="text-[#2938DA]">Dental Care </span>
+    <div className="flex flex-col items-center md:w-[30rem] w-full lg:mt-4 lg:p-[2rem]">
+      <span className="2xl:text-3xl lg:text-3xl text-lg text-center lg:text-left tracking-widest font-black">
+        <span className="text-[#FF4200]">Our  </span>
+        <span className="text-[#2938DA]">Dental Serivces </span>
       </span>
+  
+      <div className="flex flex-col lg:flex-row gap-6 justify-center lg:mt-8 lg:h-[30rem] ">
       
-      <span className="text-xs lg:text-base text-center pt-3">Your family deserves a dentist who provides not only emergency dental services but also supports and enhances oral health at every stage of life. We offer comprehensive family dentistry services designed to benefit every member of your family.</span>
+      {/* Preventive and Basic Care */}
+      <div className="bg-white rounded-lg shadow-lg w-[20rem] flex flex-col items-start ">
+        <img src="/images/image6.jpg" alt="" className="w-full h-[13rem] object-cover mb-4 rounded-t-md"  />
+        <ul className="list-none ml-1 space-y-2 text-blue-400 p-6">
+        <span className="text-[#FF4200] text-xl font-semibold mb-4">Preventive and Basic Care</span>
+          <li className="flex items-center text-lg">
+            <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+            Tooth Cleaning
+          </li>
+          <li className="flex items-center text-lg">
+            <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+            Consultation
+          </li>
+        </ul>
+      </div>
+
+      {/* Restorative Treatments */}
+      <div className="bg-white rounded-lg shadow-lg w-[20rem] flex flex-col items-start">
+      <img src="/images/image7.jpg" alt="" className="w-full h-[13rem] object-cover mb-4 rounded-t-md"  />
+
+        <ul className="list-none ml-1 space-y-2 text-blue-400 p-6">
+        <span className="text-[#2938DA] text-xl font-semibold mb-4">Restorative Treatments</span>
+          <li className="flex items-center text-lg">
+            <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+            Tooth Filling
+          </li>
+          <li className="flex items-center text-lg">
+            <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+            Tooth Whitening
+          </li>
+          <li className="flex items-center text-lg">
+            <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+            Flexible Denture
+          </li>
+          <li className="flex items-center text-lg">
+            <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+            Acrylic Denture
+          </li>
+        </ul>
+      </div>
+
+      {/* Surgical and Specialty Treatments */}
+      <div className="bg-white rounded-lg shadow-lg w-[20rem] flex flex-col items-start">
+      <img src="/images/image8.jpg" alt="" className="w-full h-[13rem] object-cover mb-4 rounded-t-md"  />
+
+        <ul className="list-none ml-1 space-y-2 text-blue-400 p-6">
+        <span className="text-[#FF4200] text-xl font-semibold mb-4">Surgical and Specialty Treatments</span>
+          <li className="flex items-center text-lg">
+            <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+            Tooth Extraction
+          </li>
+          <li className="flex items-center text-lg">
+            <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+            Dental Surgery
+          </li>
+          <li className="flex items-center text-lg">
+            <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+            Orthodontic Treatment
+          </li>
+        </ul>
+      </div>
+
+    </div>
+      <div className='mt-4'>
+        <Link href={route('guest.appointment')}>
+          <Button className='text-xl bg-[#FF4200] text-white lg:px-[24.6rem] lg:py-[1.4rem]'>
+            Book Appointment Here!
+          </Button>
+        </Link>
+      </div>
+  
     </div>
     </div>
 
