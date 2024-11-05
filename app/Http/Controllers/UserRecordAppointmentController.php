@@ -21,6 +21,7 @@ class UserRecordAppointmentController extends Controller
         $appointmentDetails = AppointmentModel::where('user_id', $userId)
         ->whereIn('status', ['cancelled', 'completed', 'missed'])
         ->with('users', 'branch', 'services')
+        ->orderBy('created_at', 'desc')
         ->get();
         
         $user = User::where('id', $userId)->get();

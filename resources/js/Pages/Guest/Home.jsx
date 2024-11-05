@@ -1,24 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FaLocationDot } from "react-icons/fa6";
 import { TbDental } from "react-icons/tb";
 import { LuCalendarCheck2 } from "react-icons/lu";
-import { Modal, Button, Carousel, Input, notification  } from 'antd';
+import { Modal, Button, Carousel, Input, notification, Divider  } from 'antd';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import Checkbox from '@/Components/Checkbox';
 import { SyncOutlined } from '@ant-design/icons';
 
-const Home = ({status, canResetPassword}) => {
+const Home = ({ status, canResetPassword }) => {
   const user= usePage().props.auth.user;
-  
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [size, setSize] = useState('large');
 
   const { data, setData, post, errors, reset } = useForm({
     email: '',
@@ -98,26 +98,51 @@ const submit = async (e) => {
     borderRadius: '8px',
   };
 
+
+  useEffect(() => {
+      const handleResize = () => {
+          if (window.innerWidth < 768) { 
+              setSize('medium');
+          } else {
+              setSize('large');
+          }
+      };
+
+      window.addEventListener('resize', handleResize);
+      handleResize(); 
+
+      return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <>
-    <div className="flex flex-col items-center justify-center">
-
-    <div className="flex flex-col md:flex-row items-center justify-center gap-14 md:gap-28">
-      <div className="flex flex-col max-w-lg ">
+    <div className="flex flex-col items-center justify-center lg:gap-0 gap-24">
+    <div className='relative h-svh w-full'>
+        <span 
+        className='absolute inset-0 bg-cover bg-center bg-fixed lg:h-full h-[41.5rem]' 
+        style={{
+          backgroundImage: 'url("/images/image3.jpg")',
+          zIndex: 0, 
+        }}
+        />
+      <span className='absolute inset-0 bg-black opacity-50 z-10 lg:h-full h-[41.5rem]' />
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-14 lg:h-[100vh] relative z-20 md:p-0 p-3">
+      
+      <div className="flex flex-col max-w-lg mt-5">
       <span className="2xl:text-4xl lg:text-4xl text-2xl text-center lg:text-left tracking-widest font-black">
-        <span className="text-[#FF4200] lg:bg-[#FADC12]">Experience </span>
-        <span className="text-[#2938DA]">quality dental care </span>
-        <span className="text-[#FF4200] lg:bg-[#FADC12]">with a smile</span>
+        <span className="text-[#FFFFFF] ">Experience </span>
+        <span className="text-[#FFFFFF]">quality dental care </span>
+        <span className="text-[#FFFFFF] ">with a smile</span>
       </span>
 
-      <div className="text-gray-500 lg:text-lg text-base text-center mt-3 lg:mt-0 lg:text-left lg:text-clip leading-5">
+      <div className="text-white lg:text-lg text-base text-center mt-3 lg:mt-0 lg:text-left lg:text-clip leading-5">
       <p>
         {isExpanded
           ? "Our clinic focuses on enhancing your smile, ensuring a healthy, radiant one, and promoting confidence through dental health and beauty. Schedule an appointment today for a brighter, healthier you."
           : "Our clinic focuses on enhancing your smile, ensuring a healthy, radiant one..."}
       </p>
       <button
-        className="text-[#2938DA] hover:underline"
+        className="text-[#ffffff] hover:underline"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         {isExpanded ? 'See Less' : 'See More...'}
@@ -128,15 +153,17 @@ const submit = async (e) => {
       <div className="flex justify-center lg:justify-start mt-7 lg:m-7">
       <Link href={route('guest.appointment')}>
         <SecondaryButton onClick={showModal}>
-          Request Appointment
+          Request Appointment Here!
         </SecondaryButton>
       </Link>     
     </div>
       </div>
+
       <div className="lg:block">
 
         {user ? (
           <>
+          {/* <div className="hidden lg:block">'
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" fill="#FF4200" transform="scale(-1, 1) translate(-480, 0)"
             className="w-96 h-96 absolute lg:inset-x-32 xl:inset-x-72 2xl:inset-x-96"
             >
@@ -146,13 +173,14 @@ const submit = async (e) => {
               src="/images/1.png" 
               alt="img"
               className='relative w-96 h-96 z-auto mt-10'
-            />        
+              />        
+              </div> */}
           </>
         ) : (
           <>
-             <div className='relative md:py-[4rem] md:px-[2rem] md:shadow-xl md:rounded-tl-3xl md:rounded-br-3xl'>
+             <div className="relative text-white lg:py-[4rem] md:py-[2rem] lg:mt-0 mt-4 md:px-[2rem] px-2 py-2 md:shadow-xl md:rounded-tl-3xl md:rounded-br-3xl md:border md:border-solid md:border-white">
 
-              <div className="flex flex-col items-center mt-4">
+              <div className="flex flex-col items-center">
                   <div className="flex items-center sm:flex-row lg:flex-row">
                       <span className="font-extrabold text-xs md:text-sm tracking-widest">Welcome To</span>
                       <img src="/images/image.png" alt="Logo" className="h-10 w-10 mr-2" />
@@ -166,14 +194,14 @@ const submit = async (e) => {
 
               <form onSubmit={submit}>
                   <div>
-                      <InputLabel htmlFor="email" value="Email" />
+                      <InputLabel htmlFor="email" value="Email" className='text-white' />
 
                       <TextInput
                           id="email"
                           type="email"
                           name="email"
                           value={data.email}
-                          className="mt-1 block w-full text-sm"
+                          className="mt-1 block w-full md:text-sm text-xs"
                           autoComplete="username"
                           isFocused={true}
                           onChange={(e) => setData('email', e.target.value)}
@@ -183,15 +211,15 @@ const submit = async (e) => {
                   </div>
 
                   <div className="mt-4">
-                      <InputLabel htmlFor="password" value="Password" />
+                      <InputLabel htmlFor="password" value="Password" className='text-white'/>
 
                       <Input.Password
                           id="password"
                           type="password"
                           name="password"
                           value={data.password}
-                          className="flex flex-1 mt-1 w-full text-sm"
-                          size='large'
+                          className="flex flex-1 mt-1 w-full md:text-sm text-xs"
+                          size={size}
                           autoComplete="current-password"
                           onChange={(e) => setData('password', e.target.value)}
                       />
@@ -206,22 +234,22 @@ const submit = async (e) => {
                               checked={data.remember}
                               onChange={(e) => setData('remember', e.target.checked)}
                           />
-                          <span className="ms-2 text-xs text-gray-600">Remember me</span>
-                      </label>
+                          <span className="ms-2 text-xs text-white">Remember me</span>
                       {canResetPassword && (
                           <Link
                               href={route('password.request')}
-                              className="underline text-xs text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                              className="underline text-xs text-white hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                           >
                               Forgot your password?
                           </Link>
                       )}
+                      </label>
                   </div>
 
                   <div className="flex items-center justify-between mt-4">
                       <Link
                       href={route('register')}
-                      className="underline text-xs text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="underline text-xs text-white hover:text-blue-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
                           Haven't created an account yet?
                       </Link>
@@ -241,19 +269,24 @@ const submit = async (e) => {
 
 
       </div>
+        </div>
     </div>
     
-    <div className="flex flex-col items-center w-full max-w-96 lg:mt-24 mt-12">
+    <div className='h-[23rem] lg:h-[100vh] flex flex-col lg:justify-center justify-end md:p-0 p-2'>
+
+    <div className="flex flex-col items-center md:w-[30rem] lg:mt-0 justify-center rounded-tl-3xl rounded-br-3xl shadow-md p-2">
     <span className="2xl:text-3xl lg:text-3xl text-lg text-center lg:text-left tracking-widest font-black">
         <span className="text-[#FF4200]">Lifelong  </span>
         <span className="text-[#2938DA]">Dental Care </span>
       </span>
       
-      <span className="text-xs lg:text-base text-center">Your family deserves a dentist who provides not only emergency dental services but also supports and enhances oral health at every stage of life. We offer comprehensive family dentistry services designed to benefit every member of your family.</span>
+      <span className="text-xs lg:text-base text-center pt-3">Your family deserves a dentist who provides not only emergency dental services but also supports and enhances oral health at every stage of life. We offer comprehensive family dentistry services designed to benefit every member of your family.</span>
+    </div>
     </div>
 
-    <div className="flex flex-col lg:flex-row justify-center w-full md:w-auto lg:w-full lg:max-w-full lg:mt-24 m-12 lg:gap-28 gap-96">
-      <div className="flex flex-col max-w-md">
+
+    <div className="flex flex-col lg:flex-row items-center lg:justify-center md:w-full md:max-w-full md:pt-20 lg:gap-28 lg:h-[100vh] md:h-[55rem] h-[40rem] w-[100vw] bg-white mb-[6rem] ">
+      <div className="flex flex-col md:max-w-md max-w-full">
           
           <span className="text-sm text-gray-500">Why choose us?</span>
 
@@ -282,9 +315,9 @@ const submit = async (e) => {
 
       </div>
 
-        <div className="flex flex-wrap items-center w-full max-w-md mt-4">
+        <div className=" flex flex-wrap items-center w-full max-w-md mt-4">
                 
-                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute lg:w-full lg:max-w-72 lg:bottom-72 2xl:right-1/4 lg:right-96 sm:bottom-80 bottom-96 left-10 sm:left-52 lg:left-1/2">
+                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute lg:w-full lg:max-w-72 lg:bottom-72 2xl:right-1/4 lg:right-96 translate-y-[9rem] md:-translate-y-[2rem] lg:-translate-y-[5rem] sm:bottom-80 bottom-96 left-10 sm:left-52 lg:left-1/2">
                   <div className="flex lg:text-lg text-sm font-black gap-1">
                 <FaLocationDot className="text-2xl "/>
                     <span>Accessible </span>
@@ -295,7 +328,7 @@ const submit = async (e) => {
                     Visit us at any of our easily reachable clinics, making dental care close to home.</span>
                 </div>
 
-                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute lg:w-full lg:max-w-72 2xl:right-72 lg:right-40 lg:bottom-36  sm:bottom-40 bottom-72 left-10 sm:left-72 lg:left-2/3" >
+                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute lg:w-full lg:max-w-72 2xl:right-72 lg:right-40 lg:bottom-36 translate-y-[10rem] md:-translate-y-[3rem] lg:-translate-y-[6rem] sm:bottom-40 bottom-72 left-10 sm:left-72 lg:left-2/3" >
                 <div className="flex lg:text-lg text-sm font-black gap-1">
                 <TbDental className="text-2xl"/>
                   <span>Full-Service </span>
@@ -306,7 +339,7 @@ const submit = async (e) => {
                     Offering a wide range of dental treatments for all ages, from routine checkups to advanced cosmetic procedures.</span>
                 </div>
 
-                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute lg:w-full lg:max-w-72 lg:right-96 lg:bottom-0 sm:bottom-4 bottom-52 left-10 sm:left-52 lg:left-1/2">
+                <div className="flex flex-col sm:shadow-lg sm:px-5 sm:py-7 rounded-bl-3xl rounded-tr-3xl absolute lg:w-full lg:max-w-72 lg:right-96 lg:bottom-0 translate-y-[11rem] md:-translate-y-[4rem] lg:-translate-y-[7rem] sm:bottom-4 bottom-52 left-10 sm:left-52 lg:left-1/2">
                 <div className="flex lg:text-lg text-sm font-black gap-1">
                 <LuCalendarCheck2 className="text-2xl "/>
                   <span>Hassle-Free </span>

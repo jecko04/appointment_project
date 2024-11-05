@@ -23,7 +23,7 @@ export default function Welcome({ auth }) {
                 <Head title="SMTC - Dental Care" />
                 <div className="text-xs ">
                     <div className="items-center justify-center selection:text-blue-500  ">
-                        <div className="relative w-full px-6 pt-2 ">
+                        <div className="relative pt-2 ">
                             <header>
                                 <Navbar auth={auth} />
                             </header>

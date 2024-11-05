@@ -1,11 +1,12 @@
 import React from 'react'
-import { Link } from '@inertiajs/inertia-react';
+import { Link, usePage } from '@inertiajs/inertia-react';
 import Logo from '@/Components/Logo';
 import { useState } from 'react';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink'; 
 import { motion, MotionConfig } from 'framer-motion';
 
 const Navbar = ({ auth }) => {
+
 
     const [isOpen, setIsOpen] = useState(false);
     const [active, setActive] = useState(false);

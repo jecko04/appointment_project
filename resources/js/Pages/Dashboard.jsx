@@ -30,8 +30,8 @@ export default function Dashboard({ auth }) {
                 <img src="/images/QRCode.png" alt="" className='h-[100px] w-[100px] bg-white rounded-sm' />
 
                 <div className='flex flex-col mt-[4rem]'>
-                    <a href={route('guest.appointment')} className='hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg font-semibold'>Book an appointment</a>
-                    <a href={route('home')} className='hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg font-semibold'>Back to Home</a>
+                    <a href={route('guest.appointment')} className='hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg '>Book an appointment Here!</a>
+                    <a href={route('home')} className='hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg '>Back to Home</a>
                 </div>
 
 

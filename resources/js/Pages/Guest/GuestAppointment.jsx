@@ -66,7 +66,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
     diabetes: false,
     smoker: false,
 
-    last_dental_visit: null,
+    //last_dental_visit: null,
     past_dental_treatments: '',
     tooth_sensitivity: '',
     frequent_tooth_pain: false,
@@ -352,7 +352,7 @@ const handleQRCode = (value) => {
   const isStepComplete = () => {
     if (currentStep === 0) return data.selectedBranch && data.selectServices && data.appointment_date && data.appointment_time;
     if (currentStep === 1) return data.fullname && data.age && data.gender && data.phone && data.email && data.address && data.date_of_birth && data.emergency_contact;
-    if (currentStep === 3) return data.last_dental_visit;
+    //if (currentStep === 3) return data.last_dental_visit;
     if (currentStep === 4) return data.termCondition;
     return true;
   };
@@ -468,7 +468,6 @@ const handleQRCode = (value) => {
                                   disabledDate={disableDate}
                                   value={data.appointment_date ? moment(data.appointment_date): null}
                                   className="block w-60 md:w-80"
-                                  needConfirm
                                   size='large'
                                   onChange={(date) => setData('appointment_date', date ? date.format("YYYY-MM-DD"): null)}
                                   required
@@ -567,7 +566,6 @@ const handleQRCode = (value) => {
                                 name="date_of_birth"
                                 type="date"
                                 className="block w-70 md:w-80"
-                                needConfirm
                                 size='large'
                                 value={data.date_of_birth ? moment(data.date_of_birth) : null} 
                                 onChange={(date) => setData('date_of_birth', date ? date.format("YYYY-MM-DD"): null)}
@@ -664,7 +662,7 @@ const handleQRCode = (value) => {
                           <span className="text-[#2938DA]">Dental Care</span>
                           <span>!</span>
                         </div>
-                        <span className="font-black text-sm">Medical History</span>
+                        <span className="font-black text-sm">General Medical Information</span>
                         <div className="flex flex-col md:flex-row md:gap-x-[4.9rem] justify-evenly">
                           <div className="flex flex-col gap-3">
                           <InputLabel htmlFor="medical_condition" value="Medical Condition (if there's any)" />
@@ -779,11 +777,10 @@ const handleQRCode = (value) => {
                           <span className="text-[#2938DA]">Dental Care</span>
                           <span>!</span>
                         </div>
-                        <span className="font-black text-sm">Dental History</span>
+                        <span className="font-black text-sm">Dental Information</span>
                         <div className="flex flex-col justify-between">
                           <div className="flex flex-col gap-3">
-                            <div>
-
+                            {/* <div>
                           <InputLabel htmlFor="last_dental_visit" value="Select your last dental visit date" />
                           <span className="text-sm text-[#FF4200]">If this is your first time, kindly choose your appointment date you previously selected at the first step.</span>
                             <DatePicker
@@ -800,11 +797,11 @@ const handleQRCode = (value) => {
                             />
 
                             <InputError className="mt-2" message={errors.last_dental_visit} />
-                            </div>
+                            </div> */}
 
                             <div>
 
-                          <InputLabel htmlFor="past_dental_treatments" value="Last dental treatment" />
+                          <InputLabel htmlFor="past_dental_treatments" value="Last dental treatment (If there's any)" />
 
                           <TextInput
                               id="past_dental_treatments"
@@ -980,19 +977,16 @@ const handleQRCode = (value) => {
                                 </div>
                                 
                             </div>
-                            <div className='flex items-center justify-end'>
+                            <div className='flex items-center justify-start'>
                                   <Checkbox
                                     id="termCondition"
                                     name="termCondition"
+                                    autoFocus
                                     checked={data.termCondition}
                                     onChange={(e) => handleCheckboxChange('termCondition', e.target.checked)}
                                   >
-                                      <span >
-                                      I have read the 
-                                        <span onClick={showTermCondition} className='underline underline-offset-2'>
-                                          Terms & Conditions 
-                                        </span> 
-                                      and fully understand them.
+                                    <span onClick={showTermCondition} className='underline underline-offset-2'>
+                                      Terms & Conditions 
                                     </span>
                                   </Checkbox>
                                 </div>
@@ -1005,7 +999,7 @@ const handleQRCode = (value) => {
                       )}
                       
 
-                      <div className="flex justify-between w-full mt-4">
+                      <div className="flex gap-3 w-full mt-4">
                         {currentStep > 0 && (
                           <TertiaryButton onClick={previousStep}  disabled={currentStep === 0}>
                             Previous

@@ -152,7 +152,7 @@ class AppointmentController extends Controller
 
         $dentalHistoryData = [
             'patient_id' => $patient->id, 
-            'last_dental_visit' => $request->last_dental_visit,
+            //'last_dental_visit' => $request->last_dental_visit,
             'past_dental_treatments' => $request->past_dental_treatments,
             'tooth_sensitivity' => $request->tooth_sensitivity,
             'frequent_tooth_pain' => $request->frequent_tooth_pain,
