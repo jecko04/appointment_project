@@ -14,7 +14,7 @@ import { SyncOutlined } from '@ant-design/icons';
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 
 
-const Home = ({ status, canResetPassword }) => {
+const Home = ({ status, canResetPassword = true }) => {
   const user= usePage().props.auth.user;
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -27,6 +27,7 @@ const Home = ({ status, canResetPassword }) => {
     password: '',
     remember: false,
 });
+console.log(canResetPassword);
 
 const submit = async (e) => {
     e.preventDefault();
@@ -218,23 +219,23 @@ const submit = async (e) => {
                       <InputError message={errors.password} className="mt-2" />
                   </div>
 
-                  <div className="flex justify-between mt-4">
-                      <label className="flex items-center">
+                  <div className="mt-4 flex justify-between">
+                      <label className="flex items-center ">
                           <Checkbox
                               name="remember"
                               checked={data.remember}
                               onChange={(e) => setData('remember', e.target.checked)}
                           />
                           <span className="ms-2 text-xs text-white">Remember me</span>
+                      </label>
                       {canResetPassword && (
                           <Link
                               href={route('password.request')}
-                              className="underline text-xs text-white hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                              className="underline text-xs text-white hover:text-blue-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                           >
                               Forgot your password?
                           </Link>
                       )}
-                      </label>
                   </div>
 
                   <div className="flex items-center justify-between mt-4">
@@ -339,7 +340,7 @@ const submit = async (e) => {
       <div className='mt-4'>
         <Link href={route('guest.appointment')}>
           <Button className='text-xl bg-[#FF4200] text-white lg:px-[24.6rem] lg:py-[1.4rem]'>
-            Book Appointment Here!
+            Book Appointment Here! 
           </Button>
         </Link>
       </div>

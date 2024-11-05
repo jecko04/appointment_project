@@ -126,7 +126,7 @@ const validatePassword = () => {
                         name="name"
                         value={data.name}
                         className="mt-1 block w-full text-xs"
-                        placeholder="Juan Dela Cruz"
+                        placeholder="e.g. Juan Dela Cruz"
                         autoComplete="name"
                         isFocused={true}
                         onChange={(e) => setData('name', e.target.value)}
@@ -145,6 +145,7 @@ const validatePassword = () => {
                         name="email"
                         value={data.email}
                         className="mt-1 block w-full text-xs"
+                        placeholder="e.g. juandelacruz@gmail.com"
                         autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
                         required
@@ -218,7 +219,6 @@ const validatePassword = () => {
                         value={data.age}
                         className="mt-1 block w-full text-xs"
                         autoComplete="age"
-                        isFocused={true}
                         onChange={(e) => setData('age', e.target.value)}
                         required
                     />
@@ -253,8 +253,8 @@ const validatePassword = () => {
                         type="tel"
                         value={data.phone}
                         className="mt-1 block w-full text-xs"
+                        placeholder="e.g. 09xxxxxxxxx"
                         autoComplete="phone"
-                        isFocused={true}
                         onChange={(e) => setData('phone', e.target.value)}
                         required
                     />
@@ -274,6 +274,7 @@ const validatePassword = () => {
                         name="address"
                         value={data.address}
                         className="mt-1 block w-full text-xs"
+                        placeholder="e.g. kapalaran st commonwealth quezon city"
                         autoComplete="address"
                         onChange={(e) => setData('address', e.target.value)}
                         required
