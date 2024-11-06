@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AboutController;
-use App\Http\Controllers\AppointmentChildForm;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
@@ -15,7 +14,12 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\RescheduleController;
 use App\Http\Controllers\ServicesController;
-use App\Http\Controllers\UpdatePersonalInfomationFormController;
+
+// Route::prefix('api')
+//     //->middleware('api')
+//     ->group(function() {
+//         require base_path('routes/api.php'); 
+//     });
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 
@@ -28,6 +32,11 @@ Route::get('/welcome', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+
+
+
+
 
 Route::get('/about', [AboutController::class, 'about'])->name('about');
 Route::get('/services', [ServicesController::class, 'services'])->name('services');

@@ -170,7 +170,7 @@ const submit = async (e) => {
           </>
         ) : (
           <>
-             <div className="relative text-white lg:py-[4rem] md:py-[2rem] lg:mt-0 mt-4 md:px-[2rem] px-2 py-2 md:shadow-xl md:rounded-tl-3xl md:rounded-br-3xl md:border md:border-solid md:border-white">
+             <div className="relative text-black bg-white/10 backdrop:blur-xl lg:py-[4rem] md:py-[2rem] lg:mt-0 mt-4 md:px-[2rem] px-2 py-2 md:shadow-xl md:rounded-tl-3xl md:rounded-br-3xl md:border md:border-solid md:border-white">
 
               <div className="flex flex-col items-center">
                   <div className="flex items-center sm:flex-row lg:flex-row">
@@ -210,7 +210,7 @@ const submit = async (e) => {
                           type="password"
                           name="password"
                           value={data.password}
-                          className="flex flex-1 mt-1 w-full md:text-sm text-xs"
+                          className="flex flex-1 mt-1 w-full md:text-sm text-xs "
                           size={size}
                           autoComplete="current-password"
                           onChange={(e) => setData('password', e.target.value)}

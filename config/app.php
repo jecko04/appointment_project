@@ -1,6 +1,12 @@
 <?php
 
+use App\Providers\RouteServiceProvider;
+
 return [
+
+    // 'providers' => [
+    //     RouteServiceProvider::class,
+    // ],
 
     /*
     |--------------------------------------------------------------------------

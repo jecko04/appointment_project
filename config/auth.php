@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Admin;
+use App\Models\Mobile\MobileDentalDoctorModel;
 use App\Models\User;
 
 return [
@@ -50,6 +51,11 @@ return [
         'driver' => 'session',
         'provider' => 'admins',
     ],
+
+    'api_dentaldoctor' => [
+        'driver' => 'session',
+        'provider' => 'dentaldoctors',
+    ],
 ],
 
 'providers' => [
@@ -61,6 +67,11 @@ return [
     'admins' => [
         'driver' => 'eloquent',
         'model' => Admin::class,
+    ],
+
+    'dentaldoctors' => [
+        'driver' => 'eloquent',
+        'model' => MobileDentalDoctorModel::class,
     ],
 ],
 
