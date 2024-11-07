@@ -18,19 +18,16 @@ class MobileLoginController extends Controller
             'password' => 'required'
         ]);
 
-        $doctor = MobileDentalDoctorModel::where('Email', $request->email)->first();
+        $doctor = MobileDentalDoctorModel::where('Email', strtolower($request->email))->first();
 
-        if (!$doctor) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
+        if ($doctor && Hash::check($request->password, $doctor->Password)) {
+            
+            $token = $doctor->createToken('mobile-app-token')->plainTextToken;
 
-        if (Auth::guard('api_dentaldoctor')->attempt([
-            'email' => $request->email,
-            'password' => $request->password,
-        ])) {
             return response()->json([
                 'success' => true,
-                'message' => 'Login successful'
+                'message' => 'Login successful',
+                'token' => $token 
             ]);
         }
 

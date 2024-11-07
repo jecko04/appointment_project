@@ -53,7 +53,7 @@ return [
     ],
 
     'api_dentaldoctor' => [
-        'driver' => 'session',
+        'driver' => 'sanctum',
         'provider' => 'dentaldoctors',
     ],
 ],
