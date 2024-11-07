@@ -7,6 +7,7 @@ use App\Http\Controllers\Mobile\MobileAppointmentController;
 use App\Http\Controllers\Mobile\MobileDashboardController;
 use App\Http\Controllers\Mobile\MobileLoginController;
 use App\Http\Controllers\Mobile\MobileLogoutController;
+use App\Http\Controllers\Mobile\MobileSetPasswordController;
 use App\Http\Controllers\Mobile\MobileSetProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/mobile/getProfile', [MobileSetProfileController::class, 'getProfile'])->name('mobile.getProfile');
     Route::post('/mobile/setProfile', [MobileSetProfileController::class, 'setProfile'])->name('mobile.setProfile');
+    
+    Route::post('/mobile/change', [MobileSetPasswordController::class, 'change'])->name('mobile.change');
 });
 
 

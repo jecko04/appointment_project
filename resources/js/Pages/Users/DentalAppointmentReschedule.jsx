@@ -179,9 +179,9 @@ const disableDate = (current) => {
       </div>
     ) : (
       <>
-      <span className='px-[3rem] italic'><b>Note:</b> If you reschedule, approval will be required again before the new appointment is confirmed.</span>
-      <div className='flex flex-col md:flex-row items-center md:py-[2rem] md:px-[2rem]'>
+      <div className='flex flex-col md:flex-row items-end md:py-[2rem] md:px-[2rem]'>
         <div className='md:px-4 py-4 md:py-0 flex flex-col gap-3 justify-center '>
+        <span className='italic'><b>Note:</b> If you reschedule, approval will be required again before the new appointment is confirmed. Only one appointment per service is allowed. If you wish to change the service or appointment details, a new appointment must be made.</span>
           <div className='flex flex-col'>
           <InputLabel htmlFor="fullname" value="Fullname" />
             <TextInput 
@@ -242,7 +242,6 @@ const disableDate = (current) => {
                               disabledDate={disableDate}
                               value={data.reschedule_date ? moment(data.reschedule_date): null}
                               className="block w-60 md:w-80"
-                              needConfirm
                               size='large'
                               onChange={(date) => setData('reschedule_date', date ? date.format("YYYY-MM-DD"): null)}
                               required
