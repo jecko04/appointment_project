@@ -79,7 +79,7 @@ const AppointmentDetails = ({ auth }) => {
                 placement: 'bottomRight',
             });
             setIsDeleteModalOpen(false);
-            window.location.href = route('appointment');
+            window.location.href = result.redirect;
 
           } else {
               notification.error({
@@ -168,16 +168,14 @@ const AppointmentDetails = ({ auth }) => {
 
     const qrCodeData = appointmentDetails ? JSON.parse(appointmentDetails[0]?.qr_code || "{}") : {};
 
-
-
     useEffect(() => {
-      const branch = branches 
-        ? branches.find(b => b.Branch_ID === appointmentDetails ? appointmentDetails[0]?.selectedBranch : null) 
-        : null;
+      const branch = branches && appointmentDetails
+      ? branches.find(b => b.Branch_ID === appointmentDetails[0]?.selectedBranch)
+      : null;
 
-      const service = categories 
-        ? categories.find(c => c.Categories_ID ===  appointmentDetails ? appointmentDetails[0]?.selectServices : null) 
-        : null;
+      const service = categories && appointmentDetails
+    ? categories.find(c => c.Categories_ID === appointmentDetails[0]?.selectServices)
+    : null;
       
       setCurrentQRCode({
         ...currentQRCode,
@@ -207,7 +205,7 @@ const AppointmentDetails = ({ auth }) => {
     <>
 
     <div className='pt-10 px-2 lg:px-[1rem]'>
-    <div className='flex flex-col gap-1 px-4 py-3'>
+    <div className='flex flex-col gap-1 px-4 lg:px-0 py-3'>
                 <div className='flex items-center justify-between'>
                     <span className='text-xs lg:text-sm text-[#ff4200]'>Welcome Back!</span>
                 </div>
@@ -234,7 +232,7 @@ const AppointmentDetails = ({ auth }) => {
       {
         processing ? (
           <>
-          <div className='mt-5 flex w-full' style={{ position: "absolute", top: "50%", left: "50%", x:"-50%", y: "-50%" }}>
+          <div className='mt-5 flex w-full' style={{ position: "absolute", top: "80%", left: "50%", x:"-50%", y: "-50%" }}>
             <BarLoader color="#FF4200" />
           </div>
           </>
