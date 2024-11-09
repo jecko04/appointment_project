@@ -34,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'ifNotUser' => RedirectIfNotUsers::class,
             'IfAuthenticate' => RedirectIfAuthenticated::class,
             'checkAppointment' => CheckAppointment::class,
-            'crftToken' => VerifyCsrfToken::class,
+            //'crftToken' => VerifyCsrfToken::class,
             
         ]);
     })

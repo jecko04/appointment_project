@@ -26,7 +26,7 @@ class CheckAppointment
             ->exists();
 
             if($hasAppointment) {
-                return redirect()->route('dashboard');
+                return redirect()->route('appointment');
             }
         }
         return $next($request);

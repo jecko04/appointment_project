@@ -38,6 +38,7 @@ export default function Login({ status, canResetPassword }) {
                 body: JSON.stringify(data),
                 //onFinish: () => reset('password'),
             });
+
             const result = await response.json();
             
             if (response.ok) {
@@ -47,7 +48,9 @@ export default function Login({ status, canResetPassword }) {
                     placement: 'bottomRight',
                     duration: 3,
                 });
-                window.location.href = route('dashboard');
+                if (result.redirect) {
+                    window.location.href = result.redirect;  
+                }
             }
             else {
                 notification.error({

@@ -10,7 +10,7 @@ export default function AdminDashboard({ auth }) {
             //header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dental Appointment</h2>}
         >
             <Head title="Dental Appointment" />
-            <main className='mt-[5rem]'>
+            <main className='bg-white w-full h-[100vh]'>
                 <DentalAppointment/>
             </main>
         </AuthenticatedLayout>

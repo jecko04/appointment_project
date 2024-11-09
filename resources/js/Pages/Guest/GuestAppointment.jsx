@@ -133,7 +133,7 @@ const Appointment = ({ auth, branches, categories, office_hours }) => {
           description: 'Dental appointment set successfully!',
           placement: 'bottomRight', 
         });
-        window.location.href = route('dashboard');
+        window.location.href = route('appointment');
     }
       catch (error) {
         console.error("Error during appointment submission:", error.message);

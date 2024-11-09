@@ -54,7 +54,7 @@ const submit = async (e) => {
                 placement: 'bottomRight',
                 duration: 3,
             });
-            window.location.href = route('dashboard');
+            window.location.href = result.redirect;  
         }
         else {
             notification.error({

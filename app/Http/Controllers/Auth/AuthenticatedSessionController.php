@@ -33,6 +33,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
         
         return response()->json([
+            'redirect' => route('home'),
             'message' => 'Login successfully!',
         ], 200);
     }

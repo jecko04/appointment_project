@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification, Tag, Popover, Pagination } from "antd";
+import { Table, Button, Modal, Space, Segmented, QRCode, DatePicker, TimePicker, notification, Tag, Popover, Pagination, Empty } from "antd";
 import { Head, useForm, usePage, Link} from '@inertiajs/react';
 import { DownloadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InputLabel from '@/Components/InputLabel';
@@ -17,14 +17,16 @@ import {
   SyncOutlined,
 } from '@ant-design/icons';
 import BarLoader from 'react-spinners/BarLoader';
+import TextInput from '@/Components/TextInput';
 
 const AppointmentDetails = ({ auth }) => {
     const { appointmentDetails, branches, categories, users, office_hours} = usePage().props;
 
     const user= usePage().props.auth.user;
-    const qrCodeData = JSON.parse( appointmentDetails?.qr_code || "{}");
+    
     
     const {data, setData, errors }= useForm({
+      id: '',
       fullname: '',
       selectedBranchName: '',
       selectedServices: '',
@@ -55,7 +57,7 @@ const AppointmentDetails = ({ auth }) => {
       try {
           const formattedData = {
               ...data,
-              id: selectedRecord.id,
+              id: appointmentDetails[0]?.id, 
               status: 'cancelled'
           };
   
@@ -96,7 +98,14 @@ const AppointmentDetails = ({ auth }) => {
     const [processing, setProcessing] = useState();
     const [isQRModalOpen, setQRModalOpen] = useState(false);
     const [isReschedModalOpen, setReschedModalOpen] = useState(false);
-    const [currentQRCode, setCurrentQRCode] = useState('');
+    const [currentQRCode, setCurrentQRCode] = useState({
+      fullname: '',
+      selectedBranchName: '',
+      selectedServices: '',
+      appointment_date: '',
+      appointment_time: '',
+      qr_code: '',
+    });
     const [renderType, setRenderType] = useState('canvas');
     const [selectedRecord, setSelectedRecord] = useState(null); 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -157,243 +166,71 @@ const AppointmentDetails = ({ auth }) => {
       document.body.removeChild(a);
     };
 
+    const qrCodeData = appointmentDetails ? JSON.parse(appointmentDetails[0]?.qr_code || "{}") : {};
+
+
 
     useEffect(() => {
-      setData((prevData) => ({
-        ...prevData,
+      const branch = branches 
+        ? branches.find(b => b.Branch_ID === appointmentDetails ? appointmentDetails[0]?.selectedBranch : null) 
+        : null;
+
+      const service = categories 
+        ? categories.find(c => c.Categories_ID ===  appointmentDetails ? appointmentDetails[0]?.selectServices : null) 
+        : null;
+      
+      setCurrentQRCode({
+        ...currentQRCode,
         qr_code: JSON.stringify({
           userId: user.id,
-          branch_name: prevData.selectedBranchName,
-          services: prevData.selectedServices,
-          appointment_date: prevData.appointment_date,
-          appointment_time: prevData.appointment_time,
+          branch_name: branch ? branch.BranchName : "",
+          services: service ? service.Title : "",
+          appointment_date: qrCodeData.appointment_date,
+          appointment_time: qrCodeData.appointment_time,
         }),
-      }));
+      });
     }, [
       user.id,
-      qrCodeData.selectedBranchName,
-      qrCodeData.selectedServices,
-      qrCodeData.appointment_date,
-      qrCodeData.appointment_time,
+      appointmentDetails,
     ]);
 
-    const columns = [
-        {
-          title: 'Fullname',
-          dataIndex: 'user_id',
-          key: 'userId',
-          render: (text, record) => {
-            const name = users && users.find(u => u.id === record.user_id);
-            return name ? name.name : '';
-          }
-        },
-        {
-          title: 'Branch',
-          dataIndex: 'selectedBranch',
-          key: 'branch',
-          render: (text, record) => {
-            const branch = branches && branches.find(b => b.Branch_ID === record.selectedBranch);
-            return branch ? branch.BranchName : '';
-          }
-        },
-        {
-          title: 'Service',
-          dataIndex: 'selectServices',
-          key: 'categories',
-          render: (text, record) => {
-            const services = categories && categories.find(c => c.Categories_ID === record.selectServices);
-            return services ? services.Title : '';
-          }
-        },
-        {
-          title: 'Appointment Date',
-          dataIndex: 'appointment_date',
-          key: 'appointment_date',
-        },
-        {
-          title: 'Appointment Time',
-          dataIndex: 'appointment_time',
-          key: 'appointment_time',
-          render: (time) => time ? moment(time, 'HH:mm').format('h:mm A') : ''
-        },
-        {
-          title: 'Resched Date',
-          dataIndex: 'reschedule_date',
-          key: 'reschedule_date',
-          render: (date) => date ? date : '',
-        },
-        {
-          title: 'Resched Time',
-          dataIndex: 'reschedule_time',
-          key: 'reschedule_time',
-          render: (time) => time ? moment(time, 'HH:mm').format('h:mm A') : ''
-        },
-        {
-          title: 'Status',
-          dataIndex: 'status',
-          key: 'status',
-          render: (record) => {
-            if (record === 'pending'){
-              return (
-              <Tag icon={<SyncOutlined spin />} color="processing">
-                {record}
-              </Tag>
-              );
-            }
+    const showDeleteModal = () => {
+      setIsDeleteModalOpen(true);
+      //setSelectedRecord(record);
+    }
 
-            if (record === 'approved'){
-              return (
-              <Tag icon={<CheckCircleOutlined />} color="success">
-                {record}
-              </Tag>
-              );
-            }
-
-            if (record === 'cancelled'){
-              return (
-              <Tag icon={<CloseCircleOutlined />} color="error">
-                {record}
-              </Tag>
-              );
-            }
-
-            if (record === 'completed'){
-              return (
-              <Tag icon={<CheckCircleOutlined />} color="success">
-                {record}
-              </Tag>
-              );
-            }
-          } 
-        },
-        {
-          title: 'QRCode',
-          dataIndex: 'qr_code',
-          key: 'qrcode',
-          render: (qrCode, record) => {
-            return <>
-            <p
-            className='text-sm text-[#2938DA] hover:text-blue-300 p-3 cursor-pointer'
-            size='small'
-            onClick={() => showQRModal(qrCode)}
-            >
-              Show
-            </p>
-            <Modal
-              title="SMTC-Dental Care : Appointment QRCode"
-              open={isQRModalOpen}
-              onOk={handleQROk}
-              onCancel={handleQRCancel}
-              style={{
-                top: 20,
-              }}
-              footer={[
-                <Button key="okay" onClick={handleQROk} color="primary">
-                  Okay
-                </Button>
-              ]}
-            >
-              <Space id="myqrcode" direction="vertical">
-                <div className="flex gap-10 ">
-                  <div className='flex flex-col items-center gap-4'>
-                  <span className="font-medium text-sm">QRCode</span>
-                  <QRCode
-                    id="qrCode"
-                    name="qrCode"
-                    type={renderType}
-                    value={currentQRCode}
-                    size={200}
-                    icon="/images/image.png"
-                    iconSize={30}
-                  />
-                  <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    onClick={renderType === 'canvas' ? downloadCanvasQRCode : downloadSvgQRCode}
-                  >
-                    Download
-                  </Button>
-                  </div>
-                <Logo/>
-                </div>
-              </Space>
-            </Modal>
-            </>
-          }
-        },
-        {
-          title: 'Action',
-          dataIndex: 'selectedBranch',
-          key: 'action',
-          render: (text, record) => { 
-
-            const showReschedModal = (rowData) => {
-              setReschedModalOpen(true);
-              setSelectedRecord(rowData)
-              setData({
-                ...data,
-                selectedBranch: rowData.selectedBranch,
-                selectServices: rowData.selectServices,
-              });
-            };
-
-            const showDeleteModal = (record) => {
-              setIsDeleteModalOpen(true);
-              setSelectedRecord(record);
-            }
-
-            const handleCancel = () => {
-              setIsDeleteModalOpen(false);
-            }
-            
-            return <>
-            <div className='flex gap-3'>
-
-
-              <p
-              className='text-sm text-red-500 hover:text-red-300 p-3 cursor-pointer'
-              size='small'
-              onClick={() => showDeleteModal(record)} 
-              >
-                Cancel
-              </p>
-
-              <Modal
-              title="Are you sure you want to cancel this appointment?"
-              open={isDeleteModalOpen}
-              closable={false}
-              style={{
-                top: 20,
-              }}z
-              width={400}
-              footer={[
-              ]}
-            >
-              <>
-              <div className="flex flex-col gap-3">
-              <Button className='bg-red-600 text-white transition ease-in-out duration-300' onClick={() => cancelAppointment(selectedRecord.id)} disabled={processing}>
-                  sure
-              </Button>
-                <Button onClick={handleCancel}>
-                  cancel
-                </Button>
-              </div>
-              
-              </>
-            </Modal>
-            </div>
-           
-            </>
-          }
-        },
-      ];
-
-     
+    const handleCancel = () => {
+      setIsDeleteModalOpen(false);
+    }     
 
   return (
     <>
 
-    <div className='m-5'>
+    <div className='pt-10 px-2 lg:px-[1rem]'>
+    <div className='flex flex-col gap-1 px-4 py-3'>
+                <div className='flex items-center justify-between'>
+                    <span className='text-xs lg:text-sm text-[#ff4200]'>Welcome Back!</span>
+                </div>
+
+            <span className='text-lg lg:text-2xl '>{user.name}</span>
+            <span className='text-xs lg:text-sm text-gray-500'>How are you Feeling Today?</span>
+            </div>
+
+                  <div className='bg-[#2938DA] w-full flex gap-32 rounded-lg px-2'>
+                <div className='flex flex-col justify-center gap-2 lg:gap-0 text-white p-4 lg:p-0 '>
+                <span className='text-sm lg:text-xl'>Take care of your smile—schedule your dental appointment today!</span>
+                <span className='text-sm lg:text-xl'><b>Download</b> your dental appointment <b>QRCode</b>  Now!</span>
+                <img src="/images/QRCode.png" alt="" className='h-[100px] w-[100px] bg-white rounded-sm' />
+
+                <div className='flex flex-col mt-[4rem]'>
+                    <a href={route('guest.appointment')} className='hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg '>Book an appointment Here!</a>
+                    <a href={route('home')} className='hover:text-blue-300 transition ease-in-out 300 text-sm lg:text-lg '>Back to Home</a>
+                </div>
+
+
+                </div>
+                <img src="/images/3.png" alt="" className='w-72 h-72 hidden md:block'/> 
+                </div>
       {
         processing ? (
           <>
@@ -403,18 +240,220 @@ const AppointmentDetails = ({ auth }) => {
           </>
         ) : (
           <>
-          <Table
-            id="table"
-            name="table"
-            dataSource={appointmentDetails} 
-            columns={columns}       
-            rowKey="id"
-            size='small'
-            pagination={{ 
-              pageSize: 5,
-              showSizeChanger: false,
-             }}
-            />
+            {appointmentDetails && appointmentDetails.length > 0 ? (
+              appointmentDetails.map((appointmentDetail) => {
+                
+                const fullname = users
+                .filter(u => u.id === appointmentDetail.user_id)
+                .map(u => u.name)
+                .join(', ') || 'No Name Found'; 
+
+                const branchName = branches
+                .filter(b => b.Branch_ID === appointmentDetail.selectedBranch)
+                .map(b => b.BranchName)
+                .join(', ') || 'No Branch Found'; 
+
+                const services = categories
+                .filter(c => c.Categories_ID === appointmentDetail.selectServices)
+                .map(c => c.Title)
+                .join(', ') || 'No Title Found'; 
+
+                const formatTo12Hour = (time) => {
+                  let [hours, minutes] = time.split(':');
+                  hours = parseInt(hours, 10);
+                  const suffix = hours >= 12 ? 'PM' : 'AM';
+                  hours = hours % 12 || 12; 
+                  return `${hours}:${minutes} ${suffix}`;
+              };
+                return (
+                <div 
+                key={appointmentDetail.id}
+                className='flex flex-col lg:flex-row gap-5 py-[2rem] lg:px-[2rem] rounded-lg justify-between'>
+                <div className='flex flex-col gap-5 py-2 px-2 shadow-md rounded-lg items-center'>
+
+                  <div className='flex flex-row items-center justify-around'>
+
+                  {/* status */}
+                    
+                        {appointmentDetail.status === 'pending' ? (
+                            <Tag icon={<SyncOutlined spin />} color="processing" className="ml-1 text-sm">
+                                {appointmentDetail.status}
+                            </Tag>
+                        ) : appointmentDetail.status === 'approved' ? (
+                            <Tag icon={<CheckCircleOutlined />} color="success">
+                                {appointmentDetail.status}
+                            </Tag>
+                        ) : null}
+
+                    <Button
+                    className='text-sm text-white bg-red-500 hover:bg-red-300 p-3 cursor-pointer'
+                    type='primary'
+                    size='small'
+                    onClick={showDeleteModal} 
+                    >
+                      Cancel
+                    </Button>
+
+                    <Modal
+                    title="Are you sure you want to cancel this appointment?"
+                    open={isDeleteModalOpen}
+                    closable={false}
+                    style={{
+                      top: 20,
+                    }}z
+                    width={400}
+                    footer={[
+                    ]}
+                    >
+                    <>
+                    <div className="flex flex-col gap-3">
+                    <Button className='bg-red-600 text-white transition ease-in-out duration-300' onClick={() => cancelAppointment(appointmentDetail.id)} disabled={processing}>
+                        sure
+                    </Button>
+                      <Button onClick={handleCancel}>
+                        cancel
+                      </Button>
+                    </div>
+
+                    </>
+                    </Modal>
+                    </div>
+
+                    <Space id="myqrcode" direction="vertical">
+
+                    <div className="flex gap-10 ">
+                      <div className='flex flex-col items-center gap-4'>
+                      {/* <span className="font-medium text-sm">QRCode</span> */}
+                      {currentQRCode.qr_code && (
+                        <QRCode
+                          id="qrCode"
+                          name="qrCode"
+                          type={renderType}
+                          value={currentQRCode.qr_code}
+                          size={200}
+                          icon="/images/image.png"
+                          iconSize={30}
+                        />
+                      )}
+                      <Button
+                        type="primary"
+                        icon={<DownloadOutlined />}
+                        onClick={renderType === 'canvas' ? downloadCanvasQRCode : downloadSvgQRCode}
+                        className='w-full'
+                      >
+                        Download
+                      </Button>
+                      </div>
+                    </div>
+                    </Space>
+                  </div>
+
+                <div className='flex flex-col lg:flex-row gap-5 lg:p-3 lg:shadow-md lg:rounded-lg'>
+
+                <div className='flex flex-col gap-6 items-end'>
+
+                <div className='flex flex-row gap-3'>
+
+                <InputLabel htmlFor="fullname"  value="Your Fullname :"/>
+                <TextInput 
+                id="fullname"
+                name="fullname"
+                value={fullname}
+                disabled
+                />
+                </div>
+
+                <div className='flex flex-row gap-3'>
+
+                <InputLabel htmlFor="branch"  value="Selected Branch Location :"/>
+                <TextInput 
+                id="branch"
+                name="branch"
+                value={branchName}
+                disabled
+                />
+                </div>
+
+                <div className='flex flex-row gap-3'>
+
+                <InputLabel htmlFor="services"  value="Selected Dental Services :"/>
+                <TextInput 
+                id="services"
+                name="services"
+                value={services}
+                disabled
+                />
+                
+                </div>
+
+                </div>
+
+                <div className='flex flex-col gap-6 items-end'>
+
+                <div className='flex flex-row gap-3'>
+
+                <InputLabel htmlFor="appointment_date"  value="Appointment Date :"/>
+                <TextInput 
+                id="appointment_date"
+                name="appointment_date"
+                value={appointmentDetail.appointment_date}
+                disabled
+                />                
+                </div>
+
+                <div className='flex flex-row gap-3'>
+
+                <InputLabel htmlFor="appointment_time"  value="Appointment Time :"/>
+                <TextInput 
+                id="appointment_time"
+                name="appointment_time"
+                value={formatTo12Hour(appointmentDetail.appointment_time)}
+                disabled
+                />
+                </div>
+
+                <div className='flex flex-row gap-3'>
+
+                <InputLabel htmlFor="reschedule_date"  value="Rescheduled Date :"/>
+                <TextInput 
+                id="reschedule_date"
+                name="reschedule_date"
+                value={appointmentDetail.reschedule_date}
+                disabled
+                />
+                </div>
+
+                <div className='flex flex-row gap-3'>
+
+                <InputLabel htmlFor="reschedule_time" value="Rescheduled Time :"/>
+                <TextInput 
+                id="reschedule_time"
+                name="reschedule_time"
+                value={formatTo12Hour(appointmentDetail.reschedule_time)}
+                disabled
+                />
+                </div>
+                </div>
+                </div>
+
+            </div>
+                )
+
+              })
+            ) : (
+              <>
+              <Empty 
+              className='bg-white'
+              style={{ 
+                position: "absolute",
+                top: "80%",
+                left: "50%",
+                x: "-50%",
+                y: "-50%"
+               }}/>
+              </>
+            )}
+            
           </>
         )
       }

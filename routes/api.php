@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/mobile/appointment2', [MobileAppointment2Controller::class, 'appointment2'])->name('mobile.appointment2');
     Route::get('/mobile/dashboard', [MobileDashboardController::class, 'dashboard'])->name('mobile.dashboard');
 
+    Route::get('/mobile/name', [MobileDashboardController::class, 'name'])->name('mobile.name');
+
     Route::get('/mobile/getProfile', [MobileSetProfileController::class, 'getProfile'])->name('mobile.getProfile');
     Route::post('/mobile/setProfile', [MobileSetProfileController::class, 'setProfile'])->name('mobile.setProfile');
     

@@ -130,7 +130,7 @@ const Navbar = ({ auth }) => {
                 <ResponsiveNavLink href={route('location')} className="text-black hover:text-amber-400 text-xs">Contact Us / Location</ResponsiveNavLink>
                 {auth.user ? (
                 
-                <ResponsiveNavLink href={route('dashboard')} className="text-black text-xs "
+                <ResponsiveNavLink href={route('appointment')} className="text-black text-xs "
                 >
                     Dashboard
                 </ResponsiveNavLink>
@@ -180,7 +180,7 @@ const Navbar = ({ auth }) => {
                     </Link>
                     </>
             {auth.user ? (
-                <Link href={route('dashboard')} className=" flex items-center rounded-md px-4 py-2 text-white bg-[#FF4200] transition duration-150 ease-in-out hover:bg-[#FF4200]/80 focus:outline-none focus:ring-2 focus:ring-[#FF2D20] focus:ring-opacity-50"
+                <Link href={route('appointment')} className=" flex items-center rounded-md px-4 py-2 text-white bg-[#FF4200] transition duration-150 ease-in-out hover:bg-[#FF4200]/80 focus:outline-none focus:ring-2 focus:ring-[#FF2D20] focus:ring-opacity-50"
                 >
                     Dashboard
                 </Link>

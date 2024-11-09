@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MobileDashboardController extends Controller
 {
-    public function dashboard() {
+    public function name() {
         $user = Auth::guard('api_dentaldoctor')->user(); 
 
         if (!$user) {
@@ -22,6 +22,26 @@ class MobileDashboardController extends Controller
         }
 
         $doctorName = strtoupper($user->Name);
+        
+
+        return response()->json([
+            "success" => true,
+            "data" => [
+                'name' => $doctorName],
+        ]);
+    }
+    
+    public function dashboard() {
+        $user = Auth::guard('api_dentaldoctor')->user(); 
+
+        if (!$user) {
+            return response()->json([
+                "success" => false,
+                "message" => "Access denied. Only dental doctors can access this information.",
+            ], 403);
+        }
+
+        
 
         $appointments = MobileAppointmentModel::with(['user', 'branch', 'service'])
             ->where('status', 'approved')
@@ -57,7 +77,6 @@ class MobileDashboardController extends Controller
         return response()->json([
             "success" => true,
             "data" => [
-                'name' => $doctorName,
                 'appointment' => $formattedAppointments],
         ]);
     }

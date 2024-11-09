@@ -73,7 +73,7 @@ export default function Authenticated({ user, header, children, }) {
                     </Link>
                 </div>
                 <div className="flex flex-col gap-3 space-y-2">
-                    <NavLink href={route('dashboard')} active={route().current('dashboard')}>
+                    {/* <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                     <svg
                         fill="none"
                         stroke="currentColor"
@@ -89,35 +89,23 @@ export default function Authenticated({ user, header, children, }) {
                         <path d="M4 4h6v8H4zM4 16h6v4H4zM14 12h6v8h-6zM14 4h6v4h-6z" />
                     </svg>
                         Dashboard
-                    </NavLink>
+                    </NavLink> */}
                     <NavLink href={route('appointment')} active={route().current('appointment')}>
-                    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fill="#000000" className='mr-5 w-6 h-6'>
-                        <g strokeWidth="0"></g>
-                        <g strokeLinecap="round" strokeLinejoin="round"></g>
-                        <g>
-                        <defs>
-                            <style>
-                            {`.a, .b {fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}
-                            .b {stroke-width:0.9965px;}`}
-                            </style>
-                        </defs>
-                        <path
-                            className="a"
-                            d="M24.2827,31a5.975,5.975,0,0,0,6,6A5.79,5.79,0,0,0,36.06,31V25a5.9314,5.9314,0,0,0-5.7778-6,6.12,6.12,0,0,0-6,6Z"
-                        />
-                        <line className="b" x1="34.7271" y1="21.2222" x2="25.8382" y2="34.7778" />
-                        <line className="a" x1="11.9396" y1="37" x2="20.9396" y2="37" />
-                        <line className="a" x1="11.9396" y1="21.475" x2="16.4396" y2="19" />
-                        <line className="a" x1="16.4396" y1="19" x2="16.4396" y2="37" />
-                        <circle className="a" cx="32.5" cy="11" r="2.5" />
-                        <circle className="a" cx="15.5" cy="11" r="2.5" />
-                        <path
-                            className="a"
-                            d="M7.5,5.5a2,2,0,0,0-2,2v33a2,2,0,0,0,2,2h33a2,2,0,0,0,2-2V7.5a2,2,0,0,0-2-2Z"
-                        />
-                        </g>
+                    <svg
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        viewBox="0 0 24 24"
+                        height="1em"
+                        width="1em"
+                        className='mr-5 w-6 h-6'
+                        >
+                        <path stroke="none" d="M0 0h24v24H0z" />
+                        <path d="M4 4h6v8H4zM4 16h6v4H4zM14 12h6v8h-6zM14 4h6v4h-6z" />
                     </svg>
-                        Dental Appointment
+                        Dashboard
                     </NavLink>
                     <NavLink href={route('record')} active={route().current('record')}>
                     <svg
@@ -150,7 +138,7 @@ export default function Authenticated({ user, header, children, }) {
                 </div>
             </div>
 
-            <div className="px-4 pb-6 ">
+            <div className="px-4 pb-6">
                 <div className="block flex-col px-4">
                     {/* Logout Button */}
                     <Link href={route('logout')} method="post" as="button" className="flex text-center mt-4" onClick={handleLogout}>
@@ -236,11 +224,11 @@ export default function Authenticated({ user, header, children, }) {
 
                 {/* Navigation Links */}
                 <div className="space-y-2">
-                    <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+                    {/* <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
                         Dashboard
-                    </ResponsiveNavLink>
+                    </ResponsiveNavLink> */}
                     <ResponsiveNavLink href={route('appointment')} active={route().current('appointment')}>
-                        Dental Appointment
+                        Dashboard
                     </ResponsiveNavLink>
                     <ResponsiveNavLink href={route('record')} active={route().current('record')}>
                         Appointment Records
@@ -255,7 +243,7 @@ export default function Authenticated({ user, header, children, }) {
 
             {/* Logout and User Profile */}
             <div className='px-4 pb-6 '>
-            <div className="block flex-col px-4">
+            <div className="block flex-col px-4 ">
                     {/* Logout Button */}
                     <Link href={route('logout')} method="post" as="button" className="flex text-center mt-4" onClick={handleLogout}>
                         <svg
