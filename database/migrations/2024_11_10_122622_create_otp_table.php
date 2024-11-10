@@ -13,14 +13,18 @@ return new class extends Migration
     {
         Schema::create('otp', function (Blueprint $table) {
             $table->id();
-            $table->integer('Admin_ID')->default(0);
-            $table->integer('SuperAdmin_ID')->default(0);
+            $table->unsignedBigInteger('Admin_ID')->nullable();
+            $table->unsignedBigInteger('SuperAdmin_ID')->nullable();
+            $table->string('email');
             $table->string('otp');
             $table->dateTime('otpExpirationDate');
             $table->boolean('isUsed')->default(false);
             $table->timestamps();
 
-            $table->unique(['Admin_ID', 'SuperAdmin_ID']);
+            $table->foreign('Admin_ID')->references('Admin_ID')->on('admin')->onDelete('cascade');
+            $table->foreign('SuperAdmin_ID')->references('SuperAdmin_ID')->on('superadmin')->onDelete('cascade');
+
+            $table->unique(['email']);
         });
     }
 
