@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminModel;
 use App\Models\AppointmentModel;
 use App\Models\User;
 use App\Models\BranchModel;
@@ -13,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 
@@ -179,17 +181,29 @@ class AppointmentController extends Controller
             'qr_code' => json_encode($qrCodeData),
         ]);
 
-        $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($appointment->id);
+        if (!$appointment) {
+            return response()->json(['message' => 'Failed to create appointment'], 500);
+        }
+                
+        Log::info('Selected Branch: ' . $request->selectedBranch);
+        $admins = AdminModel::where('Branch_ID', $request->selectedBranch)
+        ->pluck('Email');
 
-        $user = $appointment->users;
+        if ($admins->isEmpty()) {
+            return response()->json(['message' => 'No admins found for the selected branch'], 500);
+        }
+        
+        foreach ($admins as $email) {
+            Notification::route('mail', $email)->notify(new AppointmentUpdated($appointment, 'created'));
+        }
 
         $adminEmail = 'smtc.dentalcare@gmail.com';
         Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'created'));
-
+        
         $appointment->save();
-
+        $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($appointment->id);
+        
         return response()->json([
-            'redirect' => route('appointment'), 
             'message' => 'Appointment created successfully!',
         ], 201);
     }

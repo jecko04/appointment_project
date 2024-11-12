@@ -256,13 +256,14 @@ const AppointmentDetails = ({ auth }) => {
                 .map(c => c.Title)
                 .join(', ') || 'No Title Found'; 
 
-                const formatTo12Hour = (time) => {
-                  let [hours, minutes] = time.split(':');
-                  hours = parseInt(hours, 10);
-                  const suffix = hours >= 12 ? 'PM' : 'AM';
-                  hours = hours % 12 || 12; 
-                  return `${hours}:${minutes} ${suffix}`;
-              };
+              //   const formatTo12Hour = (time) => {
+              //     let [hours, minutes] = time.split(':');
+              //     hours = parseInt(hours, 10);
+              //     const suffix = hours >= 12 ? 'PM' : 'AM';
+              //     hours = hours % 12 || 12; 
+              //     return `${hours}:${minutes} ${suffix}`;
+              // };
+
                 return (
                 <div 
                 key={appointmentDetail.id}
@@ -405,7 +406,7 @@ const AppointmentDetails = ({ auth }) => {
                 <TextInput 
                 id="appointment_time"
                 name="appointment_time"
-                value={formatTo12Hour(appointmentDetail.appointment_time)}
+                value={appointmentDetail.appointment_time}
                 disabled
                 />
                 </div>
@@ -416,7 +417,7 @@ const AppointmentDetails = ({ auth }) => {
                 <TextInput 
                 id="reschedule_date"
                 name="reschedule_date"
-                value={appointmentDetail.reschedule_date}
+                value={appointmentDetail.reschedule_date ? appointmentDetail.reschedule_date : null}
                 disabled
                 />
                 </div>
@@ -427,7 +428,7 @@ const AppointmentDetails = ({ auth }) => {
                 <TextInput 
                 id="reschedule_time"
                 name="reschedule_time"
-                value={formatTo12Hour(appointmentDetail.reschedule_time)}
+                value={appointmentDetail.reschedule_time ? appointmentDetail.reschedule_time : null}
                 disabled
                 />
                 </div>

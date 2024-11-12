@@ -34,4 +34,8 @@ class BranchModel extends Model
     public function appointmentDetails() {
         return $this->hasMany(AppointmentModel::class, 'Branch_ID'); // Use this for details if needed
     }
+
+    public function emails() {
+        return $this->hasMany(AdminModel::class, 'Branch_ID'); // Use this for details if needed
+    }
 }

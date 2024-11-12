@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminModel;
 use App\Models\AppointmentModel;
 use App\Models\BranchModel;
 use App\Models\OfficeHourModel;
@@ -11,6 +12,7 @@ use App\Notifications\AppointmentUpdated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 
@@ -88,29 +90,44 @@ class RescheduleController extends Controller
         $dateformatted = Carbon::createFromFormat('Y-m-d', $validate['reschedule_date'])->format('Y-m-d');
         $timeformatted = Carbon::createFromFormat('H:i', $validate['reschedule_time'])->format('H:i:s');
 
-        $appointment = AppointmentModel::updateOrCreate(
-        [
-            'user_id' => Auth::id(),
-            'selectedBranch' => $validate['selectedBranch'],  
-            'selectServices' => $validate['selectServices'], 
-        ],     
-        [
-            'reschedule_date' => $dateformatted,
-            'reschedule_time' => $timeformatted,
-            'status' => 'pending',
-        ]);
+        $latestAppointment = AppointmentModel::where('user_id', Auth::id())
+        ->where('status', 'pending') 
+        ->orderBy('created_at', 'desc') 
+        ->first();
 
-        $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($appointment->id);
+        if (!$latestAppointment) {
+            return response()->json(['message' => 'Failed to resched appointment'], 500);
+        }
+            
 
-        $user = $appointment->users;
+        if ($latestAppointment) {
+            $latestAppointment->update([
+                'reschedule_date' => $dateformatted,
+                'reschedule_time' => $timeformatted,
+                'status' => 'pending', 
+            ]);
+    
+            $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($latestAppointment->id);
 
-
-        $adminEmail = 'smtc.dentalcare@gmail.com';
-        Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'rescheduled'));
-
-        return response()->json([
-            'redirect' => route('appointment'), 
-            'message' => 'Appointment rescheduled successfully!',
-        ], 201);
+            Log::info('Selected Branch: ' . $request->selectedBranch);
+            $admins = AdminModel::where('Branch_ID', $request->selectedBranch)
+            ->pluck('Email');
+            
+            foreach ($admins as $email) {
+                Notification::route('mail', $email)->notify(new AppointmentUpdated($appointment, 'rescheduled'));
+            }
+    
+            $adminEmail = 'smtc.dentalcare@gmail.com';
+            Notification::route('mail', $adminEmail)->notify(new AppointmentUpdated($appointment, 'rescheduled'));
+    
+            return response()->json([
+                'redirect' => route('appointment'), 
+                'message' => 'Appointment rescheduled successfully!',
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => 'No pending appointment found to reschedule.',
+            ], 404);
+        }
     }
 }

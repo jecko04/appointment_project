@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminModel;
 use App\Models\AppointmentModel;
 use App\Models\BranchModel;
 use App\Models\OfficeHourModel;
@@ -12,6 +13,7 @@ use App\Notifications\AppointmentUpdated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 
@@ -67,7 +69,7 @@ class UsersAppointmentController extends Controller
         
         $user = $appointment->users;
 
-        $validate = $request->validate([
+        $request->validate([
             'selectedBranch' => 'required|integer',
             'selectServices' => 'required|integer',
         ]);
@@ -79,6 +81,14 @@ class UsersAppointmentController extends Controller
         $appointment->update([
                 'status' => 'cancelled',
         ]);
+
+        Log::info('Selected Branch: ' . $request->selectedBranch);
+            $admins = AdminModel::where('Branch_ID', $request->selectedBranch)
+            ->pluck('Email');
+            
+            foreach ($admins as $email) {
+                Notification::route('mail', $email)->notify(new AppointmentUpdated($appointment, 'canceled'));
+            }
     
         // Use Notification::route to send email notification
         $adminEmail = 'smtc.dentalcare@gmail.com';
