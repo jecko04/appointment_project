@@ -417,7 +417,7 @@ const AppointmentDetails = ({ auth }) => {
                 <TextInput 
                 id="reschedule_date"
                 name="reschedule_date"
-                value={appointmentDetail.reschedule_date ? appointmentDetail.reschedule_date : null}
+                value={appointmentDetail.reschedule_date || ""}
                 disabled
                 />
                 </div>
@@ -428,7 +428,7 @@ const AppointmentDetails = ({ auth }) => {
                 <TextInput 
                 id="reschedule_time"
                 name="reschedule_time"
-                value={appointmentDetail.reschedule_time ? appointmentDetail.reschedule_time : null}
+                value={appointmentDetail.reschedule_time || ""}
                 disabled
                 />
                 </div>

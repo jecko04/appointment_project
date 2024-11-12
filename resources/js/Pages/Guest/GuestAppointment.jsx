@@ -836,63 +836,26 @@ const handleQRCode = (value) => {
                           </div>
 
                           <div className="flex flex-col gap-5">
-                          <InputLabel htmlFor="last_dental_visit" value="If there's any, Please check the checkbox below." className='mt-5'/>
+                          <InputLabel htmlFor="frequent_tooth_pain" value="If there's any, Please check the checkbox below." className='mt-5'/>
                           <div className="flex flex-wrap gap-3">
-
-                          <Checkbox
-                            id="frequent_tooth_pain"
-                            name="frequent_tooth_pain"
-                            checked={data.frequent_tooth_pain}
-                            onChange={(e) => handleCheckboxChange('frequent_tooth_pain', e.target.checked)}
-                          >
-                            Frequent Tooth Pain
-                          </Checkbox>
-
-                          <Checkbox
-                            id="gum_disease_history"
-                            name="gum_disease_history"
-                            checked={data.gum_disease_history}
-                            onChange={(e) => handleCheckboxChange('gum_disease_history', e.target.checked)}
-                          >
-                            Gum disease history
-                          </Checkbox>
-
-                          <Checkbox
-                            id="teeth_grinding"
-                            name="teeth_grinding"
-                            checked={data.teeth_grinding}
-                            onChange={(e) => handleCheckboxChange('teeth_grinding', e.target.checked)}
-                          >
-                            Teeth Grinding
-                          </Checkbox>
-                          
-                          <Checkbox
-                            id="orthodontic_treatment"
-                            name="orthodontic_treatment"
-                            checked={data.orthodontic_treatment}
-                            onChange={(e) => handleCheckboxChange('orthodontic_treatment', e.target.checked)}
-                          >
-                            Orthodontic
-                          </Checkbox>
-
-                          <Checkbox
-                            id="dental_implants"
-                            name="dental_implants"
-                            checked={data.dental_implants}
-                            onChange={(e) => handleCheckboxChange('dental_implants', e.target.checked)}
-                          >
-                            Dental implants
-                          </Checkbox>
-
-                          
-                          <Checkbox
-                            id="bleeding_gums"
-                            name="bleeding_gums"
-                            checked={data.bleeding_gums}
-                            onChange={(e) => handleCheckboxChange('bleeding_gums', e.target.checked)}
-                          >
-                            Bleeding gums
-                          </Checkbox>
+                            {[
+                              { id: "frequent_tooth_pain", label: "Frequent Tooth Pain" },
+                              { id: "gum_disease_history", label: "Gum Disease History" },
+                              { id: "teeth_grinding", label: "Teeth Grinding" },
+                              { id: "orthodontic_treatment", label: "Orthodontic Treatment" },
+                              { id: "dental_implants", label: "Dental Implants" },
+                              { id: "bleeding_gums", label: "Bleeding Gums" }
+                            ].map((item) => (
+                              <Checkbox
+                                key={item.id}
+                                id={item.id}
+                                name={item.id}
+                                checked={data[item.id]}
+                                onChange={(e) => handleCheckboxChange(item.id, e.target.checked)}
+                              >
+                                {item.label}
+                              </Checkbox>
+                            ))}
                           </div>
                           </div>
                         </div>
