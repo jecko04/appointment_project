@@ -64,7 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/appointment/cancelled{id}', [UsersAppointmentController::class, 'cancelled'])->name('appointment.cancelled');
     
     Route::get('/reschedule', [RescheduleController::class, 'reschedule'])->name('reschedule');
-    Route::post('/appointment/reschedule', [RescheduleController::class, 'storeReschedule'])->name('appointment.reschedule');
+    Route::put('/appointment/reschedule', [RescheduleController::class, 'storeReschedule'])->name('appointment.reschedule');
 
 
 });

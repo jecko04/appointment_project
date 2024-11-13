@@ -183,6 +183,14 @@ const DentalAppointmentHistory = ({ auth }) => {
               );
             }
 
+            if (record === 'missed'){
+              return (
+              <Tag icon={<CloseCircleOutlined />} color="error">
+                {record}
+              </Tag>
+              );
+            }
+
             if (record === 'completed'){
               return (
               <Tag icon={<CheckCircleOutlined />} color="success">
@@ -192,61 +200,61 @@ const DentalAppointmentHistory = ({ auth }) => {
             }
           } 
         },
-        {
-          title: 'QRCode',
-          dataIndex: 'qr_code',
-          key: 'qrcode',
-          render: (qrCode, record) => {
-            return <>
-            <p
-            className='text-sm text-[#2938DA] hover:text-blue-300 p-3 cursor-pointer'
-            size='small'
-            onClick={() => showQRModal(qrCode)}
-            >
-              Show
-            </p>
-            <Modal
-              title="SMTC-Dental Care : Appointment QRCode"
-              open={isQRModalOpen}
-              onOk={handleQROk}
-              onCancel={handleQRCancel}
-              style={{
-                top: 20,
-              }}
-              footer={[
-                <Button key="okay" onClick={handleQROk} color="primary">
-                  Okay
-                </Button>
-              ]}
-            >
-              <Space id="myqrcode" direction="vertical">
-                <div className="flex gap-10 ">
-                  <div className='flex flex-col items-center gap-4'>
-                  <span className="font-medium text-sm">QRCode</span>
-                  <QRCode
-                    id="qrCode"
-                    name="qrCode"
-                    type={renderType}
-                    value={currentQRCode}
-                    size={200}
-                    icon="/images/image.png"
-                    iconSize={30}
-                  />
-                  <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    onClick={renderType === 'canvas' ? downloadCanvasQRCode : downloadSvgQRCode}
-                  >
-                    Download
-                  </Button>
-                  </div>
-                <Logo/>
-                </div>
-              </Space>
-            </Modal>
-            </>
-          }
-        },
+        // {
+        //   title: 'QRCode',
+        //   dataIndex: 'qr_code',
+        //   key: 'qrcode',
+        //   render: (qrCode, record) => {
+        //     return <>
+        //     <p
+        //     className='text-sm text-[#2938DA] hover:text-blue-300 p-3 cursor-pointer'
+        //     size='small'
+        //     onClick={() => showQRModal(qrCode)}
+        //     >
+        //       Show
+        //     </p>
+        //     <Modal
+        //       title="SMTC-Dental Care : Appointment QRCode"
+        //       open={isQRModalOpen}
+        //       onOk={handleQROk}
+        //       onCancel={handleQRCancel}
+        //       style={{
+        //         top: 20,
+        //       }}
+        //       footer={[
+        //         <Button key="okay" onClick={handleQROk} color="primary">
+        //           Okay
+        //         </Button>
+        //       ]}
+        //     >
+        //       <Space id="myqrcode" direction="vertical">
+        //         <div className="flex gap-10 ">
+        //           <div className='flex flex-col items-center gap-4'>
+        //           <span className="font-medium text-sm">QRCode</span>
+        //           <QRCode
+        //             id="qrCode"
+        //             name="qrCode"
+        //             type={renderType}
+        //             value={currentQRCode}
+        //             size={200}
+        //             icon="/images/image.png"
+        //             iconSize={30}
+        //           />
+        //           <Button
+        //             type="primary"
+        //             icon={<DownloadOutlined />}
+        //             onClick={renderType === 'canvas' ? downloadCanvasQRCode : downloadSvgQRCode}
+        //           >
+        //             Download
+        //           </Button>
+        //           </div>
+        //         <Logo/>
+        //         </div>
+        //       </Space>
+        //     </Modal>
+        //     </>
+        //   }
+        // },
       ];
 
   return (

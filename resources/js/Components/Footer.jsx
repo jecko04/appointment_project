@@ -21,7 +21,7 @@ const Footer = () => {
         </span>
 
         <span className="text-xs lg:text-base text-center lg:text-start">
-         Our dental team is dedicated to providing exceptional dental care to our patients. At OralCare, you'll discorver a new reason to smile, right in your neighborhood.
+         Our dental team is dedicated to providing exceptional dental care to our patients. At SMTC, you'll discorver a new reason to smile, right in your neighborhood.
         </span>
 
       </div>

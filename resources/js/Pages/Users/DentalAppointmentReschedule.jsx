@@ -74,7 +74,7 @@ const DentalAppointmentReschedule = () => {
         };
 
         const response = await fetch(route('appointment.reschedule', formattedData), {
-          method: 'POST',
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',

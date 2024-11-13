@@ -19,7 +19,12 @@ class MobileDentalDoctorModel extends Authenticatable
     protected $fillable = [
         'Name',
         'Email',
+        'Birth_Date',
         'Password',
+        'Profession',
+        'License_Number',
+        'Specialization',
+        'License_Expiry_Date',
         'Branch_ID',
         'Role_ID',
     ];

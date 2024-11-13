@@ -91,7 +91,7 @@ class RescheduleController extends Controller
         $timeformatted = Carbon::createFromFormat('H:i', $validate['reschedule_time'])->format('H:i:s');
 
         $latestAppointment = AppointmentModel::where('user_id', Auth::id())
-        ->where('status', 'pending') 
+        ->whereIn('status', ['pending', 'approved']) 
         ->orderBy('created_at', 'desc') 
         ->first();
 
@@ -104,7 +104,7 @@ class RescheduleController extends Controller
             $latestAppointment->update([
                 'reschedule_date' => $dateformatted,
                 'reschedule_time' => $timeformatted,
-                'status' => 'pending', 
+                'status' => 'pending',
             ]);
     
             $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($latestAppointment->id);

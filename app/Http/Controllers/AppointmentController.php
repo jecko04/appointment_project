@@ -38,7 +38,9 @@ class AppointmentController extends Controller
         ->get();
         
 
-        $patients = PatientModel::with(['medicalHistory', 'dentalHistory'])->get();
+        $patients = PatientModel::with(['medicalHistory', 'dentalHistory'])
+        ->where('user_id', $userId)
+        ->get();
 
         return Inertia::render('Guest/GuestAppointment', [
             'branches' => $branches, 
@@ -102,7 +104,7 @@ class AppointmentController extends Controller
         $patient = PatientModel::firstOrCreate(
             [
                 'email' => $request->email, 
-                'Branch_ID' => $request->selectedBranch
+                // 'Branch_ID' => $request->selectedBranch
             ], 
             [
                 // Only populate these fields if a new record is being created
@@ -130,6 +132,7 @@ class AppointmentController extends Controller
                 'email' => $request->email,
                 'address' => $request->address,
                 'emergency_contact' => $request->emergency_contact,
+                // 'Branch_ID' => $request->Branch_ID,
             ]);
         }
 
