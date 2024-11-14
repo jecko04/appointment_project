@@ -34,10 +34,6 @@ Route::get('/welcome', function () {
 });
 
 
-
-
-
-
 Route::get('/about', [AboutController::class, 'about'])->name('about');
 Route::get('/services', [ServicesController::class, 'services'])->name('services');
 Route::get('/contact', [ContactController::class, 'contact'])->name('contact');

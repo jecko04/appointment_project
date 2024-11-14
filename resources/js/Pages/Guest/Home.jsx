@@ -48,23 +48,29 @@ const submit = async (e) => {
         const result = await response.json();
         
         if (response.ok) {
-            notification.success({
-                message: 'Success',
-                description: result.message || 'Login successfully!',
-                placement: 'bottomRight',
-                duration: 3,
-            });
-            window.location.href = result.redirect;  
-        }
-        else {
-            notification.error({
-                message: 'Error',
-                description: result.message || 'Login Failed!',
-                placement: 'bottomRight', 
-                duration: 3,
-            });
-        }
-        
+          notification.success({
+              message: 'Success',
+              description: result.message || 'Login successfully!',
+              placement: 'bottomRight',
+              duration: 3,
+          });
+          window.location.href = result.redirect;
+      } else if (response.status === 403) {
+          notification.warning({
+              message: 'Email Verification Required',
+              description: result.message || 'Please verify your email before logging in.',
+              placement: 'bottomRight',
+              duration: 3,
+          });
+          window.location.href = result.redirect; 
+      } else {
+          notification.error({
+              message: 'Error',
+              description: result.message || 'Login Failed!',
+              placement: 'bottomRight',
+              duration: 3,
+          });
+      }
     }
     catch (error) {
         notification.error({

@@ -93,6 +93,27 @@ class AppointmentController extends Controller
             'appointment_time' => 'required|string|date_format:H:i',
             'qr_code' => 'required|string',
 
+            // Add medical history validation with boolean fields
+            'medical_condition' => 'nullable|string|max:255',
+            'current_medication' => 'nullable|string|max:255',
+            'allergies' => 'nullable|string|max:255',
+            'past_surgeries' => 'nullable|string|max:255',
+            'family_medical_history' => 'nullable|string|max:255',
+            'blood_pressure' => 'nullable|string|max:255',
+            'heart_disease' => 'nullable|boolean', 
+            'diabetes' => 'nullable|boolean', 
+            'smoker' => 'nullable|boolean', 
+
+            // Add dental history validation with boolean fields
+            'past_dental_treatments' => 'nullable|string|max:255',
+            'tooth_sensitivity' => 'nullable|string|max:255',
+            'frequent_tooth_pain' => 'nullable|boolean', 
+            'gum_disease_history' => 'nullable|boolean', 
+            'teeth_grinding' => 'nullable|boolean', 
+            'orthodontic_treatment' => 'nullable|boolean', 
+            'dental_implants' => 'nullable|boolean', 
+            'bleeding_gums' => 'nullable|boolean',
+
         ]);
 
         $dobformatted = Carbon::createFromFormat('Y-m-d', $validate['date_of_birth'])->format('Y-m-d');

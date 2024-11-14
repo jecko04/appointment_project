@@ -6,7 +6,7 @@ import TextInput from '@/Components/TextInput';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { DatePicker, Input, Select } from 'antd';
+import { DatePicker, Input, notification, Select } from 'antd';
 import moment from 'moment';
 import { TbArrowBackUp } from "react-icons/tb";
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -25,6 +25,8 @@ export default function Register() {
         phone: '',
         address: '',
         emergency_contact: '',
+        emergency_contact_name: '',
+        emergency_contact_number: '',
     });
 
 const { Option } = Select;
@@ -43,53 +45,65 @@ const validatePassword = () => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(data.password && data.password_confirmation)) {
         setErrorMessage('Your password must be at least 8 characters long and include at least one uppercase letter and one number.');
-    }
-    else {
+    } else if (data.password !== data.password_confirmation) {
+        setErrorMessage('Your password confirmation does not match.');
+    } else {
         setErrorMessage('');
     }
 }
 
 
-    const submit = async (e) => {
-        e.preventDefault();
-        setProcessing(true);
-        validatePassword();
+const submit = async (e) => {
+    e.preventDefault();
+    setProcessing(true);
+    validatePassword();
 
-        try {
-            const response = await fetch(route('register'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                  },
-                body: JSON.stringify(data),
-            })
+    const emergencyContact = `${data.emergency_contact_name} - ${data.emergency_contact_number}`;
 
+    try {
+        const response = await fetch(route('register'), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify({
+                ...data,
+                emergency_contact: emergencyContact,
+            }),
+        });
+
+        if (response.ok) {
+            // If the response is OK, parse JSON and show success
             const result = await response.json();
-
-            if (response.ok) {
-                notification.success({
-                    message: 'Success',
-                    description: result.message || 'Register successfully!',
-                    placement: 'bottomRight', 
-                });
-                window.location.href = route('dashboard');
-            }
-        }
-        catch (error) {
+            notification.success({
+                message: 'Success',
+                description: result.message || 'Registered successfully!',
+                placement: 'bottomRight',
+            });
+            window.location.href = result.redirect;
+        } else {
+            // If response is not OK, show error
+            const result = await response.json();
             notification.error({
                 message: 'Error',
-                description: result.message || 'Error Register!',
-                placement: 'bottomRight', 
+                description: result.message || 'Registration failed!',
+                placement: 'bottomRight',
             });
         }
-        finally {
-            setProcessing(false);
-            reset('password', 'password_confirmation',);
-        }
-    };
-
+    } catch (error) {
+        // If fetch or response parsing fails
+        notification.error({
+            message: 'Error',
+            description: 'Error Register!',
+            placement: 'bottomRight',
+        });
+    } finally {
+        setProcessing(false);
+        reset('password', 'password_confirmation');
+    }
+};
     return (
         <>
         <Header/>
@@ -284,20 +298,39 @@ const validatePassword = () => {
                     </div>
 
                     <div className='mt-4'>
-                    <InputLabel htmlFor="emergency_contact" value="Emergency Contact (fullname - contact number)" />
+                    <InputLabel htmlFor="emergency_contact_name" value="Emergency Contact (fullname)" />
 
                     <TextInput
-                        id="emergency_contact"
-                        name="emergency_contact"
-                        value={data.emergency_contact}
+                        id="emergency_contact_name"
+                        name="emergency_contact_name"
+                        value={data.emergency_contact_name}
                         className="mt-1 block w-full text-xs"
-                        placeholder="Juan Dela Cruz - 09xxxxxxxxx"
-                        autoComplete="emergency_contact"
-                        onChange={(e) => setData('emergency_contact', e.target.value)}
+                        placeholder="Juan Dela Cruz"
+                        autoComplete="emergency_contact_name"
+                        onChange={(e) => setData('emergency_contact_name', e.target.value)}
                         required
                     />
 
-                    <InputError message={errors.emergency_contact} className="mt-2" />
+                    <InputError message={errors.emergency_contact_name} className="mt-2" />
+
+                    
+                    </div>
+
+                    <div className='mt-4'>
+                    <InputLabel htmlFor="emergency_contact_number" value="Emergency Contact (contact number)" />
+
+                    <TextInput
+                        id="emergency_contact_number"
+                        name="emergency_contact_number"
+                        value={data.emergency_contact_number}
+                        className="mt-1 block w-full text-xs"
+                        placeholder="09xxxxxxxxx"
+                        autoComplete="emergency_contact_number"
+                        onChange={(e) => setData('emergency_contact_number', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.emergency_contact_number} className="mt-2" />
 
                     
                     </div>

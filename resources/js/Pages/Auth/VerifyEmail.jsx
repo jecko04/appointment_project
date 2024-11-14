@@ -1,14 +1,17 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { Button } from '@headlessui/react';
+import { notification } from 'antd';
 
 export default function VerifyEmail({ status }) {
     const { post, processing } = useForm({});
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
 
         post(route('verification.send'));
+        
     };
 
     return (
@@ -31,9 +34,44 @@ export default function VerifyEmail({ status }) {
                     <PrimaryButton disabled={processing}>Resend Verification Email</PrimaryButton>
 
                     <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
+                        onClick={async () => {
+                            try {
+                                const response = await fetch(route('logout'), {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                    },
+                                });
+
+                                const result = await response.json();
+
+                                if (response.ok) {
+                                    notification.success({
+                                        message: 'Success',
+                                        description: result.message || 'Logout successfully!',
+                                        placement: 'bottomRight',
+                                        duration: 3,
+                                    });
+                                    window.location.href = route('home');
+                                } else {
+                                    notification.error({
+                                        message: 'Error',
+                                        description: result.message || 'Logout Failed!',
+                                        placement: 'bottomRight',
+                                        duration: 3,
+                                    });
+                                }
+                            } catch (error) {
+                                notification.error({
+                                    message: 'Error',
+                                    description: 'Logout Failed!',
+                                    placement: 'bottomRight',
+                                    duration: 3,
+                                });
+                            }
+                        }}
                         className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Log Out

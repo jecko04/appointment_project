@@ -32,6 +32,16 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
         
+        if (Auth::user()->email_verified_at === null) {
+            // Log out the user
+            //Auth::logout();
+    
+            return response()->json([
+                'redirect' => route('verification.notice'),
+                'message' => 'Please verify your email before accessing the application.',
+            ], 403);
+        }
+    
         return response()->json([
             'redirect' => route('home'),
             'message' => 'Login successfully!',
