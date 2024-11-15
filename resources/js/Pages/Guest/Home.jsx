@@ -159,7 +159,7 @@ const submit = async (e) => {
             </span>
 
             <div className="text-white lg:text-lg text-base text-center mt-3 lg:mt-0 lg:text-left lg:text-clip leading-5">
-              <p className='text-xs lg:text-sm'>
+              <p className='text-xs lg:text-lg'>
                 Not sure which dental treatment is right for you? Begin with a consultation! Our dental professionals will assess your needs and recommend the best treatment options tailored to you.
               </p>
             </div>
@@ -183,7 +183,7 @@ const submit = async (e) => {
             </span>
 
             <div className="text-white lg:text-lg text-base text-center mt-3 lg:mt-0 lg:text-left lg:text-clip leading-5">
-              <p className='text-xs lg:text-sm'>
+              <p className='text-xs lg:text-lg'>
                 Already aware of the treatment you require? Book directly with us. Our experienced team is ready to provide the care you need to achieve your dental health goals.
               </p>
             </div>

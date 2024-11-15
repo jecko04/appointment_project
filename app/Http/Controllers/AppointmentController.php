@@ -6,6 +6,7 @@ use App\Models\AdminModel;
 use App\Models\AppointmentModel;
 use App\Models\User;
 use App\Models\BranchModel;
+use App\Models\DentalDoctorModel;
 use App\Models\OfficeHourModel;
 use App\Models\PatientModel;
 use App\Models\ServicesModel;
@@ -42,11 +43,14 @@ class AppointmentController extends Controller
         ->where('user_id', $userId)
         ->get();
 
+        $dentaldoctor = DentalDoctorModel::all();
+
         return Inertia::render('Guest/GuestAppointment', [
             'branches' => $branches, 
             'categories' => $categories, 
             'patients' => $patients, 
             'office_hours' => $office_hours,
+            'dentaldoctor' => $dentaldoctor,
 
             'appointmentDetails' => $appointmentDetails->isNotEmpty() 
             ? $appointmentDetails->map(function ($appointment) {

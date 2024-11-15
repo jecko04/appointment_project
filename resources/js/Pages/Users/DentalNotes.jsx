@@ -3,13 +3,17 @@ import { usePage } from '@inertiajs/react';
 import { Button, Card, Col, Divider, List, Row, Empty  } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react'
+import utc from 'dayjs/plugin/utc';
+
 
 const DentalNotes = () => {
 
   const { notes, reschedule_reasons } = usePage().props;
 
-  const formattedDate = dayjs(notes.created_at).format('MMM D, YYYY h:mm A');
-  const formattedDateResched = dayjs(reschedule_reasons.created_at).format('MMM D, YYYY h:mm A');
+  console.table(notes);
+  dayjs.extend(utc);
+  const formattedDate = dayjs.utc(notes.created_at).format('MMM D, YYYY h:mm A');
+  const formattedDateResched = dayjs.utc(reschedule_reasons.created_at).format('MMM D, YYYY h:mm A');
 
   const approvedRescheduleReasons = reschedule_reasons.filter(
     (reason) => reason.appointment?.status === 'approved'

@@ -205,13 +205,19 @@ const AppointmentDetails = ({ auth }) => {
     <>
 
     <div className='pt-10 px-2 lg:px-[1rem]'>
-    <div className='flex flex-col gap-1 px-4 lg:px-0 py-3'>
+          <div className='flex flex-row justify-between'>
+            <div className='flex flex-col gap-1 px-4 lg:px-0 py-3'>
                 <div className='flex items-center justify-between'>
                     <span className='text-xs lg:text-sm text-[#ff4200]'>Welcome Back!</span>
                 </div>
-
             <span className='text-lg lg:text-2xl '>{user.name}</span>
             <span className='text-xs lg:text-sm text-gray-500'>How are you Feeling Today?</span>
+            </div>
+            <div>
+              <Link href={route('request.legitimacy')}>
+              <Button type='primary'>Request Dentist Legitimacy</Button>
+              </Link>
+            </div>
             </div>
 
                   <div className='bg-[#2938DA] w-full flex gap-32 rounded-lg px-2'>

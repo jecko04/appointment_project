@@ -38,4 +38,8 @@ class BranchModel extends Model
     public function emails() {
         return $this->hasMany(AdminModel::class, 'Branch_ID'); // Use this for details if needed
     }
+
+    public function webDentalDoctor() {
+        return $this->hasMany(DentalDoctorModel::class, 'Branch_ID');
+    }
 }

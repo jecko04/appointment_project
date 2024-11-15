@@ -7,7 +7,7 @@ import { Head, Link, useForm, usePage} from '@inertiajs/react';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
-import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Space, notification, Divider} from "antd";
+import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Space, notification, Divider, Row, Col, Card, Empty, List, Typography} from "antd";
 import PrimaryButton from '@/Components/PrimaryButton';
 import TertiaryButton from '@/Components/TertiaryButton';
 import moment from 'moment';
@@ -20,7 +20,7 @@ const { Step } = Steps;
 const { Option } = Select;
 
 const Appointment = ({ auth, branches, categories, office_hours }) => {
-  const { allAppointmentDate, patients } = usePage().props;
+  const { allAppointmentDate, patients, dentaldoctor } = usePage().props;
   const user= usePage().props.auth.user;
 
   
@@ -897,84 +897,124 @@ const handleQRCode = (value) => {
                       
                       {currentStep === 4 && (
                         <>
-                        <div>
-                        <div className="flex flex-col md:p-5 p-3 gap-5 md:shadow-md rounded-lg bg-white">
-                        
-                        <div className="flex gap-2 text-base md:text-lg">
-                          <span>Welcome to</span>
-                          <span className="text-[#ff4200]">SMTC</span>
-                          <span className="text-[#2938DA]">Dental Care</span>
-                          <span>!</span>
-                        </div>
-                        <span className="font-black text-sm">Review Info</span>
+                          <div className="flex flex-col md:p-5 p-3 gap-5 md:shadow-md rounded-lg bg-white">
+                              {/* Title Section */}
+                              <div className="flex gap-2 text-base md:text-lg">
+                                <span>Welcome to</span>
+                                <span className="text-[#ff4200]">SMTC</span>
+                                <span className="text-[#2938DA]">Dental Care</span>
+                                <span>!</span>
+                              </div>
+                              <span className="font-black text-sm">Review Info</span>
 
-                          <div className="flex flex-col gap-6 justify-between px-3 py-4">
+                              {/* Appointment Details Section */}
+                              <div className="flex flex-col gap-6 justify-between px-3 py-4">
+                                <InputLabel value="Appointment Details" />
+                                <div className="flex flex-col md:flex-row gap-5 md:gap-x-16 rounded-lg md:shadow-md md:py-4 md:px-4 md:justify-around bg-white">
+                                  <div className="flex flex-col gap-2">
+                                    <span className="font-black text-sm">Selected Branches: 
+                                      <span className="font-normal"> {data.selectedBranchName || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm">Selected Services: 
+                                      <span className="font-normal"> {data.selectedServices || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm text-wrap w-60 md:w-full">Branch Location: 
+                                      <span className="font-normal"> {data.branchLocation || 'N/A'}</span>
+                                    </span>
+                                  </div>
 
-                          <InputLabel value="Appointment Details"/>
-                          <div className="flex flex-col md:flex-row gap-5 md:gap-x-16 rounded-lg md:shadow-md md:py-4 md:px-4 md:justify-around bg-white ">
-                          
-                            <div className="flex flex-col gap-2">
-                            <span className="font-black text-sm">Selected Branches: 
-                              <span className="font-normal"> {data.selectedBranchName ? data.selectedBranchName : ''} 
-                                </span>  </span>
-                            <span className="font-black text-sm">Selected Services: 
-                              <span className="font-normal"> {data.selectedServices ? data.selectedServices : ''}
-                                </span>  </span>
-                            <span className="font-black text-sm text-wrap w-60 md:w-full">Branch Location: 
-                              <span className="font-normal"> {data.branchLocation ? data.branchLocation : ''} 
-                                </span>  </span>
-                            </div>
-
-                            <div className="flex flex-col gap-2">
-                            <span className="font-black text-sm">Appointment Date: 
-                              <span className="font-normal"> {data.appointment_date ? data.appointment_date : ''} 
-                                </span>  </span>
-                            <span className="font-black text-sm">Appointment Time: 
-                              <span className="font-normal"> {data.appointment_time ? moment(data.appointment_time, 'HH:mm').format('hh:mm A') : ''}
-                                </span>  </span>
-                            </div>
-                            </div>
-
-                          <InputLabel value="Personal Info"/>
-
-                            <div className="flex flex-col md:flex-row gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4 bg-white ">
-                            <div className="flex flex-col gap-2">
-
-                            <span className="font-black text-sm">Fullname: 
-                              <span className="font-normal"> {data.fullname ? data.fullname : ''}
-                                </span></span>
-                            <span className="font-black text-sm">Age: 
-                              <span className="font-normal"> {data.age ? data.age : ''} 
-                                </span> </span>
-                            <span className="font-black text-sm">Gender: 
-                              <span className="font-normal"> {data.gender ? data.gender : ''} 
-                                </span> </span>
-                            <span className="font-black text-sm">Date of Birth: 
-                              <span className="font-normal"> {data.date_of_birth ? data.date_of_birth : ''} 
-                                </span> </span>
-
-                            <span className="font-black text-sm">Email: 
-                              <span className="font-normal"> {data.email ? data.email : ''} 
-                                </span></span>
-                            <span className="font-black text-sm">Phone #:
-                              <span className="font-normal"> {data.phone ? data.phone : ''} 
-                                </span> </span>
-                            <span className="font-black text-sm">Address: 
-                              <span className="font-normal"> {data.address ? data.address : ''} 
-                                </span>  </span>
-                            <span className="font-black text-sm">Emergency Contact: 
-                              <span className="font-normal"> {data.emergency_contact ? data.emergency_contact : ''} 
-                                </span>  </span>
-                                
+                                  <div className="flex flex-col gap-2">
+                                    <span className="font-black text-sm">Appointment Date: 
+                                      <span className="font-normal"> {data.appointment_date || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm">Appointment Time: 
+                                      <span className="font-normal"> {data.appointment_time ? moment(data.appointment_time, 'HH:mm').format('hh:mm A') : 'N/A'}</span>
+                                    </span>
+                                  </div>
                                 </div>
-                                
-                            </div>
-                            <div className='flex items-center justify-start'>
+
+                                {/* Personal Info Section */}
+                                <InputLabel value="Personal Info" />
+                                <div className="flex flex-col md:flex-row justify-between items-center gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4 bg-white">
+                                  <div className="flex flex-col gap-2">
+                                    <span className="font-black text-sm">Fullname: 
+                                      <span className="font-normal"> {data.fullname || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm">Age: 
+                                      <span className="font-normal"> {data.age || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm">Gender: 
+                                      <span className="font-normal"> {data.gender || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm">Date of Birth: 
+                                      <span className="font-normal"> {data.date_of_birth || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm">Email: 
+                                      <span className="font-normal"> {data.email || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm">Phone #: 
+                                      <span className="font-normal"> {data.phone || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm">Address: 
+                                      <span className="font-normal"> {data.address || 'N/A'}</span>
+                                    </span>
+                                    <span className="font-black text-sm">Emergency Contact: 
+                                      <span className="font-normal"> {data.emergency_contact || 'N/A'}</span>
+                                    </span>
+                                  </div>
+
+                                  <div className="flex flex-col gap-3 max-w-[18rem] max-h-[15rem] overflow-y-auto p-4">
+                                    <span className="text-sm font-medium text-gray-600">Our Dental Doctor:</span>
+
+                                    <List
+                                      grid={{ gutter: 16, column: 1 }}
+                                      dataSource={dentaldoctor}
+                                      renderItem={doctor => (
+                                        <List.Item key={doctor.id}>
+                                          <div
+                                            className="w-full bg-white rounded-lg shadow-lg p-4"
+                                            style={{
+                                              backgroundColor: '#FFFFFF',
+                                              color: '#333',
+                                              border: '1px solid #ddd',
+                                              padding: '16px',
+                                              display: 'flex',
+                                              flexDirection: 'column',
+                                              justifyContent: 'space-between',
+                                              height: '100%',
+                                            }}
+                                          >
+                                            <Typography.Title level={4} className="text-[#2C3E50] font-semibold">
+                                              {doctor.Name}
+                                            </Typography.Title>
+
+                                            <div className="text-sm text-gray-700">
+                                              <p><strong>Date of Birth:</strong> {doctor.Birth_Date}</p>
+                                              <p><strong>Profession:</strong> {doctor.Profession}</p>
+                                              <p><strong>Specialization:</strong> {doctor.Specialization}</p>
+                                              <p><strong>License Number:</strong> {doctor.License_Number}</p>
+                                            </div>
+
+                                            <div className="border-t mt-3 pt-2 text-center text-sm text-gray-500">
+                                              <span>Licensed Dental Professional</span>
+                                            </div>
+                                          </div>
+                                        </List.Item>
+                                      )}
+                                    >
+                                      {dentaldoctor && dentaldoctor.length === 0 && (
+                                        <Empty description="No dental doctors available" />
+                                      )}
+                                    </List>
+                                  </div>
+                                </div>
+
+                                <div className='flex items-center justify-start'>
                                   <Checkbox
                                     id="termCondition"
                                     name="termCondition"
                                     autoFocus
-                                    checked={data.termCondition}
+                                    checked={data.termCondition || false}
                                     onChange={(e) => handleCheckboxChange('termCondition', e.target.checked)}
                                   >
                                     <span onClick={showTermCondition} className='underline underline-offset-2'>
@@ -982,14 +1022,11 @@ const handleQRCode = (value) => {
                                     </span>
                                   </Checkbox>
                                 </div>
-
-
-                          </div>
-                          </div>
-                        </div>
+                              </div>
+                            </div>
                         </>
                       )}
-                      
+
 
                       <div className="flex gap-3 w-full mt-4">
                         {currentStep > 0 && (

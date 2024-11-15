@@ -3,6 +3,7 @@
 namespace App\Models\Mobile;
 
 use App\Models\AdminModel;
+use App\Models\DentalDoctorModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,5 +21,10 @@ class RoleModel extends Model
     public function admin()
     {
         return $this->hasMany(AdminModel::class, 'Role_ID', 'Role_ID');
+    }
+
+    public function webDentalDoctors()
+    {
+        return $this->hasMany(DentalDoctorModel::class, 'Role_ID', 'Role_ID');
     }
 }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\RequestLegitimacyController;
 use App\Http\Controllers\RescheduleController;
 use App\Http\Controllers\ServicesController;
 
@@ -66,9 +67,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/reschedule', [RescheduleController::class, 'reschedule'])->name('reschedule');
     Route::put('/appointment/reschedule', [RescheduleController::class, 'storeReschedule'])->name('appointment.reschedule');
 
-    Route::get('/Notes', [DentalNotesController::class, 'notes'])->name('notes');
+    Route::get('/notes', [DentalNotesController::class, 'notes'])->name('notes');
 
-
+    Route::get('/request/legitimacy', [RequestLegitimacyController::class, 'request'])->name('request.legitimacy');
+    Route::post('/request/legitimacy', [RequestLegitimacyController::class, 'sendRequestNotification'])->name('request.legitimacy.send');
 
 });
 
