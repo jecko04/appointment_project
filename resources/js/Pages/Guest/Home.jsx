@@ -10,8 +10,10 @@ import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import Checkbox from '@/Components/Checkbox';
-import { SyncOutlined } from '@ant-design/icons';
+import { SyncOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { FaRegArrowAltCircleRight } from "react-icons/fa";
+
 
 
 const Home = ({ status, canResetPassword = true }) => {
@@ -126,6 +128,7 @@ const submit = async (e) => {
   return (
     <>
     <div className="flex flex-col items-center justify-center lg:gap-0 gap-24">
+    
     <div className='relative h-svh w-full'>
         <span 
         className='absolute inset-0 bg-cover bg-center bg-fixed lg:h-full h-[41.5rem]' 
@@ -136,43 +139,72 @@ const submit = async (e) => {
         />
       <span className='absolute inset-0 bg-black opacity-50 z-10 lg:h-full h-[41.5rem]' />
       <div className="flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-14 lg:h-[100vh] relative z-20 md:p-0 p-3">
-      
-      <div className="flex flex-col max-w-lg mt-5">
-      <span className="2xl:text-4xl lg:text-4xl text-2xl text-center lg:text-left tracking-widest font-black">
-        <span className="text-[#FFFFFF] ">Experience </span>
-        <span className="text-[#FFFFFF]">quality dental care </span>
-        <span className="text-[#FFFFFF] ">with a smile</span>
-      </span>
 
-      <div className="text-white lg:text-lg text-base text-center mt-3 lg:mt-0 lg:text-left lg:text-clip leading-5">
-      <p>
-        {isExpanded
-          ? "Our clinic focuses on enhancing your smile, ensuring a healthy, radiant one, and promoting confidence through dental health and beauty. Schedule an appointment today for a brighter, healthier you."
-          : "Our clinic focuses on enhancing your smile, ensuring a healthy, radiant one..."}
-      </p>
-      <button
-        className="text-[#ffffff] hover:underline"
-        onClick={() => setIsExpanded(!isExpanded)}
+      {/* <div className="relative z-30"> */}
+
+      <Carousel 
+        autoplay
+        effect="fade" 
+        dotPosition='top'
+        arrows 
+        infinite={false}
+        className="w-[20rem] lg:w-[40rem] mx-auto"  
       >
-        {isExpanded ? 'See Less' : 'See More...'}
-      </button>
-      
-    </div>
+        {/* First Slide */}
+        <div className="flex justify-center items-center h-full"> 
+          <div className="flex flex-col px-[2rem] mt-5">
+            <span className="2xl:text-4xl lg:text-4xl text-2xl text-center lg:text-left tracking-widest font-black">
+              <span className="text-yellow-500">Unsure About Your Dental Needs?</span>
+              <span className="text-blue-500"> Start with a Consultation</span>
+            </span>
 
-      <div className="flex justify-center lg:justify-start mt-7 lg:m-7">
-      <Link href={route('guest.appointment')}>
-        <SecondaryButton onClick={showModal}>
-          Request Appointment Here!
-        </SecondaryButton>
-      </Link>     
-    </div>
-      </div>
+            <div className="text-white lg:text-lg text-base text-center mt-3 lg:mt-0 lg:text-left lg:text-clip leading-5">
+              <p className='text-xs lg:text-sm'>
+                Not sure which dental treatment is right for you? Begin with a consultation! Our dental professionals will assess your needs and recommend the best treatment options tailored to you.
+              </p>
+            </div>
+
+            <div className="flex justify-center lg:justify-start mt-2 lg:m-7">
+              <Link href={route('guest.consultation')}>
+                <SecondaryButton onClick={showModal}>
+                  Schedule Your Consultation Here!
+                </SecondaryButton>
+              </Link>     
+            </div>
+          </div>
+        </div>
+
+        {/* Second Slide */}
+        <div className="flex justify-center items-center h-full"> 
+          <div className="flex flex-col  px-[2rem] mt-5">
+            <span className="2xl:text-4xl lg:text-4xl text-2xl text-center lg:text-left tracking-widest font-black">
+              <span className="text-yellow-500">Know What You Need?</span>
+              <span className="text-blue-500"> Book Your Treatment Directly</span>
+            </span>
+
+            <div className="text-white lg:text-lg text-base text-center mt-3 lg:mt-0 lg:text-left lg:text-clip leading-5">
+              <p className='text-xs lg:text-sm'>
+                Already aware of the treatment you require? Book directly with us. Our experienced team is ready to provide the care you need to achieve your dental health goals.
+              </p>
+            </div>
+
+            <div className="flex justify-center lg:justify-start mt-2 lg:m-7">
+              <Link href={route('guest.appointment')}>
+                <SecondaryButton onClick={showModal}>
+                  Book Your Treatment Here!
+                </SecondaryButton>
+              </Link>     
+            </div>
+          </div>
+        </div>
+      </Carousel>
+      {/* </div> */}
+
+
 
       <div className="lg:block">
-
         {user ? (
           <>
-          
           </>
         ) : (
           <>
@@ -180,12 +212,12 @@ const submit = async (e) => {
 
               <div className="flex flex-col items-center">
                   <div className="flex items-center sm:flex-row lg:flex-row">
-                      <span className="font-extrabold text-xs md:text-sm tracking-widest">Welcome To</span>
+                      <span className="font-extrabold text-xs md:text-sm tracking-widest text-white">Welcome To</span>
                       <img src="/images/image.png" alt="Logo" className="h-10 w-10 mr-2" />
-                      <span style={{ color: '#FF4200' }} className="mr-2 text-xs md:text-sm tracking-widest">SMTC</span>
-                      <span style={{ color: '#2938DA' }} className="md:text-sm tracking-widest">Dental Care</span>
+                      <span style={{ color: '#FF4200' }} className="mr-2 text-xs md:text-sm tracking-widest text-white">SMTC</span>
+                      <span style={{ color: '#2938DA' }} className="md:text-sm tracking-widest text-white">Dental Care</span>
                   </div>
-                  <span className="text-xs sm:text-xs lg:text-xs tracking-widest pb-5">General Dentistry & Orthodontics w/ Dental X-Ray</span>
+                  <span className="text-xs sm:text-xs lg:text-xs tracking-widest pb-5 text-white">General Dentistry & Orthodontics w/ Dental X-Ray</span>
               </div>
 
               {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
@@ -263,10 +295,8 @@ const submit = async (e) => {
           </>
         )}
         
-        
-
-
       </div>
+      
         </div>
     </div>
     
@@ -343,10 +373,16 @@ const submit = async (e) => {
       </div>
 
     </div>
-      <div className='mt-4'>
+      <div className='mt-4 flex flex-col lg:flex-row'>
+        <Link href={route('guest.consultation')}>
+          <Button className='text-xl bg-[#FF4200] text-white px-[2.53rem] lg:px-[7.8rem] lg:py-[1.4rem]'>
+            Book a Consultation Here!
+          </Button>
+        </Link>
+
         <Link href={route('guest.appointment')}>
-          <Button className='text-xl bg-[#FF4200] text-white lg:px-[24.6rem] lg:py-[1.4rem]'>
-            Book Appointment Here! 
+          <Button className='text-xl bg-[#FF4200] text-white px-[1.3rem] lg:px-[7.8rem] lg:py-[1.4rem]'>
+            Book a Dental Treatment Here! 
           </Button>
         </Link>
       </div>
@@ -354,8 +390,48 @@ const submit = async (e) => {
     </div>
     </div>
 
+    <div className='lg:h-[100vh] flex flex-col justify-center items-center bg-white w-full'>
 
-    <div className="flex flex-col lg:flex-row items-center lg:justify-center md:w-full md:max-w-full md:pt-20 lg:gap-28 lg:h-[100vh] md:h-[55rem] h-[40rem] w-[100vw] bg-white mb-[6rem] ">
+        <span className="2xl:text-3xl lg:text-3xl text-2xl text-center lg:text-left tracking-widest font-black mt-[3rem]">
+          <span className="text-blue-500">Our  </span>
+          <span className="text-blue-500">Dentist </span>
+        </span>
+        <div className='flex flex-col lg:flex-row gap-10 items-end justify-center  w-full mb-12 bg-w'>
+        <div className="bg-white rounded-lg rounded-t-full shadow-lg w-[20rem] flex flex-col items-start ">
+        <img src="/images/10.png" alt="" className="w-full h-[25rem] object-cover mb-4 rounded-t-full"  />
+        <ul className="list-none ml-1 space-y-2 text-blue-400 p-6">
+        <span className="text-[#FF4200] text-xl font-semibold mb-4">Dr. Sunshine Mayflor Tompong - Cabantac</span>
+        <div className='flex items-end'>
+        
+        </div>
+        </ul>
+      </div>
+      <div className="bg-white rounded-lg shadow-lg w-[20rem] flex flex-col items-start ">
+        {/* <img src="/images/image6.jpg" alt="" className="w-full h-[25rem] object-cover mb-4 rounded-t-full"  /> */}
+        <ul className="list-none ml-1 space-y-2 text-blue-400 p-6">
+        <span className="text-[#FF4200] text-xl font-semibold mb-4">Dr. Sunshine Mayflor Tompong - Cabantac</span>
+        <li className="flex items-center text-lg">
+          <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+          20 years experienced (example)
+        </li>
+
+        <li className="flex items-center text-lg">
+          <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+          Specializes in general dentistry
+        </li>
+
+        <li className="flex items-center text-lg">
+          <IoMdCheckmarkCircleOutline className="text-blue-400 mr-2" />
+          Member of the Philippine Dental Association
+        </li>
+        </ul>
+      </div>
+        </div>
+
+    </div>
+
+
+    <div className="flex flex-col lg:flex-row items-center lg:justify-center md:w-full md:max-w-full md:pt-20 lg:gap-28 lg:h-[100vh] md:h-[55rem] h-[40rem] w-[100vw] mb-[6rem] ">
       <div className="flex flex-col md:max-w-md max-w-full">
           
           <span className="text-sm text-gray-500">Why choose us?</span>

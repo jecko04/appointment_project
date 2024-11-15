@@ -489,7 +489,7 @@ const handleQRCode = (value) => {
                               <span className="font-light text-xs py-2 text-gray-500">Choose Date and Time of your appointment</span>
                               </div>
                               
-                              <InputLabel htmlFor="appointment_date" value="Select Date (Closed on Sundays)" />
+                              <InputLabel htmlFor="appointment_date" value="Select Your Available Day (Closed on Sundays)" />
 
                               <DatePicker
                                   id="appointment_date"
@@ -505,7 +505,7 @@ const handleQRCode = (value) => {
                               </DatePicker>
                               <InputError message={errors.appointment_date} className="mt-2" /> 
 
-                              <InputLabel htmlFor="appointment_time" value="Choose a Time (Available: 9:00 am - 5:00 pm)" />
+                              <InputLabel htmlFor="appointment_time" value="Your Available Time (Open in: 9:00 am - 5:00 pm)" />
 
                               <TimePicker
                               id="appointment_time"

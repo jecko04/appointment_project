@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\ConsultationAppointmentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DentalNotesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserRecordAppointmentController;
 use App\Http\Controllers\UsersAppointmentController;
@@ -42,6 +44,7 @@ Route::get('/location', [LocationController::class, 'location'])->name('location
 //learn how to make route
 Route::middleware(['ifNotUser', 'checkAppointment'])->group(function () {
     Route::get('/guest/appointment', [AppointmentController::class, 'appointment'])->name('guest.appointment');
+    Route::get('/guest/consultation', [ConsultationAppointmentController::class, 'consult'])->name('guest.consultation');
 });
 
 
@@ -54,6 +57,7 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/profile/personal-info', [ProfileController::class, 'updateinfo'])->name('profile.update.info');
     Route::post('/guest/appointment', [AppointmentController::class, 'storeAppointment'])->name('guest.appointment.store');
+    Route::post('/guest/consultation', [ConsultationAppointmentController::class, 'storeAppointment'])->name('guest.consultation.store');
     Route::get('/record', [UserRecordAppointmentController::class, 'showRecordAppointment'])->name('record');
 
     Route::get('/appointment', [UsersAppointmentController::class, 'showUsersAppointment'])->name('appointment');
@@ -61,6 +65,9 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/reschedule', [RescheduleController::class, 'reschedule'])->name('reschedule');
     Route::put('/appointment/reschedule', [RescheduleController::class, 'storeReschedule'])->name('appointment.reschedule');
+
+    Route::get('/Notes', [DentalNotesController::class, 'notes'])->name('notes');
+
 
 
 });

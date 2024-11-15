@@ -3,7 +3,7 @@ import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import Navbar from '../Navbar/Navbar';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Button, Card, Dropdown, Input, Select, Space, Tag  } from 'antd';
+import { Button, Card, Modal, Input, Select, Space, Tag  } from 'antd';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/TertiaryButton';
 import TextInput from '@/Components/TextInput';
@@ -79,59 +79,70 @@ const Services = ({ auth }) => {
           </Option>
         ))}
         </Select>
-
-        {/* <Input
-        id="services"
-        name="services"
-        className="w-[17.5rem] md:w-80"
-        size="large"
-        placeholder="Search services"
-        prefix={<SearchOutlined />}
-        required
-        /> */}
       </div>
 
-        <div className='flex flex-wrap gap-x-5' >
-        {categories && categories.length > 0 ? (
-          data.selectedBranch ? (
-            categories
-              .filter(category => category.Branch && category.Branch.Branch_ID == data.selectedBranch)
-              .map((category, index) => (
-                <Card
-                  key={index}
-                  type="inner"
-                  title={category.Title}
-                  hoverable
-                  size="small"
-                  className='shadow-lg mb-2'
-                  style={{ width:"39rem" }}
-                >
-                  <div className='flex'>
-                    <img src="/images/image.png" alt="" className='w-10 h-10 hidden md:block' />
-                    <div className='p-2 flex flex-col md:flex-row justify-between w-full'>
-                      <div>
-                        <p>Branch Name: {category.Branch ? category.Branch.BranchName : ''}</p>
-                        <p>Description: {category.Description}</p>
-                        <p>Duration: {category.Duration}</p>
-                      </div>
-                      <div>
-                        <p>Frequency: {category.Frequency}</p>
-                        <p>Price: {category.Price}</p>
-                        <Link href={(route('guest.appointment'))}>
-                          <Button type='primary' size='small' style={{ padding: "13px", backgroundColor: '#ff4200' }} className='w-full'>Get Appointment</Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))
-          ) : (
-            <span className='text-center mt-6 text-lg'>Please select a branch to view services</span>
-          )
-        ) : (
-          <span className='text-center mt-6 text-lg'>No data available</span>
-        )}
-        </div>
+      <div className='flex flex-wrap gap-x-5'>
+  {categories && categories.length > 0 ? (
+    data.selectedBranch ? (
+      categories
+        .filter(category => category.Branch && category.Branch.Branch_ID == data.selectedBranch)
+        .map((category, index) => (
+          <Card
+            key={index}
+            type="inner"
+            title={category.Title}
+            hoverable
+            size="small"
+            className='shadow-lg mb-4 rounded-lg border border-gray-200'
+            style={{ width: "100%", maxWidth: "39rem" }}
+          >
+            <div className='flex flex-col md:flex-row items-start md:items-center'>
+              {/* <img src="/images/image.png" alt="" className='w-16 h-16 md:w-20 md:h-20 rounded-full mb-4 md:mb-0 md:mr-4' /> */}
+              <div className='p-4 flex flex-col justify-between w-full'>
+                <div className='mb-3'>
+                  <p className='font-semibold text-lg text-gray-800'>Branch Name:</p>
+                  <p className='text-gray-600'>{category.Branch ? category.Branch.BranchName : 'N/A'}</p>
+                </div>
+                <div className='mb-3'>
+                  <p className='font-semibold text-lg text-gray-800'>Description:</p>
+                  <p className='text-gray-600'>{category.Description}</p>
+                </div>
+                <div className='mb-3'>
+                  <p className='font-semibold text-lg text-gray-800'>Duration:</p>
+                  <p className='text-gray-600'>{category.Duration}</p>
+                </div>
+                <div className='mb-3'>
+                  <p className='font-semibold text-lg text-gray-800'>Frequency:</p>
+                  <p className='text-gray-600'>{category.Frequency}</p>
+                </div>
+                <div className='mb-3'>
+                  <p className='font-semibold text-lg text-gray-800'>Price:</p>
+                  <p className='text-gray-600'>{category.Price}</p>
+                </div>
+                <div className='flex justify-end'>
+                  <Link href={route('guest.appointment')}>
+                    <Button 
+                      type='primary' 
+                      size='small' 
+                      className='w-full md:w-auto' 
+                      style={{ padding: "10px 20px", backgroundColor: '#ff4200', borderColor: '#ff4200' }}
+                    >
+                      Get Appointment
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </Card>
+        ))
+    ) : (
+      <span className='text-center mt-6 text-lg'>Please select a branch to view services</span>
+    )
+  ) : (
+    <span className='text-center mt-6 text-lg'>No data available</span>
+  )}
+</div>
+
         </div>
     </main>
     </div>

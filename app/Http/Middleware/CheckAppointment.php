@@ -25,6 +25,7 @@ class CheckAppointment
             ->whereIn('status', ['pending', 'approved'])
             ->exists();
 
+
             if($hasAppointment) {
                 return redirect()->route('appointment');
             }

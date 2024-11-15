@@ -39,4 +39,8 @@ class AppointmentModel extends Model
     public function services() {
         return $this->belongsTo(ServicesModel::class, 'selectServices', 'Categories_ID'); 
     }
+
+    public function reschedule_reasons() {
+        return $this->hasMany(RescheduleReasonsModel::class, 'appointment_id'); 
+    }
 }

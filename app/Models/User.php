@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\DentalNotesController;
 use App\Models\Mobile\MobileDentalDoctorModel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +28,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function appointments() {
         return $this->hasMany(AppointmentModel::class, 'user_id');
+    }
+
+    public function notes() {
+        return $this->hasMany(NotesModel::class, 'user_id');
+    }
+
+    public function reschedule_reasons() {
+        return $this->hasMany(RescheduleReasonsModel::class, 'user_id');
     }
 
     
