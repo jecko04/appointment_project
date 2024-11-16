@@ -12,8 +12,8 @@ const DentalNotes = () => {
 
   console.table(notes);
   dayjs.extend(utc);
-  const formattedDate = dayjs.utc(notes.created_at).format('MMM D, YYYY h:mm A');
-  const formattedDateResched = dayjs.utc(reschedule_reasons.created_at).format('MMM D, YYYY h:mm A');
+  const formattedDate = dayjs.utc(notes.updated_at).format('MMM D, YYYY');
+  const formattedDateResched = dayjs.utc(reschedule_reasons.updated_at).format('MMM D, YYYY');
 
   const approvedRescheduleReasons = reschedule_reasons.filter(
     (reason) => reason.appointment?.status === 'approved'
@@ -21,19 +21,20 @@ const DentalNotes = () => {
   return (
     <>
     <div className='flex flex-col items-center h-[100vh] bg-white '>
-    <div className="flex flex-col lg:flex-wrap gap-3 w-full p-[3rem]">
-      <span className=''>Patient Notes:</span>
+      
+    <div className="w-full p-[3rem]">
       <Row gutter={[16, 16]}>
         {notes && notes.length > 0 ? (
           notes.map((note) => (
             <Col span={8} key={note.id}>
               <Card 
-                title={formattedDate} 
+                title='Added note!' 
                 bordered={true} 
-                className="w-[18rem] lg:w-[30rem]"
-                style={{ backgroundColor: '#FFFFFF', color: '#000' }}
+                className="w-[18rem] lg:w-[30rem] lg:max-w-[30rem] overflow-y-auto bg-yellow-300 "
+                //style={{ backgroundColor: '#F6E05E', color: '#000' }}
               >
-                <p>{note.notes}</p>
+                <p className='w-[18rem] lg:w-[30rem] lg:max-w-[30rem]'>{note.notes}</p>
+                <p className='pt-7 flex justify-end items-end'>Created At: {formattedDate}</p>
               </Card>
             </Col>
           ))
@@ -48,19 +49,23 @@ const DentalNotes = () => {
     <Divider />
 
     <div className="w-full p-[3rem]">
-      <span className="">Reason for rescheduled:</span>
       <Row gutter={[16, 16]}>
         {approvedRescheduleReasons && approvedRescheduleReasons.length > 0 ? (
           approvedRescheduleReasons.map((item) => (
             <Col span={8} key={item.appointment_id}>
               <Card
-                title={`Appointment ID: ${item.appointment_id}`}
+                title="Reason for rescheduled"
                 bordered={true}
-                className="w-[18rem] lg:w-[30rem]"
-                style={{ backgroundColor: '#FFFFFF', color: '#000' }}
+                className="w-[18rem] lg:w-[30rem] overflow-y-auto bg-yellow-300 "
+                //style={{ backgroundColor: '#FFFFFF', color: '#000' }}
               >
-                <p>{item.reason}</p>
-                <p>Date: {formattedDateResched}</p> 
+                <div className='w-[18rem] lg:w-[27rem] lg:max-w-[27rem]'>
+                  <p>{item.reason}</p>
+                  <div className='flex justify-between items-center pt-7'>
+                    <p>Appointment ID: {item.appointment_id}</p>
+                    <p className=''>Created At: {formattedDateResched}</p> 
+                  </div>
+                </div>
               </Card>
             </Col>
           ))

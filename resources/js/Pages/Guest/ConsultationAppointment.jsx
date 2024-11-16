@@ -7,7 +7,7 @@ import { Head, Link, useForm, usePage} from '@inertiajs/react';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
-import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Space, notification, Divider} from "antd";
+import { Steps, Select, DatePicker, TimePicker, Checkbox, QRCode, Modal, Button, Space, notification, Divider, Empty, Typography, List} from "antd";
 import PrimaryButton from '@/Components/PrimaryButton';
 import TertiaryButton from '@/Components/TertiaryButton';
 import moment from 'moment';
@@ -18,7 +18,7 @@ const { Step } = Steps;
 const { Option } = Select;
 
 const ConsultationAppointment = ({ auth, branches, categories, office_hours }) => {
-  const { allAppointmentDate, patients } = usePage().props;
+  const { allAppointmentDate, patients, dentaldoctor } = usePage().props;
   const user= usePage().props.auth.user;
 
   
@@ -949,7 +949,7 @@ const handleQRCode = (value) => {
 
                         <InputLabel value="Personal Info"/>
 
-                          <div className="flex flex-col md:flex-row gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4 bg-white ">
+                          <div className="flex flex-col  md:flex-row justify-between items-center gap-5 md:gap-0 rounded-lg md:shadow-md md:py-4 md:px-4 bg-white ">
                           <div className="flex flex-col gap-2">
 
                           <span className="font-black text-sm">Fullname: 
@@ -979,6 +979,51 @@ const handleQRCode = (value) => {
                               </span>  </span>
                               
                               </div>
+
+                              <div className="flex flex-col gap-3 max-w-[18rem] max-h-[15rem] overflow-y-auto p-4">
+                                    <span className="text-sm font-medium text-gray-600">Our Dental Doctor:</span>
+
+                                    <List
+                                      grid={{ gutter: 16, column: 1 }}
+                                      dataSource={dentaldoctor}
+                                      renderItem={doctor => (
+                                        <List.Item key={doctor.id}>
+                                          <div
+                                            className="w-full bg-white rounded-lg shadow-lg p-4"
+                                            style={{
+                                              backgroundColor: '#FFFFFF',
+                                              color: '#333',
+                                              border: '1px solid #ddd',
+                                              padding: '16px',
+                                              display: 'flex',
+                                              flexDirection: 'column',
+                                              justifyContent: 'space-between',
+                                              height: '100%',
+                                            }}
+                                          >
+                                            <Typography.Title level={4} className="text-[#2C3E50] font-semibold">
+                                              {doctor.Name}
+                                            </Typography.Title>
+
+                                            <div className="text-sm text-gray-700">
+                                              <p><strong>Date of Birth:</strong> {doctor.Birth_Date}</p>
+                                              <p><strong>Profession:</strong> {doctor.Profession}</p>
+                                              <p><strong>Specialization:</strong> {doctor.Specialization}</p>
+                                              <p><strong>License Number:</strong> {doctor.License_Number}</p>
+                                            </div>
+
+                                            <div className="border-t mt-3 pt-2 text-center text-sm text-gray-500">
+                                              <span>Licensed Dental Professional</span>
+                                            </div>
+                                          </div>
+                                        </List.Item>
+                                      )}
+                                    >
+                                      {dentaldoctor && dentaldoctor.length === 0 && (
+                                        <Empty description="No dental doctors available" />
+                                      )}
+                                    </List>
+                                  </div>
                               
                           </div>
                           <div className='flex items-center justify-start'>

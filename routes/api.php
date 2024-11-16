@@ -21,6 +21,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/mobile/logout', [MobileLogoutController::class, 'logout'])->name('mobile.logout');
 
     Route::get('/mobile/appointment', [MobileAppointmentController::class, 'appointment'])->name('mobile.appointment');
+    Route::get('/mobile/notes', [MobileAppointmentController::class, 'notes'])->name('mobile.notes');
+    Route::get('/mobile/dentaldetails', [MobileAppointmentController::class, 'dentaldetails'])->name('mobile.dentaldetails');
+
     Route::get('/mobile/appointment2', [MobileAppointment2Controller::class, 'appointment2'])->name('mobile.appointment2');
     Route::get('/mobile/dashboard', [MobileDashboardController::class, 'dashboard'])->name('mobile.dashboard');
 

@@ -213,9 +213,9 @@ const AppointmentDetails = ({ auth }) => {
             <span className='text-lg lg:text-2xl '>{user.name}</span>
             <span className='text-xs lg:text-sm text-gray-500'>How are you Feeling Today?</span>
             </div>
-            <div>
+            <div className='flex items-center'>
               <Link href={route('request.legitimacy')}>
-              <Button type='primary'>Request Dentist Legitimacy</Button>
+              <a className='underline text-xs text-gray-400 hover:text-blue-400'>Request Dentist Legitimacy?</a>
               </Link>
             </div>
             </div>
