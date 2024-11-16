@@ -22,6 +22,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/mobile/appointment', [MobileAppointmentController::class, 'appointment'])->name('mobile.appointment');
     Route::get('/mobile/notes', [MobileAppointmentController::class, 'notes'])->name('mobile.notes');
+    Route::post('/mobile/editnotes', [MobileAppointmentController::class, 'editnotes'])->name('mobile.editnotes');
+
     Route::get('/mobile/dentaldetails', [MobileAppointmentController::class, 'dentaldetails'])->name('mobile.dentaldetails');
 
     Route::get('/mobile/appointment2', [MobileAppointment2Controller::class, 'appointment2'])->name('mobile.appointment2');
