@@ -106,8 +106,9 @@ class MobileAppointmentController extends Controller
         ]);
     }
 
-    public function editnotes(Request $request) {
-        $user = Auth::guard('api_dentaldoctor')->user(); 
+    public function editnotes(Request $request)
+    {
+        $user = Auth::guard('api_dentaldoctor')->user();
     
         if (!$user) {
             return response()->json([
@@ -118,31 +119,30 @@ class MobileAppointmentController extends Controller
     
         $request->validate([
             'notes' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
             'user_id' => 'required|integer',
         ]);
     
         try {
-            $note = NotesModel::where('user_id', $request->user_id)->first();
-    
-            if (!$note) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "Note not found for the given user ID.",
-                ], 404);
-            }
-    
-            $note->notes = $request->notes;
-            $note->save();
+            $note = NotesModel::updateOrCreate(
+                ['user_id' => $request->user_id],  
+                [
+                    'email' => $request->email,
+                    'notes' => $request->notes,
+                ]       
+            );
     
             return response()->json([
                 "success" => true,
-                "message" => "Note updated successfully.",
+                "message" => $note->wasRecentlyCreated
+                    ? "Note created successfully."
+                    : "Note updated successfully.",
                 "data" => $note,
             ]);
         } catch (Exception $e) {
             return response()->json([
                 "success" => false,
-                "message" => "An error occurred while updating the note.",
+                "message" => "An error occurred while saving the note.",
                 "error" => $e->getMessage(),
             ], 500);
         }

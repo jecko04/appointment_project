@@ -13,6 +13,7 @@ class NotesModel extends Model
 
     protected $fillable = [
         'user_id',
+        'email',
         'notes',
         'created_at',
         'updated_at',

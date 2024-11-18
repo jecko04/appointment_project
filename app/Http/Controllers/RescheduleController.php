@@ -50,7 +50,9 @@ class RescheduleController extends Controller
                 'status' => $appointment->status,
                 'user_id' => $appointment->user_id,
                 'appointment_date' => $appointment->appointment_date,
+                'appointment_time' => $appointment->appointment_time,
                 'reschedule_date' => $appointment->reschedule_date,
+                'reschedule_time' => $appointment->reschedule_time,
                 ];
                 }) 
                 : [],
@@ -85,6 +87,7 @@ class RescheduleController extends Controller
             'selectServices' => 'required|integer',
             'reschedule_date' => 'required|date', 
             'reschedule_time' => 'required|string|date_format:H:i',
+            'qr_code' => 'required|string',
         ]);
 
         $dateformatted = Carbon::createFromFormat('Y-m-d', $validate['reschedule_date'])->format('Y-m-d');
@@ -105,6 +108,8 @@ class RescheduleController extends Controller
                 'reschedule_date' => $dateformatted,
                 'reschedule_time' => $timeformatted,
                 'status' => 'pending',
+                'check_in' => 0,
+                'qr_code' => $validate['qr_code'],
             ]);
     
             $appointment = AppointmentModel::with(['users', 'branch', 'services'])->find($latestAppointment->id);

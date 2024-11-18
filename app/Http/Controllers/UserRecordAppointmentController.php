@@ -17,9 +17,23 @@ class UserRecordAppointmentController extends Controller
         $branches = BranchModel::all(); 
         $categories = ServicesModel::with('branch')->get();
         $users = User::all();
+
         $userId = Auth::id(); 
-        $appointmentDetails = AppointmentModel::where('user_id', $userId)
-        ->whereIn('status', ['cancelled', 'completed', 'missed'])
+
+        $cancelled = AppointmentModel::where('user_id', $userId)
+        ->whereIn('status', ['cancelled'])
+        ->with('users', 'branch', 'services')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        $completed = AppointmentModel::where('user_id', $userId)
+        ->whereIn('status', ['completed'])
+        ->with('users', 'branch', 'services')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        $missed = AppointmentModel::where('user_id', $userId)
+        ->whereIn('status', ['missed'])
         ->with('users', 'branch', 'services')
         ->orderBy('created_at', 'desc')
         ->get();
@@ -30,7 +44,9 @@ class UserRecordAppointmentController extends Controller
             'branches' => $branches, 
             'users' => $users, 
             'categories' => $categories, 
-            'appointmentDetails' => $appointmentDetails,
+            'cancelled' => $cancelled,
+            'completed' => $completed,
+            'missed' => $missed,
         ]);
     }
 }

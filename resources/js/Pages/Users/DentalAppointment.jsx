@@ -104,6 +104,8 @@ const AppointmentDetails = ({ auth }) => {
       selectedServices: '',
       appointment_date: '',
       appointment_time: '',
+      reschedule_date: '',
+      reschedule_time: '',
       qr_code: '',
     });
     const [renderType, setRenderType] = useState('canvas');
@@ -174,17 +176,21 @@ const AppointmentDetails = ({ auth }) => {
       : null;
 
       const service = categories && appointmentDetails
-    ? categories.find(c => c.Categories_ID === appointmentDetails[0]?.selectServices)
-    : null;
+      ? categories.find(c => c.Categories_ID === appointmentDetails[0]?.selectServices)
+      : null;
+
+
       
       setCurrentQRCode({
         ...currentQRCode,
         qr_code: JSON.stringify({
           userId: user.id,
-          branch_name: branch ? branch.BranchName : "",
-          services: service ? service.Title : "",
-          appointment_date: qrCodeData.appointment_date,
-          appointment_time: qrCodeData.appointment_time,
+          branch_name: branch ? branch.BranchName : '',
+          services: service ? service.Title : '',
+          appointment_date: qrCodeData.appointment_date || '',
+          appointment_time: qrCodeData.appointment_time || '',
+          reschedule_date: qrCodeData.reschedule_date || '',
+          reschedule_time: qrCodeData.reschedule_time || '',
         }),
       });
     }, [

@@ -10,12 +10,17 @@ import React, { useEffect, useState } from 'react'
 import BarLoader from 'react-spinners/BarLoader';
 
 const DentalAppointmentReschedule = () => {
-  const { appointmentDetails, allAppointmentDate, branches, categories, user, office_hours} = usePage().props;
+  const { appointmentDetails, allAppointmentDate, branches, categories, office_hours} = usePage().props;
+  const user= usePage().props.auth.user;
+
 
   const {data, setData, errors }= useForm({
 
+    userId: user.id,
     selectedBranch: null,
     selectServices: null,
+    appointment_date: null,
+    appointment_time: null,
     reschedule_date: null,
     reschedule_time: null,
     status: '',
@@ -27,6 +32,42 @@ const DentalAppointmentReschedule = () => {
     branch: '',
     services: '',
   });
+
+  // const [qrCodeData, setQrCodeData] = useState(null);
+  // const [qrValue, setQrValue] = useState('');
+  
+  useEffect(() => {
+    
+    const selectedBranch = branches?.find(b => b.Branch_ID === data.selectedBranch);
+    const selectedService = categories?.find(c => c.Categories_ID === data.selectServices);
+  
+    // Set the QR code data ensuring user.id is always included
+    setData((prevData) => ({
+      ...prevData,
+      qr_code: JSON.stringify({
+        userId: user.id, 
+        branch_name: selectedBranch ? selectedBranch.BranchName : '', 
+        services: selectedService ? selectedService.Title : '', 
+        appointment_date: data.appointment_date, 
+        appointment_time: data.appointment_time, 
+        reschedule_date: data.reschedule_date, 
+        reschedule_time: data.reschedule_time,
+      }),
+    }));
+  }, [
+    user.id, 
+    currentAppointment.branch, 
+    currentAppointment.services, 
+    data.appointment_date, 
+    data.appointment_time,
+    data.reschedule_date,
+    data.reschedule_time,
+    branches, 
+    categories, 
+    data.selectedBranch, 
+    data.selectServices, 
+  ]);
+  
 
   const handleValue = (e) => {
     setCurrentAppointment({
@@ -47,20 +88,23 @@ const DentalAppointmentReschedule = () => {
 
   useEffect(() => {
     if (appointmentDetails && appointmentDetails.length > 0) {
-      setCurrentAppointment({
-        fullname: user
-        ?.filter(u => u.id ===  appointmentDetails[0]?.user_id)
-        .map(u => u.name)[0] || '',
-        branch: branches
-        ?.filter(b => b.Branch_ID === appointmentDetails[0]?.selectedBranch)
-        .map(b => b.BranchName)[0] || '',
-        services: categories
-        ?.filter(c => c.Categories_ID === appointmentDetails[0]?.selectServices)
-        .map(c => c.Title)[0] || '',
-      })
-    }
-  }, [appointmentDetails]);
+      const selectedAppointment = appointmentDetails[0];
+      
+      setData({
+        ...data,
+        selectedBranch: selectedAppointment?.selectedBranch,
+        selectServices: selectedAppointment?.selectServices,
+        appointment_date: selectedAppointment?.appointment_date || '', // Populate with existing appointment data
+        appointment_time: selectedAppointment?.appointment_time || '', // Populate with existing appointment time
+      });
 
+      setCurrentAppointment({
+        fullname: user.name,
+        branch: branches?.find(b => b.Branch_ID === selectedAppointment?.selectedBranch)?.BranchName || '',
+        services: categories?.find(c => c.Categories_ID === selectedAppointment?.selectServices)?.Title || '',
+      });
+    }
+  }, [appointmentDetails, user, branches, categories]);
   const submit = async (e) => {
     e.preventDefault();
     setProcessing(true);
@@ -106,19 +150,6 @@ const DentalAppointmentReschedule = () => {
         setProcessing(false);
     }
 };   
-
-  // const [sameAppointmentCount, setSameAppointmentCount] = useState(0); 
-  // useEffect(() => {
-  //   const count = [];
-  //   if (allAppointmentDate && allAppointmentDate.length > 0) {
-  //     allAppointmentDate.forEach(appointment => {
-  //         count.push(appointment.appointment_date); 
-  //     });
-
-  //     setSameAppointmentCount(count.length); 
-  // }
-  // console.log(count);
-  // }, [allAppointmentDate]);
 
   const getAppointmentForDate = (date) => {
       const appointments = allAppointmentDate.filter(appointment => {

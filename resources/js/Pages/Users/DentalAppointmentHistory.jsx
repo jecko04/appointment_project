@@ -18,11 +18,11 @@ import {
 } from '@ant-design/icons';
 
 const DentalAppointmentHistory = ({ auth }) => {
-    const { appointmentDetails, branches, categories, users } = usePage().props;
+    const { cancelled, completed, missed, branches, categories, users } = usePage().props;
 
     const user= usePage().props.auth.user;
 
-    const qrCodeData = JSON.parse( appointmentDetails.qr_code || "{}");
+    const qrCodeData = JSON.parse( completed.qr_code || "{}");
     
     const {data, setData, errors }= useForm({
       fullname: '',
@@ -256,21 +256,57 @@ const DentalAppointmentHistory = ({ auth }) => {
         //   }
         // },
       ];
-
+      
   return (
     <>
-    <div className='m-5 '>
+    <div className='p-5 flex flex-col gap-5 lg:w-full lg:max-w-full max-w-[20rem]'>
+
+    <span className='mt-5 font-black text-lime-500'>Completed Appointment</span>
     <Table
       id="table"
       name="table"
-      dataSource={appointmentDetails} 
+      dataSource={completed} 
       columns={columns}       
       rowKey="id"
       size='small'
+      className='bg-lime-500 rounded-lg'
       pagination={{ 
         pageSize: 5,
         showSizeChanger: false,
        }}
+       scroll={{ x: 'max-content' }}
+    />
+
+    <span className='font-black text-red-500'>Cancelled Appointment</span>
+    <Table
+      id="table"
+      name="table"
+      dataSource={cancelled} 
+      columns={columns}       
+      rowKey="id"
+      size='small'
+      className=' bg-red-500 rounded-lg'
+      pagination={{ 
+        pageSize: 5,
+        showSizeChanger: false,
+       }}
+       scroll={{ x: 'max-content' }}
+    />
+
+    <span className='font-black text-red-700'>Missed Appointment</span>
+    <Table
+      id="table"
+      name="table"
+      dataSource={missed} 
+      columns={columns}       
+      rowKey="id"
+      size='small'
+      className='bg-red-700 rounded-lg'
+      pagination={{ 
+        pageSize: 5,
+        showSizeChanger: false,
+       }}
+      scroll={{ x: 'max-content' }}
     />
     </div>
     </>

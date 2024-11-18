@@ -10,7 +10,7 @@ export default function AdminDashboard({ auth }) {
             //header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Record of Appointment</h2>}
         >
             <Head title="Record" />
-            <main className='mt-[5rem]'>
+            <main className='bg-white'>
                 <DentalAppointmentHistory/>
             </main>
         </AuthenticatedLayout>
