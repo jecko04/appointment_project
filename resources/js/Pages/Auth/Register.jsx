@@ -59,6 +59,9 @@ const submit = async (e) => {
     validatePassword();
 
     const emergencyContact = `${data.emergency_contact_name} - ${data.emergency_contact_number}`;
+    const internationalContact = data.phone.startsWith('+63')
+    ? data.phone
+    : `+63${data.phone.replace(/^0/, '')}`;
 
     try {
         const response = await fetch(route('register'), {
@@ -71,6 +74,7 @@ const submit = async (e) => {
             body: JSON.stringify({
                 ...data,
                 emergency_contact: emergencyContact,
+                phone: internationalContact,
             }),
         });
 
