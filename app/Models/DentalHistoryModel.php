@@ -13,8 +13,7 @@ class DentalHistoryModel extends Model
 
     protected $fillable = [
         'patient_id',
-        'last_dental_visit',
-        'past_dental_treatment',
+        'past_dental_treatments',
         'frequent_tooth_pain',
         'gum_disease_history',
         'teeth_grinding',

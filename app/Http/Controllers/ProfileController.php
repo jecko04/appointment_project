@@ -51,12 +51,17 @@ class ProfileController extends Controller
             'date_of_birth' => 'required|date',
             'age' => 'required|integer',
             'gender' => 'required|string',
-            'phone' => 'required|string',
+            'phone' => 'required|string|min:10|max:15',
             'address' => 'required|string',
             'emergency_contact' => 'required|string',
         ]);
 
         $dateOfBirth = Carbon::parse($validated['date_of_birth'])->format('Y-m-d');
+
+        $validated['phone'] = str_starts_with($validated['phone'], '+63')
+        ? $validated['phone']
+        : '+63' . ltrim($validated['phone'], '0');
+
 
         $user = $request->user();
 

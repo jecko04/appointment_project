@@ -26,13 +26,13 @@ const user= usePage().props.auth.user
   const submit = (e) => {
     e.preventDefault();
     const internationalContact = data.phone.startsWith('+63')
-    ? data.phone
-    : `+63${data.phone.replace(/^0/, '')}`;
-
-  setData('phone', internationalContact);
-
+      ? data.phone
+      : `+63${data.phone.replace(/^0/, '')}`;
+    setData('phone', internationalContact);
+    //console.log('Formatted Phone:', internationalContact); 
     patch(route('profile.update.info'), {
-      data,
+      ...data,
+      phone: internationalContact,
       onSuccess: () => {
         notification.success({
           message: 'Success',
