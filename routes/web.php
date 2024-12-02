@@ -43,7 +43,7 @@ Route::get('/contact', [ContactController::class, 'contact'])->name('contact');
 Route::get('/location', [LocationController::class, 'location'])->name('location');
 
 //learn how to make route
-Route::middleware(['ifNotUser', 'checkAppointment'])->group(function () {
+Route::middleware(['ifNotUser', 'checkAppointment', 'IfAuthenticate'])->group(function () {
     Route::get('/guest/appointment', [AppointmentController::class, 'appointment'])->name('guest.appointment');
     Route::get('/guest/consultation', [ConsultationAppointmentController::class, 'consult'])->name('guest.consultation');
 });
@@ -51,7 +51,7 @@ Route::middleware(['ifNotUser', 'checkAppointment'])->group(function () {
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'IfAuthenticate'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

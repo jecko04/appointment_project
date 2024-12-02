@@ -16,8 +16,11 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::guard()->check()) {
-            return redirect()->route('home');
+        if (Auth::guard()->check() && Auth::user()->email_verified_at === null) {
+            // Log out the user if email is not verified
+            //Auth::logout();
+            
+            return redirect()->route('verification.notice')->with('message', 'Please verify your email before accessing the application.');
         }
 
         return $next($request);

@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('token_desktop', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('Admin_ID')->nullable();
+            $table->unsignedBigInteger('SuperAdmin_ID')->nullable();
             $table->string('email');
             $table->string('token');
             $table->dateTime('tokenExpirationDate');
             $table->boolean('isUsed')->default(false);
             $table->timestamps();
-
+            
             $table->foreign('Admin_ID')->references('Admin_ID')->on('admin')->onDelete('cascade');
+            $table->foreign('SuperAdmin_ID')->references('SuperAdmin_ID')->on('superadmin')->onDelete('cascade');
 
             $table->unique(['email']);
         });
